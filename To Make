@@ -1,0 +1,18 @@
+1. Add Icon / Window Names.
+3. Be able to move around task on the todolist screen with drag and drop
+6. Klaus Radio
+8. Active Task can own active tasks inside of them
+9. Create a Sustain Task Streak handler which you input a habit you want a streak and it'll auto add it to the next day
+10. Create functionality to move across tomorrow and yesterday
+12. The Hotkey Window thing
+15. Klaus Respawn
+17. Create the Github Repository
+19. Add onto Klaus Nutrition
+20. Refactoring Session [split classes it's getting to thick], and clean code
+21. Refactor round for simple fixes like display bugs, bugs, and stuff like that
+22. The streaks for badhabits need constant reminders in a way to keep you from doing it kinda like subconscious messages that flash because reminders are nice to keep your focus on bad habits
+23. You can stylize task names like maybe bold them or resize them during creation to stress emphasize
+28. Traceback calls to exceptions
+29. Window Screen Tinter
+BlockList have format [[appDaily][appGeneral][appTimer],[websiteTimer][websiteGeneral][websiteDaily]]
+Order for browrsers [brave][chrome][edge]

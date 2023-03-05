@@ -1,0 +1,14 @@
+1. Add Icon / Window Names.
+2. Timer current time adjusted (sum of timer time imposed on current time)
+3. Be able to move around task on the todolist screen with drag and drop
+4. Window Screen Tint
+5. Implement the Splurge Timer Block Lists
+6. Klaus Radio
+7. Klaus Nutrition
+8. Active Task can own active tasks inside of them
+9. Create a Sustain Task Streak handler which you input a habit you want a streak and it'll auto add it to the next day
+10. Create functionality to move across tomorrow and yesterday
+11. Implement Settings
+12. The Hotkey Window thing
+13. Set new daily start
+14. Add a back button
