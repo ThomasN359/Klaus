@@ -1,6 +1,5 @@
 import enum
 from datetime import time
-from KlausSrc import *
 
 
 class TaskType(enum.Enum):

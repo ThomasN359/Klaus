@@ -1,6 +1,11 @@
-from PyQt5.QtWidgets import QLabel, QPushButton
-from KlausSrc import *
-from Main import *
+import pickle
+from datetime import datetime
+
+from PyQt5 import QtCore
+from PyQt5.QtWidgets import QLabel, QPushButton, QWidget, QLineEdit, QVBoxLayout
+
+from config import pickleDirectory
+
 
 class NutritionWindow(QWidget):
     def __init__(self, todo_list_archive, todo_list, parent=None):
@@ -17,7 +22,10 @@ class NutritionWindow(QWidget):
         # Load saved data from pickle
         try:
             with open(pickleDirectory + "/net_calories.pickle", "rb") as f:
-                self.last_save_time, self.net_calories, self.daily_metabolic_rate = pickle.load(f)
+                data = pickle.load(f)
+                self.last_save_time = data["timestamp"]
+                self.net_calories = data["calories"]
+                self.daily_metabolic_rate = data["metabolic_rate"]
         except FileNotFoundError:
             pass
 
@@ -65,8 +73,8 @@ class NutritionWindow(QWidget):
         # Save net calories and metabolic rate to pickle every minute
         if now.second % 12 == 0:
             with open(pickleDirectory + "/net_calories.pickle", "wb") as f:
-                pickle.dump((now, self.net_calories, self.daily_metabolic_rate), f)
-
+                data = {"calories": self.net_calories, "metabolic_rate": self.daily_metabolic_rate, "timestamp": now, "type": "NUTRITION_LIST"}
+                pickle.dump(data, f)
         # Calculate net pounds and format as decimal with 4 digits
         net_pounds = self.net_calories / 3500
         net_pounds_formatted = "{:.6f}".format(net_pounds)
@@ -96,13 +104,19 @@ class NutritionWindow(QWidget):
         # Save net calories and metabolic rate to pickle
         now = datetime.datetime.now()
         with open(pickleDirectory + "/net_calories.pickle", "wb") as f:
-            pickle.dump((now, self.net_calories, self.daily_metabolic_rate), f)
+            data = {"calories": self.net_calories, "metabolic_rate": self.daily_metabolic_rate, "timestamp": now,
+                    "type": "NUTRITION_LIST"}
+            pickle.dump(data, f)
 
     def load_stats(self):
         # Load saved data from pickle
         try:
             with open(pickleDirectory + "/net_calories.pickle", "rb") as f:
+                data = pickle.load(f)
                 self.last_save_time, self.net_calories, self.daily_metabolic_rate = pickle.load(f)
+                self.last_save_time = data["timestamp"]
+                self.net_calories = data["calories"]
+                self.daily_metabolic_rate = data["metabolic_rate"]
         except FileNotFoundError:
             pass
 

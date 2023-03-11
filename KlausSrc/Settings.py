@@ -1,16 +1,8 @@
 from PyQt5.QtWidgets import *
-import os
 from PyQt5.QtCore import Qt
-from KlausSrc import *
 import pickle
-from Main import *
+from config import pickleDirectory
 import enum
-
-#TODO i have these global variables in main.py too probably only need one set but it has circular import error to fix
-parentDirectory = os.path.abspath(os.path.join(os.getcwd(), '..'))
-klausDirectory = os.path.join(parentDirectory, 'Klaus')
-pickleDirectory = os.path.join(klausDirectory, 'Pickles')
-pictureDirectory = os.path.join(klausDirectory, 'Pics')
 
 class KlausFeeling(enum.Enum):
     HAPPY = 1
@@ -129,7 +121,8 @@ class SettingsWindow(QWidget):
             self.settings.enable_lock_out = False
         # Brave, Chrome, Edge is the order
         self.settings.browsers = [self.brave_box.isChecked(), self.chrome_box.isChecked(), self.msedge_box.isChecked()]
-        with open(pickleDirectory + '/settings.pickle', 'wb') as f:
-            pickle.dump(self.settings, f)
+        with open(pickleDirectory + '\settings.pickle', 'wb') as f:
+            data = {"settings": self.settings, "type": "SETTINGS"}
+            pickle.dump(data, f)
             f.flush()
 

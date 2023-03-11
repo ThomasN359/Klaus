@@ -1,9 +1,7 @@
 import os
-
-from PyQt5.QtWidgets import QPushButton
-
-from KlausSrc import *
-from Main import *
+import pickle
+from PyQt5.QtWidgets import QPushButton, QLabel, QDialog, QVBoxLayout, QLineEdit, QComboBox
+from config import pickleDirectory
 
 class QuickListAddWindow(QDialog):
     def __init__(self, parent, todo_list):
@@ -37,8 +35,10 @@ class QuickListAddWindow(QDialog):
         self.choose_combobox = QComboBox()
 
         for filename in os.listdir(pickleDirectory):
-            if filename.endswith("qs.pickle"):
-                self.choose_combobox.addItem(filename.replace("qs.pickle", ""))
+            with open(pickleDirectory + "\\" + filename, "rb") as f:
+                data = pickle.load(f)
+            if data["type"] == "QUICK_LIST":
+                self.choose_combobox.addItem(filename.replace(".pickle", ""))
 
         self.layout.addWidget(self.choose_combobox)
 
@@ -51,21 +51,21 @@ class QuickListAddWindow(QDialog):
 
     # This function connects to the Quick Save button and quick saves by dumping it into a file on your computer
     def quick_save(self):
-        pickle_file = pickleDirectory + "/" + self.name_textbox.text() + "qs.pickle"
+        pickle_file = pickleDirectory + "/" + self.name_textbox.text() + ".pickle"
         if not os.path.exists(pickleDirectory):
             os.makedirs(pickleDirectory)
 
-        data = ("Quick Add", self.todo_list)
+        data = {"task_list": self.todo_list, "type": "QUICK_LIST"}
 
         with open(pickle_file, "wb") as f:
             pickle.dump(data, f)
 
     # This function connects to the quick add button
     def quick_add(self):
-        chosen_pickle = "Pickles/" + self.choose_combobox.currentText() + "qs.pickle"
+        chosen_pickle = pickleDirectory + "\\" + self.choose_combobox.currentText() + ".pickle"
         with open(chosen_pickle, "rb") as f:
             data = pickle.load(f)
-        self.todo_list.extend(data[1])
+        self.todo_list.extend(data["task_list"])
         self.parent().initUI()
         self.close()
         self.parent().repaint()

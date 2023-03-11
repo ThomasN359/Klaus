@@ -1,7 +1,6 @@
-from PyQt5.QtWidgets import QLabel, QPushButton
+from PyQt5.QtCore import Qt
+from PyQt5.QtWidgets import QLabel, QPushButton, QWidget, QHBoxLayout, QVBoxLayout
 
-from KlausSrc import *
-from Main import *
 
 class StatsWindow(QWidget):
     def __init__(self, todo_list_archive, todo_list, parent=None):
