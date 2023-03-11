@@ -1,5 +1,12 @@
-from KlausSrc import *
-from Main import *
+import os
+import pickle
+from datetime import datetime
+from config import pickleDirectory
+from PyQt5.QtCore import QTime, Qt
+from PyQt5.QtWidgets import QLabel, QPushButton, QComboBox, QTextEdit, QLineEdit, QVBoxLayout, QDialog, QTimeEdit, \
+    QCheckBox
+from Task import TaskStatus, TaskType, ActiveTask, TimerTask, BedTime, SustainTask
+
 
 class AddTaskWindow(QDialog):
     # index denotes the hbox index for the task line widget
@@ -145,8 +152,10 @@ class AddTaskWindow(QDialog):
         self.app_block_list_combo.addItem("None")
 
         for filename in os.listdir(pickleDirectory):
-            if filename.endswith("APPLIST.pickle"):
-                self.app_block_list_combo.addItem(filename)
+            with open(pickleDirectory + "\\" + filename, "rb") as f:
+                data = pickle.load(f)
+                if data["type"] == "APPLIST":
+                    self.app_block_list_combo.addItem(filename)
 
         self.app_block_list_label.hide()
         self.app_block_list_combo.hide()
@@ -156,8 +165,10 @@ class AddTaskWindow(QDialog):
         self.web_block_list_combo.addItem("None")
 
         for filename in os.listdir(pickleDirectory):
-            if filename.endswith("WEBLIST.pickle"):
-                self.web_block_list_combo.addItem(filename)
+            with open(pickleDirectory + "\\" + filename, "rb") as f:
+                data = pickle.load(f)
+                if data["type"] == "WEBLIST":
+                    self.web_block_list_combo.addItem(filename)
 
         self.web_block_list_label.hide()
         self.web_block_list_combo.hide()
@@ -233,8 +244,9 @@ class AddTaskWindow(QDialog):
             self.parent().repaint()
             self.parent().update()
             # Saving the task list to a file
-            todoData = {"Tasks": self.todo_list, "Date": datetime.now().date()}
-            with open(pickleDirectory + "todo_list.pickle", "wb") as f:
+
+            todoData = {"tasks": self.todo_list, "date": datetime.now().date(), "type": "TODOLIST"}
+            with open(pickleDirectory + "\\todo_list.pickle", "wb") as f:
                 pickle.dump(todoData, f)
                 f.flush()
 

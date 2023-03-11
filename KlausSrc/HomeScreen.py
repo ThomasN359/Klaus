@@ -1,9 +1,14 @@
-from PyQt5.QtWidgets import QLabel
-from KlausSrc import *
-from Main import *
-from ListCreatorWindow import *
-from StatsWindow import *
-from NutritionWindow import *
+from PyQt5.QtCore import QSize
+from PyQt5.QtGui import QPixmap, QIcon
+from PyQt5.QtWidgets import *
+from StatsWindow import StatsWindow
+from ListCreatorWindow import ListCreatorWindow
+from Settings import SettingsWindow
+from GlobalThreads import ScheduleThread, BlockThread
+from TodolistWindow import TodoListWindow
+from NutritionWindow import NutritionWindow
+from config import pictureDirectory
+
 
 class HomeScreen(QMainWindow):
     def __init__(self, todo_list_archive, todo_list, block_lists, settings, parent=None):

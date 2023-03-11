@@ -1,17 +1,20 @@
-from KlausSrc import *
-from AddTaskWindow import *
-from KlausSrc.Task import TaskStatus
-from Main import *
-from GlobalThreads import *
+import pickle
+from Task import TaskType, TaskStatus
+from Settings import KlausFeeling
+from GlobalThreads import TimerThread
+from config import pickleDirectory
 import random
 import os
-import json
 from datetime import *
 from PyQt5 import QtCore
-from winotify import Notification, audio
-from PyQt5.QtCore import Qt, QThread, pyqtSignal, QSize, QTime, QTimer
-from PyQt5.QtGui import QIcon, QFont, QPixmap
+from winotify import Notification
+from PyQt5.QtCore import QTime, QTimer
+from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import *
+from ReminderPopUpWindow import ReminderPopUp
+from HelperFunctions import automate_browser
+from AddTaskWindow import AddTaskWindow
+from QuickListAddWindow import QuickListAddWindow
 
 
 class TodoListWindow(QWidget):
@@ -31,7 +34,6 @@ class TodoListWindow(QWidget):
         self.layout = QVBoxLayout()
         self.initUI()
         self.setLayout(self.layout)
-
 
     def initUI(self):
 
@@ -138,7 +140,7 @@ class TodoListWindow(QWidget):
         # (bed time - timer accounted)
         self.update_feeling()
 
-        # This clears the buttons next to each task such as the checkbox, play_buttons etc to avoid duplicates on refresh
+        # This clears the buttons next to each task like the checkbox, play_buttons etc. to avoid duplicates on refresh
         widgets = [self.task_labels, self.check_buttons, self.x_buttons, self.play_buttons, self.cancel_buttons,
                    self.minutes_remaining, self.gear_buttons]
         for widget_list in widgets:
@@ -186,7 +188,7 @@ class TodoListWindow(QWidget):
 
     # This function draws the task rows which are horizontal rectangles that include the task name and their buttons
     def task_row_creator(self):
-        # This function iterates through every task in the todo_list and adds their buttons/layouts according to task type
+        # This function iterates each task in the todo_list and adds their buttons/layouts according to task type
         for task in self.todo_list:
             if task.task_type == TaskType.ACTIVE:
                 hbox = QHBoxLayout()
@@ -231,11 +233,11 @@ class TodoListWindow(QWidget):
             elif task.task_type == TaskType.TIMER:
                 hbox = QHBoxLayout()
                 task_label = QLabel(task.task_name + "(" + task.due_by + ")", self)
-                if (task.task_status == TaskStatus.FAILED):
+                if task.task_status == TaskStatus.FAILED:
                     task_label.setText("<s>" + task_label.text() + "</s>")
                     task_label.setStyleSheet("color: red")
                     task_label.setTextInteractionFlags(QtCore.Qt.TextSelectableByMouse)
-                elif (task.task_status == TaskStatus.PASSED):
+                elif task.task_status == TaskStatus.PASSED:
                     task_label.setText("<s>" + task_label.text() + "</s>")
                     task_label.setStyleSheet("color: green")
                     task_label.setTextInteractionFlags(QtCore.Qt.TextSelectableByMouse)
@@ -274,11 +276,11 @@ class TodoListWindow(QWidget):
             elif task.task_type == TaskType.SUSTAIN:
                 hbox = QHBoxLayout()
                 task_label = QLabel(task.task_name + "(" + task.due_by + ")", self)
-                if (task.task_status == TaskStatus.FAILED):
+                if task.task_status == TaskStatus.FAILED:
                     task_label.setText("<s>" + task_label.text() + "</s>")
                     task_label.setStyleSheet("color: red")
                     task_label.setTextInteractionFlags(QtCore.Qt.TextSelectableByMouse)
-                elif (task.task_status == TaskStatus.PASSED):
+                elif task.task_status == TaskStatus.PASSED:
                     task_label.setText("<s>" + task_label.text() + "</s>")
                     task_label.setStyleSheet("color: green")
                     task_label.setTextInteractionFlags(QtCore.Qt.TextSelectableByMouse)
@@ -296,17 +298,17 @@ class TodoListWindow(QWidget):
                     task.due_by[3:5])
                 dayMinuteBias = self.settings.daily_start_time.hour() * 60 + self.settings.daily_start_time.minute()
 
-                if (current_minutes < dayMinuteBias):
+                if current_minutes < dayMinuteBias:
                     current_minutes = 1440 - (dayMinuteBias - current_minutes)
                 else:
-                    current_minutes = current_minutes - (dayMinuteBias)
+                    current_minutes = current_minutes - dayMinuteBias
                 if target_time_minutes < dayMinuteBias:
                     target_time_minutes = 1440 - (dayMinuteBias - target_time_minutes)
                 else:
-                    target_time_minutes = target_time_minutes - (dayMinuteBias)
+                    target_time_minutes = target_time_minutes - dayMinuteBias
 
                 minutes_difference = int(target_time_minutes - current_minutes)
-                if (minutes_difference < 0):
+                if minutes_difference < 0:
                     minutes_difference = 0
                     task.task_status = TaskStatus.PASSED
                 minutesRemaining = QLabel("Minutes Remaining: {}".format(minutes_difference))
@@ -337,11 +339,11 @@ class TodoListWindow(QWidget):
             elif task.task_type == TaskType.BEDTIME:
                 hbox = QHBoxLayout()
                 task_label = QLabel(task.task_name + "(" + task.due_by + ")", self)
-                if (task.task_status == TaskStatus.FAILED):
+                if task.task_status == TaskStatus.FAILED:
                     task_label.setText("<s>" + task_label.text() + "</s>")
                     task_label.setStyleSheet("color: red")
                     task_label.setTextInteractionFlags(QtCore.Qt.TextSelectableByMouse)
-                elif (task.task_status == TaskStatus.PASSED):
+                elif task.task_status == TaskStatus.PASSED:
                     task_label.setText("<s>" + task_label.text() + "</s>")
                     task_label.setStyleSheet("color: green")
                     task_label.setTextInteractionFlags(QtCore.Qt.TextSelectableByMouse)
@@ -547,13 +549,13 @@ class TodoListWindow(QWidget):
             self.timer_thread = TimerThread(task, self)
             self.timer_thread.timer_signal.connect(lambda x: self.update_duration(task, x))
             timer_set = False
+
             # Implements block list for play button
             for filename in os.listdir(pickleDirectory):
-                if filename.endswith("APPLIST.pickle"):
-                    chosen_pickle = "Pickles/" + filename
-                    with open(chosen_pickle, "rb") as file:
-                        data = pickle.load(file)
-
+                chosen_pickle = pickleDirectory + "\\" + filename
+                with open(chosen_pickle, "rb") as file:
+                    data = pickle.load(file)
+                if data["type"] == "APPLIST":
                     if data["status"] == "TIMER":
                         if timer_set:
                             data["status"] = "INACTIVE"
@@ -569,23 +571,22 @@ class TodoListWindow(QWidget):
                         pickle.dump(data, file)
 
                 if filename.endswith("WEBLIST.pickle"):
-                    chosen_pickle = "Pickles/" + filename
+                    chosen_pickle = pickleDirectory + "\\" + filename
                     with open(chosen_pickle, "rb") as file:
                         data = pickle.load(file)
-
-                    if data["status"] == "TIMER":
-                        if timer_set:
-                            data["status"] = "INACTIVE"
-                        else:
+                    if data["type"] == "WEBLIST":
+                        if data["status"] == "TIMER":
+                            if timer_set:
+                                data["status"] = "INACTIVE"
+                            else:
+                                timer_set = True
+                        if task.web_block_list == filename:
+                            data["status"] = "TIMER"
+                            self.block_list[1][0] = data["entries"]
                             timer_set = True
 
-                    if task.web_block_list == filename:
-                        data["status"] = "TIMER"
-                        self.block_list[1][0] = data["entries"]
-                        timer_set = True
-
-                    with open(chosen_pickle, "wb") as file:
-                        pickle.dump(data, file)
+                        with open(chosen_pickle, "wb") as file:
+                            pickle.dump(data, file)
             self.timer_thread.start()
         else:
             sender.setText("\u25B6")  # play symbol
@@ -599,10 +600,11 @@ class TodoListWindow(QWidget):
                 self.timer_thread = None
             timer_set = False
             for filename in os.listdir(pickleDirectory):
-                if filename.endswith("APPLIST.pickle"):
-                    chosen_pickle = "Pickles/" + filename
-                    with open(chosen_pickle, "rb") as file:
-                        data = pickle.load(file)
+                chosen_pickle = pickleDirectory + "\\" + filename
+                with open(chosen_pickle, "rb") as file:
+                    data = pickle.load(file)
+                if data["type"] == "APPLIST":
+
                     if data["status"] == "TIMER":
                         if timer_set:
                             data["status"] = "INACTIVE"
@@ -617,11 +619,10 @@ class TodoListWindow(QWidget):
                     with open(chosen_pickle, "wb") as file:
                         pickle.dump(data, file)
 
-                if filename.endswith("WEBLIST.pickle"):
-                    chosen_pickle = "Pickles/" + filename
-                    with open(chosen_pickle, "rb") as file:
-                        data = pickle.load(file)
-
+                chosen_pickle = pickleDirectory + "\\" + filename
+                with open(chosen_pickle, "rb") as file:
+                    data = pickle.load(file)
+                if data["type"] == "WEBLIST":
                     if data["status"] == "TIMER":
                         if timer_set:
                             data["status"] = "INACTIVE"
@@ -635,6 +636,7 @@ class TodoListWindow(QWidget):
 
                     with open(chosen_pickle, "wb") as file:
                         pickle.dump(data, file)
+
         if task.web_block_list != "None":
             automate_browser(self.block_list, self.settings)
 

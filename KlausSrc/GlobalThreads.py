@@ -1,16 +1,13 @@
-
 import datetime
 import os
 import subprocess
 import threading
 from datetime import *
 import time
-
 from PyQt5.QtCore import QThread, pyqtSignal
 from winotify import Notification
-
-from KlausSrc import TaskType, decrement_brightness
-from Task import TaskStatus
+from HelperFunctions import decrement_brightness
+from Task import TaskStatus, TaskType
 
 
 class TimerThread(QThread):

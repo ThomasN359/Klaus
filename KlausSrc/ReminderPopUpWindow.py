@@ -1,7 +1,9 @@
-from PyQt5.QtWidgets import QLabel, QPushButton
+from PyQt5.QtWidgets import *
+from PyQt5.uic.Compiler.qtproxies import QtCore
+import random
 
-from KlausSrc import *
-from Main import *
+from Settings import KlausFeeling
+
 
 class ReminderPopUp(QDialog):
     def __init__(self, klaus_feeling, parent=None):
