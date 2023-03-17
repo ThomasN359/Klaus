@@ -14,6 +14,7 @@ from PyQt5.QtWidgets import *
 from ReminderPopUpWindow import ReminderPopUp
 from HelperFunctions import automate_browser
 from AddTaskWindow import AddTaskWindow
+from AddTaskWindow import update_file
 from QuickListAddWindow import QuickListAddWindow
 
 
@@ -529,6 +530,8 @@ class TodoListWindow(QWidget):
         task_label = self.task_labels[index]
         task_label.setStyleSheet("color: green;")
         task_label.setText("<s>" + task_label.text() + "</s>")
+        update_file(self)
+
 
     def handle_x_click(self):
         sender = self.sender()
@@ -538,6 +541,7 @@ class TodoListWindow(QWidget):
         task_label = self.task_labels[index]
         task_label.setStyleSheet("color: red;")
         task_label.setText("<s>" + task_label.text() + "</s>")
+        update_file(self)
 
     def handle_play_click(self):
         sender = self.sender()
@@ -677,6 +681,7 @@ class TodoListWindow(QWidget):
         del cancel_button
         del x_button
         del task
+        update_file(self)
         self.parent().show_todolist()
 
     # Bottom Row Buttons Functionality
@@ -731,7 +736,10 @@ class TodoListWindow(QWidget):
         self.add_list_window = QuickListAddWindow(self, self.todo_list)
         self.add_list_window.show()
 
+
+
     # [Group 4] Redundency Funcitons. Functionality you'll use a lot so you just have it a simple function
+
     def clear_layout(self, layout):
         if layout is not None:
             while layout.count():
