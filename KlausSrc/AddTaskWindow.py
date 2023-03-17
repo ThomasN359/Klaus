@@ -244,7 +244,11 @@ class AddTaskWindow(QDialog):
             self.parent().repaint()
             self.parent().update()
             # Saving the task list to a file
-            update_file(self)
+
+            todoData = {"tasks": self.todo_list, "date": datetime.now().date(), "type": "TODOLIST"}
+            with open(pickleDirectory + "\\todo_list.pickle", "wb") as f:
+                pickle.dump(todoData, f)
+                f.flush()
 
     def show_task_type(self):
         task_type = self.type_combo.currentText()
@@ -266,9 +270,3 @@ class AddTaskWindow(QDialog):
             self.web_block_list_label.hide()
             self.web_block_list_combo.hide()
             self.enable_shutdown_checkbox.hide()
-
-def update_file(self):
-    todoData = {"tasks": self.todo_list, "date": datetime.now().date(), "type": "TODOLIST"}
-    with open(pickleDirectory + "\\todo_list.pickle", "wb") as f:
-        pickle.dump(todoData, f)
-        f.flush()
