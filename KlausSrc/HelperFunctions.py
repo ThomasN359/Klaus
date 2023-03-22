@@ -5,8 +5,7 @@ import traceback
 
 import pyautogui
 
-
-
+from CommunicationManager import sendBlocklist
 
 # This is where the web browser block list is handled
 def automate_browser(block_lists, settings):
@@ -44,58 +43,65 @@ def automate_browser(block_lists, settings):
             else:
                 continue
 
-            # Launch browser
-            pyautogui.hotkey('win', 'r')
-            pyautogui.typewrite(browser_exe)
-            pyautogui.press('enter')
-
-            # Wait for browser to open
-            time.sleep(1)
-
-            # Check if browser is maximized
-            try:
-                win = pyautogui.getWindowsWithTitle(browser_name)[0]
-                is_maximized = win.isMaximized
-
-                # Maximize browser window if it's not already maximized
-                if not is_maximized:
-                    pyautogui.hotkey('win', 'up')
-                    # Wait for browser to maximize
-                    time.sleep(.05)
-
-                # Navigate to extension URL
-                pyautogui.hotkey('ctrl', 'l')
-                pyautogui.typewrite('chrome-extension://akfbkbiialncppkngofjpglbbobjoeoe/options.html')
+            if browser_name == 'Google Chrome': #use chrome extension
+                try:
+                    sendBlocklist(block_str)
+                except:
+                    print(f"Unable to send blocklist for Google Chrome")
+                    continue
+            else: #else use default method
+                # Launch browser
+                pyautogui.hotkey('win', 'r')
+                pyautogui.typewrite(browser_exe)
                 pyautogui.press('enter')
 
-                # Wait for extension to load
-                time.sleep(.7)
+                # Wait for browser to open
+                time.sleep(1)
 
-                # Click the textbox
-                pyautogui.click(x, 2 * y)
-                time.sleep(.05)
+                # Check if browser is maximized
+                try:
+                    win = pyautogui.getWindowsWithTitle(browser_name)[0]
+                    is_maximized = win.isMaximized
 
-                # Select all text in textbox
-                pyautogui.hotkey('ctrl', 'a')
+                    # Maximize browser window if it's not already maximized
+                    if not is_maximized:
+                        pyautogui.hotkey('win', 'up')
+                        # Wait for browser to maximize
+                        time.sleep(.05)
 
-                # Delete all text in textbox
-                pyautogui.press('backspace')
+                    # Navigate to extension URL
+                    pyautogui.hotkey('ctrl', 'l')
+                    pyautogui.typewrite('chrome-extension://akfbkbiialncppkngofjpglbbobjoeoe/options.html')
+                    pyautogui.press('enter')
 
-                # Type in block list
-                pyautogui.typewrite(block_str)
+                    # Wait for extension to load
+                    time.sleep(.7)
 
-                # Wait for text to be typed in
-                time.sleep(.1)
+                    # Click the textbox
+                    pyautogui.click(x, 2 * y)
+                    time.sleep(.05)
 
-                # Click the Save button
-                pyautogui.click(x / 1.3, 2.4 * y)
-                time.sleep(.05)
+                    # Select all text in textbox
+                    pyautogui.hotkey('ctrl', 'a')
 
-                # Close the browser
-                pyautogui.hotkey('alt', 'f4')
-            except IndexError:
-                print(f"Unable to find window for {browser_name}")
-                continue
+                    # Delete all text in textbox
+                    pyautogui.press('backspace')
+
+                    # Type in block list
+                    pyautogui.typewrite(block_str)
+
+                    # Wait for text to be typed in
+                    time.sleep(.1)
+
+                    # Click the Save button
+                    pyautogui.click(x / 1.3, 2.4 * y)
+                    time.sleep(.05)
+
+                    # Close the browser
+                    pyautogui.hotkey('alt', 'f4')
+                except IndexError:
+                    print(f"Unable to find window for {browser_name}")
+                    continue
 
     except Exception as e:
         tb = traceback.format_exc()
