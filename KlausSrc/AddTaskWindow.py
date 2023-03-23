@@ -6,6 +6,7 @@ from PyQt5.QtCore import QTime, Qt
 from PyQt5.QtWidgets import QLabel, QPushButton, QComboBox, QTextEdit, QLineEdit, QVBoxLayout, QDialog, QTimeEdit, \
     QCheckBox
 from Task import TaskStatus, TaskType, ActiveTask, TimerTask, BedTime, SustainTask
+from HelperFunctions import makePath
 
 
 class AddTaskWindow(QDialog):
@@ -152,7 +153,7 @@ class AddTaskWindow(QDialog):
         self.app_block_list_combo.addItem("None")
 
         for filename in os.listdir(pickleDirectory):
-            with open(pickleDirectory + "\\" + filename, "rb") as f:
+            with open(makePath(pickleDirectory, filename), "rb") as f:
                 data = pickle.load(f)
                 if data["type"] == "APPLIST":
                     self.app_block_list_combo.addItem(filename)
@@ -165,7 +166,7 @@ class AddTaskWindow(QDialog):
         self.web_block_list_combo.addItem("None")
 
         for filename in os.listdir(pickleDirectory):
-            with open(pickleDirectory + "\\" + filename, "rb") as f:
+            with open(makePath(pickleDirectory, filename), "rb") as f:
                 data = pickle.load(f)
                 if data["type"] == "WEBLIST":
                     self.web_block_list_combo.addItem(filename)
@@ -269,6 +270,6 @@ class AddTaskWindow(QDialog):
 
 def update_file(self):
     todoData = {"tasks": self.todo_list, "date": datetime.now().date(), "type": "TODOLIST"}
-    with open(pickleDirectory + "\\todo_list.pickle", "wb") as f:
+    with open(makePath(pickleDirectory, "todo_list.pickle"), "wb") as f:
         pickle.dump(todoData, f)
         f.flush()

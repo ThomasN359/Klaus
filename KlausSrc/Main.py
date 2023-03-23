@@ -10,7 +10,7 @@ import time
 from PyQt5.QtCore import QTime
 from PyQt5.QtGui import QFont
 from PyQt5.QtWidgets import *
-
+from HelperFunctions import *
 
 def main_process():  # TODO FLAG AND LOCK
 
@@ -24,9 +24,8 @@ def main_process():  # TODO FLAG AND LOCK
     # Below here, items are loaded and initialized in your system, such as settings, todolist, block list etc.
     # Load in saved block list if they exist
 
-
     for filename in os.listdir(pickleDirectory):
-        filename = "Pickles/" + filename
+        filename = makePath("Pickles", filename)
         if filename.endswith("APPLIST.pickle"):
             try:
                 with open(filename, "rb") as f:
@@ -48,7 +47,7 @@ def main_process():  # TODO FLAG AND LOCK
 
     # Load in t0dolist archive
     try:
-        with open(pictureDirectory + "/todo_list_archive.pickle", "rb") as f:
+        with open(makePath(pickleDirectory, "todo_list_archive.pickle"), "rb") as f:
             todo_list_archive = pickle.load(f)
     except:
         # Handle the exception and continue without the data
@@ -57,7 +56,7 @@ def main_process():  # TODO FLAG AND LOCK
 
     # Load in most recent t0do list
     try:
-        with open(pickleDirectory + "/todo_list.pickle", "rb") as f:
+        with open(makePath(pickleDirectory, "todo_list.pickle"), "rb") as f:
             todoData = pickle.load(f)
             todo_list = todoData["tasks"]
             timeStamp = todoData["date"]
@@ -69,7 +68,7 @@ def main_process():  # TODO FLAG AND LOCK
 
     # Load in settings
     try:
-        with open(pickleDirectory + "/settings.pickle", "rb") as f:
+        with open(makePath(pickleDirectory, "settings.pickle"), "rb") as f:
             data = pickle.load(f)
             settings = data["settings"]
     except:
@@ -80,7 +79,7 @@ def main_process():  # TODO FLAG AND LOCK
         settings.browsers = [False, True, False]
         settings.klaus_state = KlausFeeling.HAPPY
         settings.enable_dialogue_reminder_window = True
-        with open(pickleDirectory + '\settings.pickle', 'wb') as f:
+        with open(makePath(pickleDirectory, 'settings.pickle'), 'wb') as f:
             data = {"settings": settings, "type": "SETTINGS"}
             pickle.dump(data, f)
             f.flush()
@@ -92,7 +91,7 @@ def main_process():  # TODO FLAG AND LOCK
         if len(todo_list) > 0:
             todo_list_archive.append({timeStamp: todo_list})  # if there was a previous todolist archive it
             try:
-                with open(pickleDirectory + "/todo_list_archive.pickle", "wb") as f:
+                with open(makePath(pickleDirectory, 'todo_list_archive.pickle'), "wb") as f:
                     pickle.dump(todo_list_archive, f)
                     f.flush()
             except:
@@ -118,9 +117,9 @@ def main_process():  # TODO FLAG AND LOCK
     main_window.start_scheduling()
     main_window.start_blocking()
     # Connect close event to handle_close_event
-    # main_window.closeEvent = lambda event: handle_close_event(event, flag, lock) TODO flag and lock
+    # main_window.closeEvent = lambda event: handle_close_event(event, flag, lock) #T0DO flag and lock
     # This handles the block list
-    app.exec()
+    sys.exit(app.exec())
 
 
 def main():

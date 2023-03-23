@@ -16,6 +16,7 @@ from HelperFunctions import automate_browser
 from AddTaskWindow import AddTaskWindow
 from AddTaskWindow import update_file
 from QuickListAddWindow import QuickListAddWindow
+from HelperFunctions import makePath
 
 
 class TodoListWindow(QWidget):
@@ -556,7 +557,7 @@ class TodoListWindow(QWidget):
 
             # Implements block list for play button
             for filename in os.listdir(pickleDirectory):
-                chosen_pickle = pickleDirectory + "\\" + filename
+                chosen_pickle = makePath(pickleDirectory, filename)
                 with open(chosen_pickle, "rb") as file:
                     data = pickle.load(file)
                 if data["type"] == "APPLIST":
@@ -575,7 +576,7 @@ class TodoListWindow(QWidget):
                         pickle.dump(data, file)
 
                 if filename.endswith("WEBLIST.pickle"):
-                    chosen_pickle = pickleDirectory + "\\" + filename
+                    chosen_pickle = makePath(pickleDirectory, filename)
                     with open(chosen_pickle, "rb") as file:
                         data = pickle.load(file)
                     if data["type"] == "WEBLIST":
@@ -604,7 +605,7 @@ class TodoListWindow(QWidget):
                 self.timer_thread = None
             timer_set = False
             for filename in os.listdir(pickleDirectory):
-                chosen_pickle = pickleDirectory + "\\" + filename
+                chosen_pickle = makePath(pickleDirectory, filename)
                 with open(chosen_pickle, "rb") as file:
                     data = pickle.load(file)
                 if data["type"] == "APPLIST":
@@ -623,7 +624,7 @@ class TodoListWindow(QWidget):
                     with open(chosen_pickle, "wb") as file:
                         pickle.dump(data, file)
 
-                chosen_pickle = pickleDirectory + "\\" + filename
+                chosen_pickle = makePath(pickleDirectory, filename)
                 with open(chosen_pickle, "rb") as file:
                     data = pickle.load(file)
                 if data["type"] == "WEBLIST":
