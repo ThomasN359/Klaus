@@ -6,6 +6,9 @@ import threading
 import sys
 import json
 import struct
+import os
+
+lock_file = 'parent.lock'
 
 exampleBlocklist = ["reddit", "twitter", "twitch"]
 
@@ -32,6 +35,18 @@ def sendMessage(encodedMessage):
     sys.stdout.buffer.write(encodedMessage['length'])
     sys.stdout.buffer.write(encodedMessage['content'])
     sys.stdout.buffer.flush()
+
+def sendBlocklist(message):
+    encodedMsg = encodeMessage(message)
+    sendMessage(encodedMsg)
+
+def evaluateMasterKlausStatus():
+    if os.path.exists(lock_file):
+        print("Master Klaus is running")
+    else:
+        with open(lock_file, 'w') as file: #open lock file in write mode
+            file.write(str(os.getpid()))
+        os.remove(lock_file)
 
 class Box(QWidget):
 

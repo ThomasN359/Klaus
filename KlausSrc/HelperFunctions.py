@@ -11,6 +11,9 @@ import pyautogui
 
 from CommunicationManager import sendBlocklist
 
+lock_file = 'mainKlaus.lock'
+log_file = 'mainKlaus.log'
+
 # This is where the web browser block list is handled
 def automate_browser(block_lists, settings):
     try:
@@ -134,3 +137,44 @@ def decrement_brightness():
 def makePath(str1, str2):
     path = os.path.normpath(os.path.join(str1, str2))
     return path
+
+def removeLockFile(): #removes the lock file
+    os.remove(lock_file)
+    writeToLogFile('Klaus lock file removed')
+
+def writeToLogFile(message): #writes message to logfile
+    with open(log_file, 'a') as f:
+        f.write(f"{message}\n")
+
+def ensureSingleton(): #makes sure that there is only one process running at a time using a lock file
+    if isSingleton():
+        writeLockFile()
+        atexit.register(removeLockFile)
+        print("This process is a singleton")
+    else:
+        print("Another instance is already running.")
+
+
+def writeLockFile():
+    with open(lock_file, 'w') as f:
+        f.write(str(os.getpid()))
+
+def isSingleton(): #returns true if process is the only one, false if there's already another process
+    if os.path.exists(lock_file):
+        with open(lock_file, 'r') as f:
+            pid = int(f.read().strip())
+        if psutil.pid_exists(pid):
+            parent_process = psutil.Process(pid)
+            if parent_process.name() == os.path.basename(__file__):
+                return False
+    return True
+
+def handleExit():
+    signal.signal(signal.SIGINT, exitSignalHandler)
+    signal.signal(signal.SIGTERM, exitSignalHandler)
+
+def exitSignalHandler(signal, frame):
+    print(f"Klaus exiting with signal {signal}...")
+    if os.path.exists(lock_file):
+        removeLockFile()
+    sys.exit(0)
