@@ -2,7 +2,11 @@ import ctypes
 import subprocess
 import time
 import traceback
-
+import os
+import atexit
+import signal
+import sys
+import psutil
 import pyautogui
 
 from CommunicationManager import sendBlocklist
@@ -126,3 +130,7 @@ def decrement_brightness():
         print(f"Brightness level set to {new_brightness}")
     else:
         print("Cannot decrement brightness level as it is already 0.")
+
+def makePath(str1, str2):
+    path = os.path.normpath(os.path.join(str1, str2))
+    return path

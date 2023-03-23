@@ -2,6 +2,7 @@ import os
 import pickle
 from PyQt5.QtWidgets import QPushButton, QLabel, QDialog, QVBoxLayout, QLineEdit, QComboBox
 from config import pickleDirectory
+from HelperFunctions import makePath
 
 class QuickListAddWindow(QDialog):
     def __init__(self, parent, todo_list):
@@ -35,7 +36,7 @@ class QuickListAddWindow(QDialog):
         self.choose_combobox = QComboBox()
 
         for filename in os.listdir(pickleDirectory):
-            with open(pickleDirectory + "\\" + filename, "rb") as f:
+            with open(makePath(pickleDirectory, filename), "rb") as f:
                 data = pickle.load(f)
             if data["type"] == "QUICK_LIST":
                 self.choose_combobox.addItem(filename.replace(".pickle", ""))
@@ -51,7 +52,7 @@ class QuickListAddWindow(QDialog):
 
     # This function connects to the Quick Save button and quick saves by dumping it into a file on your computer
     def quick_save(self):
-        pickle_file = pickleDirectory + "/" + self.name_textbox.text() + ".pickle"
+        pickle_file = makePath(pickleDirectory, self.name_textbox.text()+".pickle")
         if not os.path.exists(pickleDirectory):
             os.makedirs(pickleDirectory)
 
@@ -62,7 +63,7 @@ class QuickListAddWindow(QDialog):
 
     # This function connects to the quick add button
     def quick_add(self):
-        chosen_pickle = pickleDirectory + "\\" + self.choose_combobox.currentText() + ".pickle"
+        chosen_pickle = makePath(pickleDirectory, self.choose_combobox.currentText() + ".pickle")
         with open(chosen_pickle, "rb") as f:
             data = pickle.load(f)
         self.todo_list.extend(data["task_list"])

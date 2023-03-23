@@ -3,6 +3,7 @@ from PyQt5.QtCore import Qt
 import pickle
 from config import pickleDirectory
 import enum
+from HelperFunctions import makePath
 
 class KlausFeeling(enum.Enum):
     HAPPY = 1
@@ -121,7 +122,7 @@ class SettingsWindow(QWidget):
             self.settings.enable_lock_out = False
         # Brave, Chrome, Edge is the order
         self.settings.browsers = [self.brave_box.isChecked(), self.chrome_box.isChecked(), self.msedge_box.isChecked()]
-        with open(pickleDirectory + '\settings.pickle', 'wb') as f:
+        with open(makePath(pickleDirectory,'settings.pickle'), 'wb') as f:
             data = {"settings": self.settings, "type": "SETTINGS"}
             pickle.dump(data, f)
             f.flush()

@@ -3,6 +3,7 @@ import pickle
 from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QLabel, QPushButton, QComboBox, QVBoxLayout, QWidget, QLineEdit, QTextEdit, QHBoxLayout
 from config import pickleDirectory
+from HelperFunctions import makePath
 
 
 class ListCreatorWindow(QWidget):
@@ -41,7 +42,7 @@ class ListCreatorWindow(QWidget):
         type = ""
 
         for filename in os.listdir(pickleDirectory):
-            filePath = pickleDirectory + "\\" + filename
+            filePath = makePath(pickleDirectory, filename)
             try:
                 with open(filePath, "rb") as f:
                     data = pickle.load(f)
@@ -86,7 +87,7 @@ class ListCreatorWindow(QWidget):
         print("inward " + str(self.list_type_combobox.currentIndex()))
         fileList = []
         for filename in os.listdir(pickleDirectory):
-            filePath = pickleDirectory + "\\" + filename
+            filePath = makePath(pickleDirectory, filename)
             try:
                 with open(filePath, "rb") as f:
                     data = pickle.load(f)
@@ -106,7 +107,7 @@ class ListCreatorWindow(QWidget):
 
 
     def update_list_content(self, list_name):
-        pickle_file = pickleDirectory + "\\" + list_name
+        pickle_file = makePath(pickleDirectory,list_name)
         try:
             with open(pickle_file, "rb") as f:
                 data = pickle.load(f)
@@ -136,7 +137,7 @@ class ListCreatorWindow(QWidget):
             "entries": entries
         }
 
-        filePath = f"{pickleDirectory}\{list_name}.pickle"
+        filePath = makePath(pickleDirectory,list_name+".pickle")
         if filePath.endswith(".pickle.pickle"):
             filePath = filePath[:-7]
         with open(filePath, "wb") as f:
@@ -149,7 +150,7 @@ class ListCreatorWindow(QWidget):
 
     def delete(self):
         if self.list_name_textbox.text() != "":
-            filePath = f"{pickleDirectory}\{self.list_name_textbox.text()}.pickle"
+            filePath = makePath(pickleDirectory, self.list_name_textbox.text()+".pickle")
             if filePath.endswith(".pickle.pickle"):
                 filePath = filePath[:-7]
             os.remove(filePath)

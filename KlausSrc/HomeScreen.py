@@ -8,6 +8,7 @@ from GlobalThreads import ScheduleThread, BlockThread
 from TodolistWindow import TodoListWindow
 from NutritionWindow import NutritionWindow
 from config import pictureDirectory
+from HelperFunctions import makePath
 
 
 class HomeScreen(QMainWindow):
@@ -37,7 +38,7 @@ class HomeScreen(QMainWindow):
 
         # T0do List Button
         todolist_button = QPushButton()
-        pixmap = QPixmap(pictureDirectory + "/todolist.png")
+        pixmap = QPixmap(makePath(pictureDirectory, "todolist.png"))
         todolist_button.setIcon(QIcon(pixmap))
         todolist_button.setIconSize(QSize(150, 150))
         todolist_button.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
@@ -45,7 +46,7 @@ class HomeScreen(QMainWindow):
 
         # Settings Button
         settings_button = QPushButton()
-        pixmap = QPixmap(pictureDirectory + "/setting.png")
+        pixmap = QPixmap(makePath(pictureDirectory, "setting.png"))
         settings_button.setIcon(QIcon(pixmap))
         settings_button.setIconSize(QSize(150, 150))
         settings_button.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
@@ -53,7 +54,7 @@ class HomeScreen(QMainWindow):
 
         # List Creator Button
         list_creator_button = QPushButton()
-        pixmap = QPixmap(pictureDirectory + "/pencil.png")
+        pixmap = QPixmap(makePath(pictureDirectory,"pencil.png"))
         list_creator_button.setIcon(QIcon(pixmap))
         list_creator_button.setIconSize(QSize(150, 150))
         list_creator_button.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
@@ -61,7 +62,7 @@ class HomeScreen(QMainWindow):
 
         # Stat Button
         stats_button = QPushButton()
-        pixmap = QPixmap(pictureDirectory + "/stats.png")
+        pixmap = QPixmap(makePath(pictureDirectory,"stats.png"))
         stats_button.setIcon(QIcon(pixmap))
         stats_button.setIconSize(QSize(150, 150))
         stats_button.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
@@ -69,7 +70,7 @@ class HomeScreen(QMainWindow):
 
         # Nutrition Button
         nutrition_button = QPushButton()
-        pixmap = QPixmap(pictureDirectory + "/nutrition.png")
+        pixmap = QPixmap(makePath(pictureDirectory,"nutrition.png"))
         nutrition_button.setIcon(QIcon(pixmap))
         nutrition_button.setIconSize(QSize(150, 150))
         nutrition_button.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
