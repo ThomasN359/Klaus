@@ -55,5 +55,3 @@ winotify==1.1.0
 winsdk==1.0.0b7
 WMI==1.5.1
 wsproto==1.2.0
-
-nativemessaging~=1.0.1

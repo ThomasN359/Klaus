@@ -1,7 +1,7 @@
 {
-    "name": "klausCommManagerApple",
+    "name": "klauscommmanagerapple",
     "description": "Klaus Communication Manager Manifest for Apple OS",
-    "path": "INSERT_ABSOLUTE_PATH_TO_COMMUNICATIONMANAGER_SCRIPT_HERE",
+    "path": "INSERT_PATH_TO_COMMUNICATIONMANAGER_SCRIPT_HERE",
     "type": "stdio",
     "allowed_origins": [
         "chrome-extension://INSERT_EXTENSION_ID_HERE/"
