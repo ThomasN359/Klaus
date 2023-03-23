@@ -1,5 +1,5 @@
 {
-    "name": "klausCommManagerWin",
+    "name": "klauscommmanagerwin",
     "description": "Klaus Communication Manager Manifest for Windows",
     "path": "INSERT_PATH_TO_COMMUNICATIONMANAGER_SCRIPT_HERE",
     "type": "stdio",

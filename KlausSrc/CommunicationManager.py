@@ -6,7 +6,6 @@ import threading
 import sys
 import json
 import struct
-import nativemessaging
 
 exampleBlocklist = ["reddit", "twitter", "twitch"]
 
@@ -34,10 +33,6 @@ def sendMessage(encodedMessage):
     sys.stdout.buffer.write(encodedMessage['content'])
     sys.stdout.buffer.flush()
 
-
-def sendBlocklist(blocklist):
-    nativemessaging.send_message(nativemessaging.encode_message(blocklist))
-
 class Box(QWidget):
 
     def __init__(self):
@@ -48,10 +43,8 @@ class Box(QWidget):
     def Button(self):
         # add button
         clear_btn = QPushButton('Send example blocklist', self)
-        #clear_btn.clicked.connect(lambda: self.sendMessage(exampleBlocklist))
         blockListStr = exampleBlocklist[0] + "\n" + "\n".join(exampleBlocklist[1:])
         blockListStr = encodeMessage(blockListStr)
-        print(blockListStr)
         clear_btn.clicked.connect(lambda: sendMessage(blockListStr))
 
         # Set geometry
@@ -60,21 +53,16 @@ class Box(QWidget):
         # Display QlistWidget
         self.show()
 
-    def sendMessage(self, blocklist):
-        blockListStr = blocklist[0] + "\n" + "\n".join(blocklist[1:])
-        print(blockListStr)
-        nativemessaging.send_message(nativemessaging.encode_message(blockListStr))
-
     def thread(self):
         t1 = threading.Thread(target=self.Operation)
         t1.start()
 
     def Operation(self):
         while True:
-            message = nativemessaging.get_message()
+            message = getMessage()
 
             if message == "hello":
-                nativemessaging.send_message(nativemessaging.encode_message(f"Message: {message}"))
+                sendMessage(encodeMessage(f"Message: {message}"))
 
 
 if __name__ == '__main__':
