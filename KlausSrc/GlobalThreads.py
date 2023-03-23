@@ -5,7 +5,7 @@ import threading
 from datetime import *
 import time
 from PyQt5.QtCore import QThread, pyqtSignal
-from winotify import Notification
+#from winotify import Notification #UNCOMMENT_BlOCK_IF_WINDOWS
 from HelperFunctions import decrement_brightness
 from Task import TaskStatus, TaskType
 
@@ -93,10 +93,11 @@ class ScheduleThread(QThread):
                         reminderTime = "{}:{} {}".format(hours, minutes, timeComponents[1].split()[1])
                         # TODO make a function that converts time
                         if str(currentClock) == str(reminderTime):
-                            toast = Notification(app_id="Klaus",
-                                                 title="Reminder",
-                                                 msg="Reminder to complete the task " + task.task_name)
-                            toast.show()
+                            # toast = Notification(app_id="Klaus",
+                            #                      title="Reminder",
+                            #                      msg="Reminder to complete the task " + task.task_name)
+                            # toast.show() #UNCOMMENT_BlOCK_IF_WINDOWS
+                            print("Reminder toast to complete the task " + task.task_name)
 
                 if task.task_type == TaskType.BEDTIME:
                     originalBedTime = task.due_by
@@ -129,11 +130,11 @@ class ScheduleThread(QThread):
                         if i % 10 == 0:
                             decrement_brightness()
                     if originalBedTime == currentClock:
-                        toast = Notification(app_id="Klaus",
-                                             title="Reminder",
-                                             msg="It's bed time, you have 1 minutes before autoshut off",
-                                             duration="long")
-                        toast.show()
+                        # toast = Notification(app_id="Klaus",
+                        #                      title="Reminder",
+                        #                      msg="It's bed time, you have 1 minutes before autoshut off",
+                        #                      duration="long")
+                        # toast.show() #UNCOMMENT_BlOCK_IF_WINDOWS
                         print("Prepare for shutdown in 60 seconds minutes")
                         subprocess.run("shutdown /s /t 60", shell=True)
                         time.sleep(60)

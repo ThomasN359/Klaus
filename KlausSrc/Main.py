@@ -141,8 +141,12 @@ def main():
     # # Wait for GUI process to finish
     # gui_klaus.join()
     # main_process(flag, lock)
-    main_process()
-
+    handleExit()
+    if isSingleton(): #if this is a singleton process, make sure that no other processes can be made
+        ensureSingleton()
+        main_process()
+    else: #else, print and don't run program
+        print("Another instance is already running.")
 
 # This is a global function that overrides the normal "X" close button by including the information about respawning
 def handle_close_event(flag, lock):

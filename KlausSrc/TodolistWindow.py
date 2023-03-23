@@ -7,7 +7,7 @@ import random
 import os
 from datetime import *
 from PyQt5 import QtCore
-from winotify import Notification
+#from winotify import Notification #UNCOMMENT_BlOCK_IF_WINDOWS
 from PyQt5.QtCore import QTime, QTimer
 from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import *
