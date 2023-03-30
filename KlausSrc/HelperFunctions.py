@@ -1,5 +1,6 @@
 import ctypes
 import subprocess
+import threading
 import time
 import traceback
 import os
@@ -8,32 +9,29 @@ import signal
 import sys
 import psutil
 import pyautogui
-
-from CommunicationManager import sendBlocklist
+import struct
+import json
+import webbrowser
+import pickle
+import multiprocessing
+from config import pickleDirectory
 
 lock_file = 'mainKlaus.lock'
 log_file = 'mainKlaus.log'
 
+PORT_ESTABLISHED_MESSAGE = "PORT_ESTABLISHED"
+COMM_MANAGER_OPENED_MESSAGE = "COMM_MANAGER_OPENED"
+REQUEST_BLOCKLIST_MESSAGE = "REQUEST_BLOCKLIST"
+ENABLE_BLOCKLIST_MESSAGE = "ENABLE_BLOCKLIST"
+ENABLE_BLOCKLIST_SUCCESSS_MESSAGE = "ENABLE_BLOCKLIST_SUCCESS"
+
+TIMEOUT_TIME = 5
+CHROME_PATH = "/Applications/Google Chrome.app"
+
 # This is where the web browser block list is handled
 def automate_browser(block_lists, settings):
     try:
-        # create the mega block list by combining all the current lists
-        fullList = block_lists[1][0] + block_lists[1][1]
-        block_str = '\n'.join(fullList) + '\n'
-
-        # Get screen DPI
-        user32 = ctypes.windll.user32
-        user32.SetProcessDPIAware()
-        screen_width = user32.GetSystemMetrics(0)
-        screen_height = user32.GetSystemMetrics(1)
-        screen_dpi = user32.GetDpiForSystem()
-
-        # Calculate zoom factor
-        zoom_factor = screen_dpi / 96
-
-        # Calculate click coordinates
-        x = int(screen_width * 0.3 * zoom_factor)
-        y = int(screen_height * 0.3 * zoom_factor)
+        block_str = createWebsiteBlocklistFromBlocklists(block_lists)
 
         # Perform the task for these optional browsers
         # TODO remove i==1 with the users browsers from settings
@@ -52,11 +50,36 @@ def automate_browser(block_lists, settings):
 
             if browser_name == 'Google Chrome': #use chrome extension
                 try:
-                    sendBlocklist(block_str)
-                except:
-                    print(f"Unable to send blocklist for Google Chrome")
+
+                    extension_id = 'goaaiijpbejcjepcjfindfjncboeolaj'
+
+                    # The URL of the extension page in the Chrome Web Store
+                    extension_url = f'chrome-extension://{extension_id}/options.html'
+
+                    # Open the extension in the default browser
+                    webbrowser.get('chrome').open_new(extension_url)
+
+                    #T0D0: figure out how to send the ENABLE_BLOCKLIST_MESSAGE when the comm manager is
+                    #successfully established. Maybe figure out how to send messages/talk between python files?
+
+                except Exception as e:
+                    print(f"Unable to send blocklist for Google Chrome: {e}")
                     continue
             else: #else use default method
+                # Get screen DPI
+                user32 = ctypes.windll.user32
+                user32.SetProcessDPIAware()
+                screen_width = user32.GetSystemMetrics(0)
+                screen_height = user32.GetSystemMetrics(1)
+                screen_dpi = user32.GetDpiForSystem()
+
+                # Calculate zoom factor
+                zoom_factor = screen_dpi / 96
+
+                # Calculate click coordinates
+                x = int(screen_width * 0.3 * zoom_factor)
+                y = int(screen_height * 0.3 * zoom_factor)
+
                 # Launch browser
                 pyautogui.hotkey('win', 'r')
                 pyautogui.typewrite(browser_exe)
@@ -95,7 +118,7 @@ def automate_browser(block_lists, settings):
                     pyautogui.press('backspace')
 
                     # Type in block list
-                    pyautogui.typewrite(block_str)
+                    pyautogui.typewrite(block_str.replace('BLOCKLIST:',''))
 
                     # Wait for text to be typed in
                     time.sleep(.1)
@@ -114,7 +137,6 @@ def automate_browser(block_lists, settings):
         tb = traceback.format_exc()
         error_message = f"Web Blocking Automation Failed: {e}\n\n{tb}"
         print(error_message)
-
 
 # Decrements the brightness by 1
 def decrement_brightness():
@@ -158,6 +180,7 @@ def ensureSingleton(): #makes sure that there is only one process running at a t
 def writeLockFile():
     with open(lock_file, 'w') as f:
         f.write(str(os.getpid()))
+        f.close()
 
 def isSingleton(): #returns true if process is the only one, false if there's already another process
     if os.path.exists(lock_file):
@@ -178,3 +201,83 @@ def exitSignalHandler(signal, frame):
     if os.path.exists(lock_file):
         removeLockFile()
     sys.exit(0)
+
+def checkKlausRunning():
+    if os.path.exists(lock_file):
+        with open(lock_file, 'r') as f:
+            pid = int(f.read().strip())
+        if psutil.pid_exists(pid):
+            return True
+    return False
+
+def runKlaus():
+    # Run the parent script
+    process = subprocess.Popen(['python3', 'Main.py', 'main'], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+
+    # Wait for the process to finish and get the output
+    output, error = process.communicate()
+
+
+    #Sends output and error
+    sendMessage(output.decode('utf-8'))
+    sendMessage(error.decode('utf-8'))
+
+# Read a message from stdin and decode it.
+def getMessage():
+    rawLength = sys.stdin.buffer.read(4)
+    if len(rawLength) == 0:
+        sys.exit(0)
+    messageLength = struct.unpack('@I', rawLength)[0]
+    message = sys.stdin.buffer.read(messageLength).decode('utf-8')
+    return json.loads(message)
+
+# Encode a message for transmission, given its content.
+def encodeMessage(messageContent):
+    # https://docs.python.org/3/library/json.html#basic-usage
+    # To get the most compact JSON representation, you should specify (',', ':') to eliminate whitespace.
+    # We want the most compact representation because the browser rejects # messages that exceed 1 MB.
+    encodedContent = json.dumps(messageContent, separators=(',', ':')).encode('utf-8')
+    encodedLength = struct.pack('@I', len(encodedContent))
+    return {'length': encodedLength, 'content': encodedContent}
+
+# Send an encoded message to stdout
+def sendMessage(message):
+    encodedMessage = encodeMessage(message)
+    sys.stdout.buffer.write(encodedMessage['length'])
+    sys.stdout.buffer.write(encodedMessage['content'])
+    sys.stdout.buffer.flush()
+
+def sendBlocklist():
+    # if blocklist is not None and blocklist.startswith("BLOCKLIST:"):
+    #     sendMessage(blocklist)
+    # else:
+    #     print("Couldn't send blocklist")
+    sendMessage(createWebsiteBlocklistFromPickles())
+
+def createWebsiteBlocklistFromPickles():
+    #Gathers website blocklist
+    for filename in os.listdir(pickleDirectory):
+        try:
+            chosen_pickle = makePath(pickleDirectory, filename)
+
+            with open(chosen_pickle, "rb") as file:
+                data = pickle.load(file)
+
+            if data["type"] == "WEBLIST":
+                with open(chosen_pickle, "wb") as file:
+                    dataEntries = data["entries"]
+                    block_str = '\n'.join(dataEntries) + '\n'
+                    block_list = f'BLOCKLIST:{block_str}'
+                    pickle.dump(data, file)
+                    return block_list
+        except Exception as e:
+            print(f"Error occurred while creating website blocklist: {e}")
+def createWebsiteBlocklistFromBlocklists(block_lists):
+    #Gathers website blocklist
+    try:
+        fullList = block_lists[1][0] + block_lists[1][1]
+        block_str = '\n'.join(fullList) + '\n'
+        block_list = f"BLOCKLIST:{block_str}"
+        return(block_list)
+    except Exception as e:
+        print(f"Error occurred while creating website blocklist: {e}")

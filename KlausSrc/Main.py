@@ -1,9 +1,13 @@
+import sys
+import os
+dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
+sys.path.append(dir) #this fixes some weird importing thing when running communicationManager initialized by chrome
+
 from KlausSrc import *
 from Settings import *
 from config import pictureDirectory
 from TodolistWindow import *
 import multiprocessing
-import os
 import pickle
 from datetime import *
 import time
@@ -11,6 +15,7 @@ from PyQt5.QtCore import QTime
 from PyQt5.QtGui import QFont
 from PyQt5.QtWidgets import *
 from HelperFunctions import *
+
 
 def main_process():  # TODO FLAG AND LOCK
 
@@ -25,7 +30,7 @@ def main_process():  # TODO FLAG AND LOCK
     # Load in saved block list if they exist
 
     for filename in os.listdir(pickleDirectory):
-        filename = makePath("Pickles", filename)
+        filename = makePath(pickleDirectory, filename)
         if filename.endswith("APPLIST.pickle"):
             try:
                 with open(filename, "rb") as f:

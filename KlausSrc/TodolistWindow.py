@@ -575,23 +575,19 @@ class TodoListWindow(QWidget):
                     with open(chosen_pickle, "wb") as file:
                         pickle.dump(data, file)
 
-                if filename.endswith("WEBLIST.pickle"):
-                    chosen_pickle = makePath(pickleDirectory, filename)
-                    with open(chosen_pickle, "rb") as file:
-                        data = pickle.load(file)
-                    if data["type"] == "WEBLIST":
-                        if data["status"] == "TIMER":
-                            if timer_set:
-                                data["status"] = "INACTIVE"
-                            else:
-                                timer_set = True
-                        if task.web_block_list == filename:
-                            data["status"] = "TIMER"
-                            self.block_list[1][0] = data["entries"]
+                if data["type"] == "WEBLIST":
+                    if data["status"] == "TIMER":
+                        if timer_set:
+                            data["status"] = "INACTIVE"
+                        else:
                             timer_set = True
+                    if task.web_block_list == filename:
+                        data["status"] = "TIMER"
+                        self.block_list[1][0] = data["entries"]
+                        timer_set = True
 
-                        with open(chosen_pickle, "wb") as file:
-                            pickle.dump(data, file)
+                    with open(chosen_pickle, "wb") as file:
+                        pickle.dump(data, file)
             self.timer_thread.start()
         else:
             sender.setText("\u25B6")  # play symbol
