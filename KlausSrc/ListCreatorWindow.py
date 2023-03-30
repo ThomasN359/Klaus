@@ -107,14 +107,16 @@ class ListCreatorWindow(QWidget):
 
 
     def update_list_content(self, list_name):
-        pickle_file = makePath(pickleDirectory,list_name)
         try:
+            pickle_file = makePath(pickleDirectory, list_name)
             with open(pickle_file, "rb") as f:
                 data = pickle.load(f)
                 self.list_entries_textbox.setPlainText(" ".join(data["entries"]))
         except FileNotFoundError:
             self.list_entries_textbox.setPlainText("")
             self.list_type_combobox.setCurrentText("")
+        except IsADirectoryError:
+            pass
 
     def save_list(self):
         list_name = self.list_name_textbox.text()
