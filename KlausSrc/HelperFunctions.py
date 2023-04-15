@@ -56,13 +56,18 @@ def automate_browser(block_lists, settings):
             if browser_name == 'Google Chrome': #use chrome extension
                 try:
 
-                    extension_id = 'goaaiijpbejcjepcjfindfjncboeolaj'
+                    chromePath = makeNormPath('C:\Program Files\Google\Chrome\Application\chrome.exe')
+
+                    # webbrowser.register('chrome', None, webbrowser.BackgroundBrowser(chromePath))
+
+                    registerBrowser('chrome', chromePath)
+
+                    extension_id = 'dfjgcclcalfbaaenggppkhjklmdnbjce'
 
                     # The URL of the extension page in the Chrome Web Store
                     extension_url = f'chrome-extension://{extension_id}/options.html'
 
-                    # Open the extension in the default browser
-                    webbrowser.get('chrome').open_new(extension_url)
+                    openInBrowser(extension_url, 'chrome')
 
                     #T0D0: figure out how to send the ENABLE_BLOCKLIST_MESSAGE when the comm manager is
                     #successfully established. Maybe figure out how to send messages/talk between python files?
@@ -161,6 +166,28 @@ def decrement_brightness():
     else:
         print("Cannot decrement brightness level as it is already 0.")
 
+def registerBrowser(browserName, path):
+    path = makeNormPath(path) #just in case path hasn't been normalized
+    if os.path.exists(path):
+        try:
+            webbrowser.register(browserName, None, webbrowser.BackgroundBrowser(path))
+            # print("Careful! While the browser path exists it might not be correct")
+        except webbrowser.Error as e:
+            print("Error while registering browser: "+ e)
+    else:
+        print("This browser path doesn't exist!")
+
+def openInBrowser(url, browserName):
+    try:
+        browser = webbrowser.get(browserName)
+        browser.open(url)
+        print(f"Opened {url} in {browserName}")
+    except webbrowser.Error as e:
+        print("Error while opening in browser: " + e)
+    except Exception as e:
+        print("Unable to open in browser " + e)
+
+
 def makePath(str1, str2):
     path = os.path.normpath(os.path.join(str1, str2))
     return path
@@ -220,7 +247,7 @@ def checkKlausRunning():
 
 def runKlaus():
     # Run the parent script
-    process = subprocess.Popen(['python3', 'Main.py', 'main'], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    process = subprocess.run(['python', 'Main.py', 'main'], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
     # Wait for the process to finish and get the output
     output, error = process.communicate()
