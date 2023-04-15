@@ -1,6 +1,5 @@
 import ctypes
 import subprocess
-import threading
 import time
 import traceback
 import os
@@ -8,22 +7,28 @@ import atexit
 import signal
 import sys
 import psutil
-import pyautogui
+
+try:
+    import pyautogui
+except ImportError:
+    pass
+
 import struct
 import json
 import webbrowser
 import pickle
-import multiprocessing
 from config import pickleDirectory
+
+MESSAGE_CODES = {
+    "PORT_ESTABLISHED_MESSAGE": "PORT_ESTABLISHED",
+    "COMM_MANAGER_OPENED_MESSAGE": "COMM_MANAGER_OPENED",
+    "REQUEST_BLOCKLIST_MESSAGE": "REQUEST_BLOCKLIST",
+    "ENABLE_BLOCKLIST_MESSAGE": "ENABLE_BLOCKLIST",
+    "ENABLE_BLOCKLIST_SUCCESSS_MESSAGE": "ENABLE_BLOCKLIST_SUCCESS"
+}
 
 lock_file = 'mainKlaus.lock'
 log_file = 'mainKlaus.log'
-
-PORT_ESTABLISHED_MESSAGE = "PORT_ESTABLISHED"
-COMM_MANAGER_OPENED_MESSAGE = "COMM_MANAGER_OPENED"
-REQUEST_BLOCKLIST_MESSAGE = "REQUEST_BLOCKLIST"
-ENABLE_BLOCKLIST_MESSAGE = "ENABLE_BLOCKLIST"
-ENABLE_BLOCKLIST_SUCCESSS_MESSAGE = "ENABLE_BLOCKLIST_SUCCESS"
 
 TIMEOUT_TIME = 5
 CHROME_PATH = "/Applications/Google Chrome.app"
@@ -160,6 +165,9 @@ def makePath(str1, str2):
     path = os.path.normpath(os.path.join(str1, str2))
     return path
 
+def makeNormPath(str):
+    return os.path.normpath(str)
+
 def removeLockFile(): #removes the lock file
     os.remove(lock_file)
     writeToLogFile('Klaus lock file removed')
@@ -217,61 +225,15 @@ def runKlaus():
     # Wait for the process to finish and get the output
     output, error = process.communicate()
 
-
     #Sends output and error
     sendMessage(output.decode('utf-8'))
     sendMessage(error.decode('utf-8'))
 
-# Read a message from stdin and decode it.
-def getMessage():
-    rawLength = sys.stdin.buffer.read(4)
-    if len(rawLength) == 0:
-        sys.exit(0)
-    messageLength = struct.unpack('@I', rawLength)[0]
-    message = sys.stdin.buffer.read(messageLength).decode('utf-8')
-    return json.loads(message)
+def openKlausInstance():
+    if not checkKlausRunning():
+        runKlaus()
+        print("Running Klaus...")
 
-# Encode a message for transmission, given its content.
-def encodeMessage(messageContent):
-    # https://docs.python.org/3/library/json.html#basic-usage
-    # To get the most compact JSON representation, you should specify (',', ':') to eliminate whitespace.
-    # We want the most compact representation because the browser rejects # messages that exceed 1 MB.
-    encodedContent = json.dumps(messageContent, separators=(',', ':')).encode('utf-8')
-    encodedLength = struct.pack('@I', len(encodedContent))
-    return {'length': encodedLength, 'content': encodedContent}
-
-# Send an encoded message to stdout
-def sendMessage(message):
-    encodedMessage = encodeMessage(message)
-    sys.stdout.buffer.write(encodedMessage['length'])
-    sys.stdout.buffer.write(encodedMessage['content'])
-    sys.stdout.buffer.flush()
-
-def sendBlocklist():
-    # if blocklist is not None and blocklist.startswith("BLOCKLIST:"):
-    #     sendMessage(blocklist)
-    # else:
-    #     print("Couldn't send blocklist")
-    sendMessage(createWebsiteBlocklistFromPickles())
-
-def createWebsiteBlocklistFromPickles():
-    #Gathers website blocklist
-    for filename in os.listdir(pickleDirectory):
-        try:
-            chosen_pickle = makePath(pickleDirectory, filename)
-
-            with open(chosen_pickle, "rb") as file:
-                data = pickle.load(file)
-
-            if data["type"] == "WEBLIST":
-                with open(chosen_pickle, "wb") as file:
-                    dataEntries = data["entries"]
-                    block_str = '\n'.join(dataEntries) + '\n'
-                    block_list = f'BLOCKLIST:{block_str}'
-                    pickle.dump(data, file)
-                    return block_list
-        except Exception as e:
-            print(f"Error occurred while creating website blocklist: {e}")
 def createWebsiteBlocklistFromBlocklists(block_lists):
     #Gathers website blocklist
     try:
@@ -281,3 +243,46 @@ def createWebsiteBlocklistFromBlocklists(block_lists):
         return(block_list)
     except Exception as e:
         print(f"Error occurred while creating website blocklist: {e}")
+
+def createWebsiteBlocklistFromPickles():
+  # Gathers website blocklist
+  for filename in os.listdir(pickleDirectory):
+    try:
+      chosen_pickle = makePath(pickleDirectory, filename)
+
+      with open(chosen_pickle, "rb") as file:
+        data = pickle.load(file)
+
+      if data["type"] == "WEBLIST":
+        with open(chosen_pickle, "wb") as file:
+          dataEntries = data["entries"]
+          block_str = '\n'.join(dataEntries) + '\n'
+          block_list = f'BLOCKLIST:{block_str}'
+          pickle.dump(data, file)
+          return block_list
+    except Exception as e:
+      print(f"Error occurred while creating website blocklist: {e}")
+
+# Encode a message for transmission, given its content.
+def encodeMessage(messageContent):
+  # https://docs.python.org/3/library/json.html#basic-usage
+  # To get the most compact JSON representation, you should specify (',', ':') to eliminate whitespace.
+  # We want the most compact representation because the browser rejects # messages that exceed 1 MB.
+  encodedContent = json.dumps(messageContent, separators=(',', ':')).encode('utf-8')
+  encodedLength = struct.pack('@I', len(encodedContent))
+  return {'length': encodedLength, 'content': encodedContent}
+
+# Send an encoded message to stdout
+def sendMessage(message):
+  encodedMessage = encodeMessage(message)
+  sys.stdout.buffer.write(encodedMessage['length'])
+  sys.stdout.buffer.write(encodedMessage['content'])
+  sys.stdout.buffer.flush()
+
+def sendBlocklist():
+  # if blocklist is not None and blocklist.startswith("BLOCKLIST:"):
+  #     sendMessage(blocklist)
+  # else:
+  #     print("Couldn't send blocklist")
+  sendMessage(createWebsiteBlocklistFromPickles())
+
