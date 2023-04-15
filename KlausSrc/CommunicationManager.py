@@ -1,60 +1,133 @@
-#!/usr/bin/env -S python3 -u
+# # !/usr/bin/env -S python -u
+#THE ABOVE LINE CREATES SO MANY PROBLEMS... FIGURE OUT HOW TO FIX THIS EVENTUALLY
 
-from PyQt5.QtWidgets import *
+import struct
+import sys
 import threading
-from HelperFunctions import *
-
-lock_file = 'parent.lock'
+import queue
+import json
+from HelperFunctions import sendMessage, sendBlocklist, openKlausInstance, MESSAGE_CODES
 
 exampleBlocklist = ["reddit", "twitter", "twitch"]
 
-class Box(QWidget):
+try:
+  import tkinter
+  import tkinter.messagebox
+except ImportError:
+  tkinter = None
 
-    def __init__(self):
-        super().__init__()
-        self.thread()
-        self.Button()
-        sendMessage(COMM_MANAGER_OPENED_MESSAGE)
+# On Windows, the default I/O mode is O_TEXT. Set this to O_BINARY
+# to avoid unwanted modifications of the input/output streams.
+if sys.platform == "win32":
+  import os, msvcrt
+  msvcrt.setmode(sys.stdin.fileno(), os.O_BINARY)
+  msvcrt.setmode(sys.stdout.fileno(), os.O_BINARY)
 
-    def Button(self):
-        # add button
-        clear_btn = QPushButton('Send example blocklist', self)
-        blockListStr = exampleBlocklist[0] + "\n" + "\n".join(exampleBlocklist[1:])
-        clear_btn.clicked.connect(lambda: sendMessage(blockListStr))
+# Thread that reads messages from the webapp.
+def read_thread_func(aqueue):
+  while True:
+    # Read the message length (first 4 bytes).
+    rawLength = sys.stdin.buffer.read(4)
 
-        # Set geometry
-        self.setGeometry(0, 0, 200, 50)
+    if len(rawLength) == 0:
+      if aqueue:
+        aqueue.put(None)
+      sys.exit(0)
 
-        # Display QlistWidget
-        self.show()
+    # Unpack message length as 4 byte integer.
+    messageLength = struct.unpack('@I', rawLength)[0]
 
-    def thread(self):
-        t1 = threading.Thread(target=self.Operation)
-        t1.start()
+    # Read the text (JSON object) of the message.
+    text = json.loads(sys.stdin.buffer.read(messageLength).decode('utf-8'))
 
-    def Operation(self):
-        while True:
-            if not checkKlausRunning():
-                sendMessage(f"{checkKlausRunning()}")
-                runKlaus()
+    if aqueue:
+      aqueue.put(text)
+    else:
+      # In headless mode just send an echo message back.
+      sendMessage('{"echo": %s}' % text)
 
-            message = getMessage()
+if tkinter:
+  class NativeMessagingWindow(tkinter.Frame):
+    def __init__(self, aqueue):
+      self.aqueue = aqueue
 
-            if message == "hello":
-                sendMessage(f"Message: {message}")
+      tkinter.Frame.__init__(self)
+      self.pack()
 
-            if message == PORT_ESTABLISHED_MESSAGE:
-                sendMessage("Port has been successfully established")
+      self.text = tkinter.Text(self)
+      self.text.grid(row=0, column=0, padx=10, pady=10, columnspan=2)
+      self.text.config(state=tkinter.DISABLED, height=10, width=40)
 
-            if message == REQUEST_BLOCKLIST_MESSAGE:
-                sendBlocklist()
+      self.messageContent = tkinter.StringVar()
+      self.sendEntry = tkinter.Entry(self, textvariable=self.messageContent)
+      self.sendEntry.grid(row=1, column=0, padx=10, pady=10)
 
-            if message == ENABLE_BLOCKLIST_SUCCESSS_MESSAGE:
-                pass
+      self.sendButton = tkinter.Button(self, text="Send", command=self.onSend)
+      self.sendButton.grid(row=1, column=1, padx=10, pady=10)
 
+      self.after(100, self.processMessages)
+
+      sendMessage(MESSAGE_CODES.get("COMM_MANAGER_OPENED_MESSAGE"))
+
+      openKlausInstance()
+
+    def processMessages(self):
+      while not self.aqueue.empty():
+        message = self.aqueue.get_nowait()
+
+        if message == None:
+          self.quit()
+          return
+
+        if message == "hello":
+            # sendMessage(f"Message: {message}")
+          sendMessage("fhjeoaisjdfoj")
+
+        if message == MESSAGE_CODES.get("REQUEST_BLOCKLIST_MESSAGE"):
+            sendBlocklist()
+
+        if message == MESSAGE_CODES.get("ENABLE_BLOCKLIST_SUCCESSS_MESSAGE"):
+            pass
+
+        self.log(f"Received {message}")
+
+      self.after(100, self.processMessages)
+
+    def onSend(self):
+      text = '{"text": "' + self.messageContent.get() + '"}'
+      self.log('Sending %s' % text)
+      try:
+        sendMessage(text)
+      except IOError:
+        tkinter.messagebox.showinfo('Native Messaging Example',
+                              'Failed to send message.')
+        sys.exit(1)
+
+    def log(self, message):
+      self.text.config(state=tkinter.NORMAL)
+      self.text.insert(tkinter.END, message + "\n")
+      self.text.config(state=tkinter.DISABLED)
+
+def Main():
+  if not tkinter:
+    sendMessage('"Tkinter python module wasn\'t found. Running in headless ' +
+                 'mode. Please consider installing Tkinter."')
+    read_thread_func(None)
+    sys.exit(0)
+
+  aqueue = queue.Queue()
+
+  main_window = NativeMessagingWindow(aqueue)
+  main_window.master.title('Klaus Communication Manager')
+
+  thread = threading.Thread(target=read_thread_func, args=(aqueue,))
+  thread.daemon = True
+  thread.start()
+
+  main_window.mainloop()
+
+  sys.exit(0)
 
 
 if __name__ == '__main__':
-    app = QApplication(sys.argv)
-    w = Box()
-    sys.exit(app.exec())
+  Main()
