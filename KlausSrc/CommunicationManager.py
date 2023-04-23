@@ -6,9 +6,10 @@ import sys
 import threading
 import queue
 import json
-from HelperFunctions import sendMessage, sendBlocklist, openKlausInstance, MESSAGE_CODES
+from HelperFunctions import createWebsiteBlocklistFromPickles, sendMessage, sendBlocklist, openKlausInstance, MESSAGE_CODES, setGlobalVar
 
 exampleBlocklist = ["reddit", "twitter", "twitch"]
+extensionID = ""
 
 try:
   import tkinter
@@ -69,7 +70,7 @@ if tkinter:
 
       sendMessage(MESSAGE_CODES.get("COMM_MANAGER_OPENED_MESSAGE"))
 
-      openKlausInstance()
+      # openKlausInstance()
 
     def processMessages(self):
       while not self.aqueue.empty():
@@ -84,10 +85,15 @@ if tkinter:
           sendMessage("fhjeoaisjdfoj")
 
         if message == MESSAGE_CODES.get("REQUEST_BLOCKLIST_MESSAGE"):
+            self.log(createWebsiteBlocklistFromPickles())
             sendBlocklist()
 
         if message == MESSAGE_CODES.get("ENABLE_BLOCKLIST_SUCCESSS_MESSAGE"):
             pass
+
+        if MESSAGE_CODES.get("GET_EXTENSION_ID") in message:
+            id = message.replace(MESSAGE_CODES.get("GET_EXTENSION_ID") + ":", "")
+            setGlobalVar("EXTENSION_ID", id)
 
         self.log(f"Received {message}")
 
@@ -105,7 +111,7 @@ if tkinter:
 
     def log(self, message):
       self.text.config(state=tkinter.NORMAL)
-      self.text.insert(tkinter.END, message + "\n")
+      self.text.insert(tkinter.END, str(message) + "\n")
       self.text.config(state=tkinter.DISABLED)
 
 def Main():
