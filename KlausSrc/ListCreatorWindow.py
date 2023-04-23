@@ -49,6 +49,8 @@ class ListCreatorWindow(QWidget):
                     type = data["type"]
             except FileNotFoundError:
                 print("File not found")
+            except EOFError:
+                print("File is empty")
             if self.list_type_combobox.currentText() == "Block Apps":
                 if type == "APPLIST":
                     fileList.append(filename)
