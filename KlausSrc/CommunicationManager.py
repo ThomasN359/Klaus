@@ -6,7 +6,7 @@ import sys
 import threading
 import queue
 import json
-from HelperFunctions import createWebsiteBlocklistFromPickles, sendMessage, sendBlocklist, openKlausInstance, MESSAGE_CODES, setGlobalVar
+from HelperFunctions import createWebsiteBlocklistFromPickles, sendMessage, sendBlocklist, MESSAGE_CODES, setGlobalVar, nativeCommQueue, openKlausInstance
 
 exampleBlocklist = ["reddit", "twitter", "twitch"]
 extensionID = ""
@@ -24,15 +24,15 @@ if sys.platform == "win32":
   msvcrt.setmode(sys.stdin.fileno(), os.O_BINARY)
   msvcrt.setmode(sys.stdout.fileno(), os.O_BINARY)
 
-# Thread that reads messages from the webapp.
-def read_thread_func(aqueue):
+# Thread that reads messages from the extension.
+def read_ext_thread_func(extensionCommQueue):
   while True:
     # Read the message length (first 4 bytes).
     rawLength = sys.stdin.buffer.read(4)
 
     if len(rawLength) == 0:
-      if aqueue:
-        aqueue.put(None)
+      if extensionCommQueue:
+        extensionCommQueue.put(None)
       sys.exit(0)
 
     # Unpack message length as 4 byte integer.
@@ -41,16 +41,17 @@ def read_thread_func(aqueue):
     # Read the text (JSON object) of the message.
     text = json.loads(sys.stdin.buffer.read(messageLength).decode('utf-8'))
 
-    if aqueue:
-      aqueue.put(text)
+    if extensionCommQueue:
+      extensionCommQueue.put(text)
     else:
       # In headless mode just send an echo message back.
       sendMessage('{"echo": %s}' % text)
 
 if tkinter:
   class NativeMessagingWindow(tkinter.Frame):
-    def __init__(self, aqueue):
-      self.aqueue = aqueue
+    def __init__(self, extensionCommQueue, nativeCommQueue):
+      self.extensionCommQueue = extensionCommQueue
+      self.nativeCommQueue = nativeCommQueue
 
       tkinter.Frame.__init__(self)
       self.pack()
@@ -66,15 +67,15 @@ if tkinter:
       self.sendButton = tkinter.Button(self, text="Send", command=self.onSend)
       self.sendButton.grid(row=1, column=1, padx=10, pady=10)
 
-      self.after(100, self.processMessages)
+      self.after(100, self.processMessagesFromExtension)
+      self.after(100, self.processMessagesFromNative)
 
       sendMessage(MESSAGE_CODES.get("COMM_MANAGER_OPENED_MESSAGE"))
 
-      # openKlausInstance()
 
-    def processMessages(self):
-      while not self.aqueue.empty():
-        message = self.aqueue.get_nowait()
+    def processMessagesFromExtension(self):
+      while not self.extensionCommQueue.empty():
+        message = self.extensionCommQueue.get_nowait()
 
         if message == None:
           self.quit()
@@ -82,7 +83,7 @@ if tkinter:
 
         if message == "hello":
             # sendMessage(f"Message: {message}")
-          sendMessage("fhjeoaisjdfoj")
+          sendMessage("hello received")
 
         if message == MESSAGE_CODES.get("REQUEST_BLOCKLIST_MESSAGE"):
             self.log(createWebsiteBlocklistFromPickles())
@@ -95,9 +96,22 @@ if tkinter:
             id = message.replace(MESSAGE_CODES.get("GET_EXTENSION_ID") + ":", "")
             setGlobalVar("EXTENSION_ID", id)
 
-        self.log(f"Received {message}")
+        self.log(f"Extension:{message}")
 
-      self.after(100, self.processMessages)
+      self.after(100, self.processMessagesFromExtension)
+
+    #  Reads messages from native Klaus queue
+    def processMessagesFromNative(self):
+      while not self.nativeCommQueue.empty():
+        message = self.nativeCommQueue.get_nowait()
+
+        if message == None:
+          self.quit()
+          return
+
+        self.log(f"Native:{message}")
+
+      self.after(100, self.processMessagesFromNative)
 
     def onSend(self):
       text = '{"text": "' + self.messageContent.get() + '"}'
@@ -118,15 +132,17 @@ def Main():
   if not tkinter:
     sendMessage('"Tkinter python module wasn\'t found. Running in headless ' +
                  'mode. Please consider installing Tkinter."')
-    read_thread_func(None)
+    read_ext_thread_func(None)
     sys.exit(0)
 
-  aqueue = queue.Queue()
+  openKlausInstance()
 
-  main_window = NativeMessagingWindow(aqueue)
+  extensionCommQueue = queue.Queue()
+
+  main_window = NativeMessagingWindow(extensionCommQueue, nativeCommQueue)
   main_window.master.title('Klaus Communication Manager')
 
-  thread = threading.Thread(target=read_thread_func, args=(aqueue,))
+  thread = threading.Thread(target=read_ext_thread_func, args=(extensionCommQueue,))
   thread.daemon = True
   thread.start()
 
