@@ -8,6 +8,7 @@ import signal
 import sys
 import psutil
 import portalocker
+import queue
 
 try:
     import pyautogui
@@ -34,6 +35,8 @@ log_file = 'mainKlaus.log'
 
 TIMEOUT_TIME = 5
 CHROME_PATH = "/Applications/Google Chrome.app"
+
+nativeCommQueue = queue.Queue()
 
 # This is where the web browser block list is handled
 def automate_browser(block_lists, settings):
@@ -273,7 +276,7 @@ def checkKlausRunning():
 
 def runKlaus():
     # Run the parent script
-    process = subprocess.run(['python', 'Main.py', 'main'], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    process = subprocess.Popen([sys.executable, 'Main.py', 'main'], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
 def openKlausInstance():
     if not checkKlausRunning():
