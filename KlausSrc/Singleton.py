@@ -68,9 +68,10 @@ class Singleton:
             return
 
         if exc_val is not None:
-            if exc_val == 0:
-                pass #SystemExit 0, which is normal system exit
-            logging.warning(f"Error encountered: Type:{exc_type}, val:{exc_val}, tb:{exc_tb}")
+            if exc_val.code == 0: #SystemExit 0, which is normal system exit
+                pass
+            else:
+                logging.warning(f"Error encountered: Type:{exc_type}, val:{exc_val}, tb:{exc_tb}")
 
         try:
             if sys.platform == "win32":
