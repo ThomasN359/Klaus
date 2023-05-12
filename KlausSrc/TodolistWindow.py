@@ -16,7 +16,8 @@ from HelperFunctions import automate_browser
 from AddTaskWindow import AddTaskWindow
 from AddTaskWindow import update_file
 from QuickListAddWindow import QuickListAddWindow
-from HelperFunctions import makePath
+from HelperFunctions import *
+from CommunicationManager import *
 
 
 class TodoListWindow(QWidget):
@@ -469,10 +470,11 @@ class TodoListWindow(QWidget):
             task_label = self.task_labels[index]
             task_label.setStyleSheet("color: green;")
             task_label.setText("<s>" + task_label.text() + "</s>")
-            toast = Notification(app_id="Klaus",
-                                 title="Reminder",
-                                 msg="The timer for " + task.task_name + " is over")
-            toast.show()
+            # toast = Notification(app_id="Klaus",
+            #                      title="Reminder",
+            #                      msg="The timer for " + task.task_name + " is over")
+            # toast.show()
+            print("The timer for "+task.task_name+" is over")
 
     def updateCurrentTime(self):
         current_time = QTime.currentTime()
@@ -588,6 +590,8 @@ class TodoListWindow(QWidget):
 
                     with open(chosen_pickle, "wb") as file:
                         pickle.dump(data, file)
+            if task.web_block_list != "None":
+                automate_browser(self.block_list, self.settings, blocker_on=True)
             self.timer_thread.start()
         else:
             sender.setText("\u25B6")  # play symbol
@@ -637,9 +641,7 @@ class TodoListWindow(QWidget):
 
                     with open(chosen_pickle, "wb") as file:
                         pickle.dump(data, file)
-
-        if task.web_block_list != "None":
-            automate_browser(self.block_list, self.settings)
+            automate_browser(self.block_list, self.settings, blocker_on=False)
 
     def handle_edit_button(self):
         sender = self.sender()
