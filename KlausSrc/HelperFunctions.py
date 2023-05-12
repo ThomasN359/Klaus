@@ -258,7 +258,7 @@ def makeNormPath(str):
 
 def runKlaus():
     # Run the parent script
-    subprocess.Popen([sys.executable, 'Main.py', 'main'], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    subprocess.Popen([sys.executable, 'Main.py', 'main'])
 
 
 def createWebsiteBlocklistFromBlocklists(block_lists):

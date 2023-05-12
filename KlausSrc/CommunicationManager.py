@@ -31,7 +31,7 @@ def read_ext_thread_func(extensionCommQueue, closeEvent):
     while True:
         if closeEvent.is_set():
             print("Closing read thread")
-            break
+            sys.exit(0)
 
         # Read the message length (first 4 bytes).
         rawLength = sys.stdin.buffer.read(4)
