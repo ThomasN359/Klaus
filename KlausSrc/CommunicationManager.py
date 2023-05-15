@@ -151,7 +151,7 @@ if tkinter:
 
 
 def Main():
-    if not tkinter:
+    if tkinter is None:
         sendMessage('"Tkinter python module wasn\'t found. Running in headless ' +
                     'mode. Please consider installing Tkinter."')
         read_ext_thread_func(None)
@@ -162,12 +162,13 @@ def Main():
     extensionCommQueue = queue.Queue()
 
     closeEvent = threading.Event()
+
+    processing_thread = threading.Thread(target=read_ext_thread_func, args=(extensionCommQueue, closeEvent))
+    processing_thread.daemon = True
+    processing_thread.start()
+
     main_window = NativeMessagingWindow(extensionCommQueue, toCommManagerQueue, closeEvent)
     main_window.mainloop()
-
-    thread = threading.Thread(target=read_ext_thread_func, args=(extensionCommQueue, closeEvent,))
-    thread.start()
-    thread.join()
 
     sys.exit(0)
 
