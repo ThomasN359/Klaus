@@ -1,4 +1,4 @@
-from KlausSrc import *
+from KlausSrc import HomeScreen
 from Settings import *
 from config import pictureDirectory
 from TodolistWindow import *
@@ -71,6 +71,7 @@ def main_process():  # TODO FLAG AND LOCK
         with open(makePath(pickleDirectory, "settings.pickle"), "rb") as f:
             data = pickle.load(f)
             settings = data["settings"]
+    #If there is no settings at all that means it's the first time having settings
     except:
         # Handle the exception and continue without the data
         settings.daily_start_time = QTime(0, 0)
@@ -79,6 +80,10 @@ def main_process():  # TODO FLAG AND LOCK
         settings.browsers = [False, True, False]
         settings.klaus_state = KlausFeeling.HAPPY
         settings.enable_dialogue_reminder_window = True
+        settings.lock_in = False
+        settings.has_daily_update = True
+
+
         with open(makePath(pickleDirectory, 'settings.pickle'), 'wb') as f:
             data = {"settings": settings, "type": "SETTINGS"}
             pickle.dump(data, f)
