@@ -1,15 +1,17 @@
 import ctypes
+import pickle
 import subprocess
 import time
 import traceback
 import os
+from config import pickleDirectory
 import atexit
 import signal
 import sys
 import psutil
 import pyautogui
 
-from CommunicationManager import sendBlocklist
+#from CommunicationManager import sendBlocklist
 
 # This is where the web browser block list is handled
 def automate_browser(block_lists, settings):
@@ -131,6 +133,13 @@ def decrement_brightness():
     else:
         print("Cannot decrement brightness level as it is already 0.")
 
+def save_setting(settings):
+    with open(makePath(pickleDirectory, 'settings.pickle'), 'wb') as f:
+        data = {"settings": settings, "type": "SETTINGS"}
+        pickle.dump(data, f)
+        f.flush()
+
 def makePath(str1, str2):
     path = os.path.normpath(os.path.join(str1, str2))
     return path
+

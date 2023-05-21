@@ -19,7 +19,8 @@ class Settings:
         self.browsers = []
         self.klaus_state = KlausFeeling.HAPPY
         self.enable_dialogue_reminder_window = True
-
+        self.has_daily_update = False
+        self.lock_in = False
 
 class SettingsWindow(QWidget):
     def __init__(self, todo_list_archive, todo_list, block_list, settings):
@@ -116,14 +117,21 @@ class SettingsWindow(QWidget):
 
     def save(self):
         self.settings.daily_start_time = self.start_time.time()
-        if (self.lock_out.clicked):
-            self.settings.enable_lock_out = True
-        else:
-            self.settings.enable_lock_out = False
+        self.settings.enable_lock_out = self.lock_out.isChecked()
         # Brave, Chrome, Edge is the order
         self.settings.browsers = [self.brave_box.isChecked(), self.chrome_box.isChecked(), self.msedge_box.isChecked()]
+
         with open(makePath(pickleDirectory,'settings.pickle'), 'wb') as f:
             data = {"settings": self.settings, "type": "SETTINGS"}
             pickle.dump(data, f)
             f.flush()
+
+    # Some settings switch their status when the new day starts such as setting a 'lock in" for a current day will be
+    # reverted once the day ends. It will go back to the default settings. This function is run once a day if the
+    # boolean "has_daily_update" is evaluated to false which is checked upon start up or when the next day occurs.
+    def updateNewDailySettings(self):
+        if not self.settings.has_daily_update:
+            self.lock_in = False
+            self.settings.has_daily_update = True
+            self.save()
 

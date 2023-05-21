@@ -9,261 +9,12 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="1be6badc-fbce-489b-8f04-225b720bd2a2" name="Changes" comment="Updated imports, made config file, and added functionality to list creator">
-      <change afterPath="$PROJECT_DIR$/KlausSrc/config.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Klaus" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Klaus.spec" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/KlausSrc/AddTaskWindow.py" beforeDir="false" afterPath="$PROJECT_DIR$/KlausSrc/AddTaskWindow.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/KlausSrc/GlobalThreads.py" beforeDir="false" afterPath="$PROJECT_DIR$/KlausSrc/GlobalThreads.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/KlausSrc/HelperFunctions.py" beforeDir="false" afterPath="$PROJECT_DIR$/KlausSrc/HelperFunctions.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/KlausSrc/HomeScreen.py" beforeDir="false" afterPath="$PROJECT_DIR$/KlausSrc/HomeScreen.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/KlausSrc/ListCreatorWindow.py" beforeDir="false" afterPath="$PROJECT_DIR$/KlausSrc/ListCreatorWindow.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/KlausSrc/Main.py" beforeDir="false" afterPath="$PROJECT_DIR$/KlausSrc/Main.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/KlausSrc/NutritionWindow.py" beforeDir="false" afterPath="$PROJECT_DIR$/KlausSrc/NutritionWindow.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/KlausSrc/QuickListAddWindow.py" beforeDir="false" afterPath="$PROJECT_DIR$/KlausSrc/QuickListAddWindow.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/KlausSrc/ReminderPopUpWindow.py" beforeDir="false" afterPath="$PROJECT_DIR$/KlausSrc/ReminderPopUpWindow.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/KlausSrc/Settings.py" beforeDir="false" afterPath="$PROJECT_DIR$/KlausSrc/Settings.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/KlausSrc/StatsWindow.py" beforeDir="false" afterPath="$PROJECT_DIR$/KlausSrc/StatsWindow.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/KlausSrc/Task.py" beforeDir="false" afterPath="$PROJECT_DIR$/KlausSrc/Task.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/KlausSrc/TodolistWindow.py" beforeDir="false" afterPath="$PROJECT_DIR$/KlausSrc/TodolistWindow.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/KlausSrc/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/KlausSrc/__init__.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Pickles/APPLIST.pickle" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Pickles/abc123APPLIST.pickle" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Pickles/abcdqs.pickle" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Pickles/settings.pickle" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/To Make" beforeDir="false" afterPath="$PROJECT_DIR$/To Make" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/Klaus/Analysis-00.toc" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/Klaus/COLLECT-00.toc" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/Klaus/EXE-00.toc" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/Klaus/Klaus.exe" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/Klaus/Klaus.exe.manifest" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/Klaus/Klaus.pkg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/Klaus/PKG-00.toc" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/Klaus/PYZ-00.pyz" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/Klaus/PYZ-00.toc" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/Klaus/Pickles/net_calories.pickle" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/Klaus/Pickles/todo_list.pickle" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/Klaus/Pickles/todo_list_archive.pickle" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/Klaus/Pics/nutrition.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/Klaus/Pics/pencil.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/Klaus/Pics/setting.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/Klaus/Pics/stats.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/Klaus/Pics/todolist.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/Klaus/Tree-00.toc" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/Klaus/Tree-01.toc" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/Klaus/Tree-02.toc" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/Klaus/base_library.zip" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/Klaus/warn-Klaus.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/Klaus/xref-Klaus.html" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/main/Analysis-00.toc" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/main/COLLECT-00.toc" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/main/EXE-00.toc" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/main/PKG-00.toc" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/main/PYZ-00.pyz" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/main/PYZ-00.toc" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/main/base_library.zip" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/main/main.exe" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/main/main.exe.manifest" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/main/main.pkg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/main/warn-main.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/main/xref-main.html" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/Example List 1.pickle" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/Example List 2.pickle" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/Klaus.exe" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/Klaus.lnk" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/Klaus.spec" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/MyTestList.pickle" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/Pics/pencil.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/Pics/setting.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/Pics/stats.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/Pics/todolist.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/PyQt5/Qt5/bin/MSVCP140.dll" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/PyQt5/Qt5/bin/MSVCP140_1.dll" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/PyQt5/Qt5/bin/Qt5Core.dll" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/PyQt5/Qt5/bin/Qt5DBus.dll" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/PyQt5/Qt5/bin/Qt5Gui.dll" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/PyQt5/Qt5/bin/Qt5Network.dll" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/PyQt5/Qt5/bin/Qt5Qml.dll" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/PyQt5/Qt5/bin/Qt5QmlModels.dll" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/PyQt5/Qt5/bin/Qt5Quick.dll" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/PyQt5/Qt5/bin/Qt5Svg.dll" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/PyQt5/Qt5/bin/Qt5WebSockets.dll" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/PyQt5/Qt5/bin/Qt5Widgets.dll" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/PyQt5/Qt5/bin/VCRUNTIME140_1.dll" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/PyQt5/Qt5/bin/d3dcompiler_47.dll" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/PyQt5/Qt5/bin/libEGL.dll" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/PyQt5/Qt5/bin/libGLESv2.dll" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/PyQt5/Qt5/bin/opengl32sw.dll" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/PyQt5/Qt5/plugins/generic/qtuiotouchplugin.dll" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/PyQt5/Qt5/plugins/iconengines/qsvgicon.dll" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/PyQt5/Qt5/plugins/imageformats/qgif.dll" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/PyQt5/Qt5/plugins/imageformats/qicns.dll" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/PyQt5/Qt5/plugins/imageformats/qico.dll" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/PyQt5/Qt5/plugins/imageformats/qjpeg.dll" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/PyQt5/Qt5/plugins/imageformats/qsvg.dll" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/PyQt5/Qt5/plugins/imageformats/qtga.dll" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/PyQt5/Qt5/plugins/imageformats/qtiff.dll" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/PyQt5/Qt5/plugins/imageformats/qwbmp.dll" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/PyQt5/Qt5/plugins/imageformats/qwebp.dll" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/PyQt5/Qt5/plugins/platforms/qminimal.dll" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/PyQt5/Qt5/plugins/platforms/qoffscreen.dll" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/PyQt5/Qt5/plugins/platforms/qwebgl.dll" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/PyQt5/Qt5/plugins/platforms/qwindows.dll" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/PyQt5/Qt5/plugins/platformthemes/qxdgdesktopportal.dll" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/PyQt5/Qt5/plugins/styles/qwindowsvistastyle.dll" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/PyQt5/Qt5/translations/qtbase_ar.qm" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/PyQt5/Qt5/translations/qtbase_bg.qm" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/PyQt5/Qt5/translations/qtbase_ca.qm" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/PyQt5/Qt5/translations/qtbase_cs.qm" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/PyQt5/Qt5/translations/qtbase_da.qm" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/PyQt5/Qt5/translations/qtbase_de.qm" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/PyQt5/Qt5/translations/qtbase_en.qm" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/PyQt5/Qt5/translations/qtbase_es.qm" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/PyQt5/Qt5/translations/qtbase_fi.qm" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/PyQt5/Qt5/translations/qtbase_fr.qm" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/PyQt5/Qt5/translations/qtbase_gd.qm" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/PyQt5/Qt5/translations/qtbase_he.qm" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/PyQt5/Qt5/translations/qtbase_hu.qm" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/PyQt5/Qt5/translations/qtbase_it.qm" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/PyQt5/Qt5/translations/qtbase_ja.qm" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/PyQt5/Qt5/translations/qtbase_ko.qm" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/PyQt5/Qt5/translations/qtbase_lv.qm" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/PyQt5/Qt5/translations/qtbase_pl.qm" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/PyQt5/Qt5/translations/qtbase_ru.qm" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/PyQt5/Qt5/translations/qtbase_sk.qm" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/PyQt5/Qt5/translations/qtbase_tr.qm" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/PyQt5/Qt5/translations/qtbase_uk.qm" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/PyQt5/Qt5/translations/qtbase_zh_TW.qm" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/PyQt5/QtCore.pyd" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/PyQt5/QtGui.pyd" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/PyQt5/QtWidgets.pyd" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/PyQt5/sip.cp311-win_amd64.pyd" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/To Make" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/VCRUNTIME140.dll" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/VCRUNTIME140_1.dll" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/_bz2.pyd" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/_ctypes.pyd" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/_decimal.pyd" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/_hashlib.pyd" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/_lzma.pyd" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/_multiprocessing.pyd" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/_queue.pyd" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/_socket.pyd" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/_ssl.pyd" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/base_library.zip" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/libcrypto-1_1.dll" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/libffi-8.dll" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/libssl-1_1.dll" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/main.spec" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/main/Example List 1.pickle" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/main/Example List 2.pickle" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/main/Klaus.spec" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/main/MyTestList.pickle" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/main/PyQt5/Qt5/bin/MSVCP140.dll" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/main/PyQt5/Qt5/bin/MSVCP140_1.dll" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/main/PyQt5/Qt5/bin/Qt5Core.dll" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/main/PyQt5/Qt5/bin/Qt5DBus.dll" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/main/PyQt5/Qt5/bin/Qt5Gui.dll" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/main/PyQt5/Qt5/bin/Qt5Network.dll" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/main/PyQt5/Qt5/bin/Qt5Qml.dll" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/main/PyQt5/Qt5/bin/Qt5QmlModels.dll" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/main/PyQt5/Qt5/bin/Qt5Quick.dll" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/main/PyQt5/Qt5/bin/Qt5Svg.dll" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/main/PyQt5/Qt5/bin/Qt5WebSockets.dll" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/main/PyQt5/Qt5/bin/Qt5Widgets.dll" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/main/PyQt5/Qt5/bin/VCRUNTIME140_1.dll" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/main/PyQt5/Qt5/bin/d3dcompiler_47.dll" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/main/PyQt5/Qt5/bin/libEGL.dll" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/main/PyQt5/Qt5/bin/libGLESv2.dll" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/main/PyQt5/Qt5/bin/opengl32sw.dll" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/main/PyQt5/Qt5/plugins/generic/qtuiotouchplugin.dll" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/main/PyQt5/Qt5/plugins/iconengines/qsvgicon.dll" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/main/PyQt5/Qt5/plugins/imageformats/qgif.dll" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/main/PyQt5/Qt5/plugins/imageformats/qicns.dll" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/main/PyQt5/Qt5/plugins/imageformats/qico.dll" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/main/PyQt5/Qt5/plugins/imageformats/qjpeg.dll" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/main/PyQt5/Qt5/plugins/imageformats/qsvg.dll" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/main/PyQt5/Qt5/plugins/imageformats/qtga.dll" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/main/PyQt5/Qt5/plugins/imageformats/qtiff.dll" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/main/PyQt5/Qt5/plugins/imageformats/qwbmp.dll" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/main/PyQt5/Qt5/plugins/imageformats/qwebp.dll" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/main/PyQt5/Qt5/plugins/platforms/qminimal.dll" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/main/PyQt5/Qt5/plugins/platforms/qoffscreen.dll" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/main/PyQt5/Qt5/plugins/platforms/qwebgl.dll" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/main/PyQt5/Qt5/plugins/platforms/qwindows.dll" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/main/PyQt5/Qt5/plugins/platformthemes/qxdgdesktopportal.dll" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/main/PyQt5/Qt5/plugins/styles/qwindowsvistastyle.dll" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/main/PyQt5/Qt5/translations/qtbase_ar.qm" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/main/PyQt5/Qt5/translations/qtbase_bg.qm" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/main/PyQt5/Qt5/translations/qtbase_ca.qm" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/main/PyQt5/Qt5/translations/qtbase_cs.qm" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/main/PyQt5/Qt5/translations/qtbase_da.qm" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/main/PyQt5/Qt5/translations/qtbase_de.qm" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/main/PyQt5/Qt5/translations/qtbase_en.qm" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/main/PyQt5/Qt5/translations/qtbase_es.qm" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/main/PyQt5/Qt5/translations/qtbase_fi.qm" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/main/PyQt5/Qt5/translations/qtbase_fr.qm" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/main/PyQt5/Qt5/translations/qtbase_gd.qm" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/main/PyQt5/Qt5/translations/qtbase_he.qm" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/main/PyQt5/Qt5/translations/qtbase_hu.qm" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/main/PyQt5/Qt5/translations/qtbase_it.qm" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/main/PyQt5/Qt5/translations/qtbase_ja.qm" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/main/PyQt5/Qt5/translations/qtbase_ko.qm" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/main/PyQt5/Qt5/translations/qtbase_lv.qm" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/main/PyQt5/Qt5/translations/qtbase_pl.qm" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/main/PyQt5/Qt5/translations/qtbase_ru.qm" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/main/PyQt5/Qt5/translations/qtbase_sk.qm" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/main/PyQt5/Qt5/translations/qtbase_tr.qm" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/main/PyQt5/Qt5/translations/qtbase_uk.qm" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/main/PyQt5/Qt5/translations/qtbase_zh_TW.qm" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/main/PyQt5/QtCore.pyd" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/main/PyQt5/QtGui.pyd" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/main/PyQt5/QtWidgets.pyd" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/main/PyQt5/sip.cp311-win_amd64.pyd" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/main/To Make" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/main/VCRUNTIME140.dll" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/main/VCRUNTIME140_1.dll" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/main/_bz2.pyd" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/main/_ctypes.pyd" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/main/_decimal.pyd" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/main/_hashlib.pyd" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/main/_lzma.pyd" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/main/_multiprocessing.pyd" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/main/_queue.pyd" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/main/_socket.pyd" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/main/_ssl.pyd" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/main/base_library.zip" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/main/libcrypto-1_1.dll" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/main/libffi-8.dll" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/main/libssl-1_1.dll" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/main/main.exe" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/main/main.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/main/main.spec" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/main/pencil.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/main/pyexpat.pyd" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/main/python3.dll" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/main/python311.dll" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/main/quickedit" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/main/select.pyd" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/main/setting.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/main/stats.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/main/todo_list.pickle" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/main/todolist.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/main/unicodedata.pyd" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/pencil.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/pyexpat.pyd" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/python3.dll" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/python311.dll" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/quickedit" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/select.pyd" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/setting.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/stats.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/todo_list.pickle" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/todolist.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/unicodedata.pyd" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/fav pick" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/main.spec" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -285,6 +36,19 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;
+  }
+}</component>
+  <component name="GithubPullRequestsUISettings">
+    <option name="selectedUrlAndAccountId">
+      <UrlAndAccount>
+        <option name="accountId" value="febe12f3-c454-4a7a-a310-6b6c712c6b69" />
+        <option name="url" value="git@github.com:ThomasN359/Klaus.git" />
+      </UrlAndAccount>
+    </option>
+  </component>
   <component name="MarkdownSettingsMigration">
     <option name="stateVersion" value="1" />
   </component>
@@ -296,15 +60,15 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "RunOnceActivity.OpenProjectViewOnStart": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "last_opened_file_path": "C:/Users/inpht/PycharmProjects/Klaus/KlausSrc",
-    "run.code.analysis.last.selected.profile": "aDefault",
-    "settings.editor.selected.configurable": "com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/inpht/PycharmProjects/Klaus&quot;,
+    &quot;run.code.analysis.last.selected.profile&quot;: &quot;aDefault&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable&quot;
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
       <recent name="C:\Users\inpht\PycharmProjects\Klaus" />
