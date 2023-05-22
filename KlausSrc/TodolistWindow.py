@@ -11,7 +11,7 @@ from winotify import Notification
 from PyQt5.QtCore import QTime, QTimer, QSize
 from PyQt5.QtGui import QIcon, QPixmap
 from PyQt5.QtWidgets import *
-from ReminderPopUpWindow import ReminderPopUp, LockInPopUp, MemoPopUp, StreakPopUp
+from ReminderPopUpWindow import ReminderPopUp, LockInPopUp, MemoPopUp, StreakPopUp, CalendarPopUp
 from HelperFunctions import automate_browser
 from AddTaskWindow import AddTaskWindow
 from AddTaskWindow import update_file
@@ -83,7 +83,8 @@ class TodoListWindow(QWidget):
         self.lock_button.setIconSize(QSize(30, 30))
         self.lock_button.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
         self.lock_button.clicked.connect(self.lockIn)
-        self.lock_button.setFixedSize(35, 35)  # set fixed size of 30x30 pixels
+        self.lock_button.setStyleSheet("background-color: #cfcfcf")  # set gray background color
+        self.lock_button.setFixedSize(45, 45)  # set fixed size of 30x30 pixels
 
         # Streak Button
         self.streak_button = QPushButton()
@@ -93,7 +94,7 @@ class TodoListWindow(QWidget):
         self.streak_button.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
         self.streak_button.clicked.connect(self.handle_streak_button)
         self.streak_button.setStyleSheet("background-color: #ffff00")  # set gray background color
-        self.streak_button.setFixedSize(35, 35)  # set fixed size of 30x30 pixels
+        self.streak_button.setFixedSize(45, 45)  # set fixed size of 30x30 pixels
 
         # Memo Button
         self.memo_button = QPushButton()
@@ -102,8 +103,8 @@ class TodoListWindow(QWidget):
         self.memo_button.setIconSize(QSize(30, 30))
         self.memo_button.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
         self.memo_button.clicked.connect(self.handle_memo_button)
-        self.memo_button.setStyleSheet("background-color: #964b00")  # set gray background color
-        self.memo_button.setFixedSize(35, 35)  # set fixed size of 30x30 pixels
+        self.memo_button.setStyleSheet("background-color: #ffb200")  # set gray background color
+        self.memo_button.setFixedSize(45, 45)  # set fixed size of 30x30 pixels
 
         # Refresh Button
         self.refresh_button = QPushButton()
@@ -113,13 +114,24 @@ class TodoListWindow(QWidget):
         self.refresh_button.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
         self.refresh_button.clicked.connect(self.refresh_save)
         self.refresh_button.setStyleSheet("background-color: #00ff00")  # set gray background color
-        self.refresh_button.setFixedSize(35, 35)  # set fixed size of 30x30 pixels
+        self.refresh_button.setFixedSize(45, 45)  # set fixed size of 30x30 pixels
+
+        # Calendar Button
+        self.calendar_button = QPushButton()
+        pixmap = QPixmap(makePath(pictureDirectory, "calender.png"))
+        self.calendar_button.setIcon(QIcon(pixmap))
+        self.calendar_button.setIconSize(QSize(30, 30))
+        self.calendar_button.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
+        self.calendar_button.clicked.connect(self.handle_calendar_button)
+        self.calendar_button.setStyleSheet("background-color: #00ffff")  # set gray background color
+        self.calendar_button.setFixedSize(45, 45)  # set fixed size of 30x30 pixels
 
         self.sub_title_layout.addStretch(1)
         self.sub_title_layout.addWidget(self.refresh_button)
         self.sub_title_layout.addWidget(self.memo_button)
         self.sub_title_layout.addWidget(self.lock_button)
         self.sub_title_layout.addWidget(self.streak_button)
+        self.sub_title_layout.addWidget(self.calendar_button)
         self.sub_title_layout.addStretch(1)
         self.sub_title_layout.addStretch()
         self.layout.addLayout(self.sub_title_layout)
@@ -560,6 +572,9 @@ class TodoListWindow(QWidget):
         dialog = MemoPopUp(self)
         dialog.exec_()
 
+    def handle_calendar_button(self):
+        dialog = CalendarPopUp()
+        dialog.exec()
     def handle_streak_button(self):
         dialog = StreakPopUp(self)
         dialog.exec_()
@@ -782,7 +797,7 @@ class TodoListWindow(QWidget):
 
 
 
-    # [Group 4] Redundency Funcitons. Functionality you'll use a lot so you just have it a simple function
+    # [Group 4] Redundancy Funcitons. Functionality you'll use a lot so you just have it a simple function
 
     def clear_layout(self, layout):
         if layout is not None:

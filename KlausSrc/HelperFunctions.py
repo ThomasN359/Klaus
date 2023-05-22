@@ -143,3 +143,15 @@ def makePath(str1, str2):
     path = os.path.normpath(os.path.join(str1, str2))
     return path
 
+# Some settings switch their status when the new day starts such as setting a 'lock in" for a current day will be
+# reverted once the day ends. It will go back to the default settings. This function is run once a day if the
+# boolean "has_daily_update" is evaluated to false which is checked upon start up or when the next day occurs.
+def update_daily_settings(settings):
+    print("A NEW DAY HAS BEGUN")
+    if not settings.has_daily_update:
+        settings.lock_in = False
+        settings.has_daily_update = True
+        with open(makePath(pickleDirectory,'settings.pickle'), 'wb') as f:
+            data = {"settings": settings, "type": "SETTINGS"}
+            pickle.dump(data, f)
+            f.flush()

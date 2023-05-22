@@ -6,8 +6,9 @@ from datetime import *
 import time
 from PyQt5.QtCore import QThread, pyqtSignal
 from winotify import Notification
-from HelperFunctions import decrement_brightness
+from HelperFunctions import decrement_brightness, update_daily_settings
 from Task import TaskStatus, TaskType
+
 
 
 class TimerThread(QThread):
@@ -75,6 +76,14 @@ class ScheduleThread(QThread):
             i += 1
             current_time = datetime.now().time()
             currentClock = current_time.strftime('%I:%M %p')
+            current_hour = current_time.hour
+            current_minute = current_time.minute
+
+            if current_hour == self.settings.daily_start_time.hour() and current_minute == self.settings.daily_start_time.minute():
+                print("entered loop")
+                update_daily_settings(self.settings)
+
+
             # Check the time and perform the relevant actions
             # The scheduled events are scheduled by tasks inside your todolist so we will loop through each to see if
             # the current time aligns with any time based events saved into the todo_list
