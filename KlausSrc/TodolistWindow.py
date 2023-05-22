@@ -62,6 +62,7 @@ class TodoListWindow(QWidget):
         self.title_layout.addWidget(self.right_button)
         self.title_layout.addStretch(1)
         self.title_layout.addStretch()
+
         # Set spacing between widgets in title_layout to 0
         self.layout.addLayout(self.title_layout)
 
@@ -133,7 +134,6 @@ class TodoListWindow(QWidget):
         self.sub_title_layout.addWidget(self.streak_button)
         self.sub_title_layout.addWidget(self.calendar_button)
         self.sub_title_layout.addStretch(1)
-        self.sub_title_layout.addStretch()
         self.layout.addLayout(self.sub_title_layout)
 
         # Below is the code that draws the timer row
@@ -212,208 +212,94 @@ class TodoListWindow(QWidget):
         self.add_task_button.clicked.connect(self.open_add_task_window)
         self.hbox2.addWidget(self.add_task_button)
 
-        self.layout.update()
-        self.layout.addLayout(self.hbox2)
+        # Create new QVBoxLayout if it doesn't exist.
+        # This QVBoxLayout will be our main layout.
+        if not hasattr(self, 'main_layout'):
+            self.main_layout = QVBoxLayout()
+            self.main_layout.addLayout(self.layout)  # add the previous layout
 
-    # Below are Function Defintions for the Todo list window
+            self.main_layout.addStretch(1)  # add stretch
+            self.main_layout.addLayout(self.hbox2)  # add the hbox2 layout at the end
+            self.setLayout(self.main_layout)  # set the new QVBoxLayout as the main layout
+
+        else:  # if main_layout already exists, just update the existing layouts.
+            self.layout.update()
+            self.hbox2.update()
+
+    # Below are Function Defintions for the t0do window
     # [Group 1] This group of functions help draw the window
 
-    # This function draws the task rows which are horizontal rectangles that include the task name and their buttons
+    # The functions task_row_creator, create_task_label, create_button draws the task rows which are horizontal
+    # rectangles that include the task name and their buttons
     def task_row_creator(self):
-        # This function iterates each task in the todo_list and adds their buttons/layouts according to task type
         for task in self.todo_list:
-            if task.task_type == TaskType.ACTIVE:
-                hbox = QHBoxLayout()
-                task_label = QLabel(task.task_name + "(" + task.due_by + ")", self)
-                if task.task_status == TaskStatus.FAILED:
-                    task_label.setText("<s>" + task_label.text() + "</s>")
-                    task_label.setStyleSheet("color: red")
-                    task_label.setTextInteractionFlags(QtCore.Qt.TextSelectableByMouse)
-                elif task.task_status == TaskStatus.PASSED:
-                    task_label.setText("<s>" + task_label.text() + "</s>")
-                    task_label.setStyleSheet("color: green")
-                    task_label.setTextInteractionFlags(QtCore.Qt.TextSelectableByMouse)
-                hbox.addWidget(task_label)
-                check_button = QPushButton("\u2713", self)
-                check_button.setStyleSheet("background-color: green")
-                check_button.setFixedWidth(35)
-                check_button.clicked.connect(self.handle_check_click)
-                hbox.addWidget(check_button)
-                gear_button = QPushButton("\u2699", self)
-                gear_button.setStyleSheet("background-color: gray")
-                gear_button.setFixedWidth(35)
-                gear_button.clicked.connect(self.handle_edit_button)
-                hbox.addWidget(gear_button)
-                if not self.settings.lock_in:
-                    cancel_button = QPushButton("⨺", self)
-                    cancel_button.setStyleSheet("background-color: yellow")
-                    cancel_button.setFixedWidth(35)
-                    hbox.addWidget(cancel_button)
-                x_button = QPushButton("\u2715", self)
-                x_button.setStyleSheet("background-color: red")
-                x_button.setFixedWidth(35)
-                x_button.clicked.connect(self.handle_x_click)
-                hbox.addWidget(x_button)
-                self.layout.addLayout(hbox)
-                self.task_labels.append(task_label)
-                self.check_buttons.append(check_button)
-                if not self.settings.lock_in:
-                    self.cancel_buttons.append(cancel_button)
-                    cancel_button.clicked.connect(self.handle_cancel_button)
-                self.x_buttons.append(x_button)
-                self.minutes_remaining.append(None)
-                self.play_buttons.append(None)
-                self.gear_buttons.append(gear_button)
+            hbox = QHBoxLayout()
+            task_label = self.create_task_label(task)
+            hbox.addWidget(task_label)
 
-            elif task.task_type == TaskType.TIMER:
-                hbox = QHBoxLayout()
-                task_label = QLabel(task.task_name + "(" + task.due_by + ")", self)
-                if task.task_status == TaskStatus.FAILED:
-                    task_label.setText("<s>" + task_label.text() + "</s>")
-                    task_label.setStyleSheet("color: red")
-                    task_label.setTextInteractionFlags(QtCore.Qt.TextSelectableByMouse)
-                elif task.task_status == TaskStatus.PASSED:
-                    task_label.setText("<s>" + task_label.text() + "</s>")
-                    task_label.setStyleSheet("color: green")
-                    task_label.setTextInteractionFlags(QtCore.Qt.TextSelectableByMouse)
-                hbox.addWidget(task_label)
-                hbox.addStretch()
+            hbox.addStretch(1)  # Add stretch factor to push the content to the left
+
+
+            if task.task_type == TaskType.TIMER:
                 minutesRemaining = QLabel("Minutes Remaining: {}".format(str(task.duration // 60)))
                 hbox.addWidget(minutesRemaining)
-                play_button = QPushButton("\u25B6", self)
-                play_button.setStyleSheet("background-color: green")
-                play_button.setFixedWidth(65)
-                play_button.clicked.connect(self.handle_play_click)
-                hbox.addWidget(play_button)
-                gear_button = QPushButton("\u2699", self)
-                gear_button.setStyleSheet("background-color: gray")
-                gear_button.setFixedWidth(35)
-                gear_button.clicked.connect(self.handle_edit_button)
-                hbox.addWidget(gear_button)
-                if not self.settings.lock_in:
-                    cancel_button = QPushButton("⨺", self)
-                    cancel_button.setStyleSheet("background-color: yellow")
-                    cancel_button.setFixedWidth(35)
-                    hbox.addWidget(cancel_button)
-                x_button = QPushButton("\u2715", self)
-                x_button.setStyleSheet("background-color: red")
-                x_button.setFixedWidth(35)
-                x_button.clicked.connect(self.handle_x_click)
-                hbox.addWidget(x_button)
-                self.layout.addLayout(hbox)
-                self.task_labels.append(task_label)
-                self.play_buttons.append(play_button)
-                self.x_buttons.append(x_button)
-                if not self.settings.lock_in:
-                    self.cancel_buttons.append(cancel_button)
-                    cancel_button.clicked.connect(self.handle_cancel_button)
-                self.check_buttons.append(None)
                 self.minutes_remaining.append(minutesRemaining)
-                self.gear_buttons.append(gear_button)
-
             elif task.task_type == TaskType.SUSTAIN:
-                hbox = QHBoxLayout()
-                task_label = QLabel(task.task_name + "(" + task.due_by + ")", self)
-                if task.task_status == TaskStatus.FAILED:
-                    task_label.setText("<s>" + task_label.text() + "</s>")
-                    task_label.setStyleSheet("color: red")
-                    task_label.setTextInteractionFlags(QtCore.Qt.TextSelectableByMouse)
-                elif task.task_status == TaskStatus.PASSED:
-                    task_label.setText("<s>" + task_label.text() + "</s>")
-                    task_label.setStyleSheet("color: green")
-                    task_label.setTextInteractionFlags(QtCore.Qt.TextSelectableByMouse)
-                hbox.addWidget(task_label)
-                hbox.addStretch()
-
-                current_minutes = 60 * datetime.now().hour + datetime.now().minute
-                time_components = task.due_by.split(":")
-                hours = time_components[0].zfill(2)
-                minutes = time_components[1].split()[0].zfill(2)
-                ampm = time_components[1].split()[1]
-                task.due_by = "{}:{} {}".format(hours, minutes, ampm)
-
-                target_time_minutes = (int(task.due_by[:2]) % 12 + 12 * (task.due_by[-2:] == 'PM')) * 60 + int(
-                    task.due_by[3:5])
-                dayMinuteBias = self.settings.daily_start_time.hour() * 60 + self.settings.daily_start_time.minute()
-
-                if current_minutes < dayMinuteBias:
-                    current_minutes = 1440 - (dayMinuteBias - current_minutes)
-                else:
-                    current_minutes = current_minutes - dayMinuteBias
-                if target_time_minutes < dayMinuteBias:
-                    target_time_minutes = 1440 - (dayMinuteBias - target_time_minutes)
-                else:
-                    target_time_minutes = target_time_minutes - dayMinuteBias
-
-                minutes_difference = int(target_time_minutes - current_minutes)
-                if minutes_difference < 0:
-                    minutes_difference = 0
-                    task.task_status = TaskStatus.PASSED
-                minutesRemaining = QLabel("Minutes Remaining: {}".format(minutes_difference))
+                # TODO time calculation for sustain
+                minutesRemaining = QLabel("Minutes Remaining: -1")
                 hbox.addWidget(minutesRemaining)
-                gear_button = QPushButton("\u2699", self)
-                gear_button.setStyleSheet("background-color: gray")
-                gear_button.setFixedWidth(35)
-                gear_button.clicked.connect(self.handle_edit_button)
-                hbox.addWidget(gear_button)
-                if not self.settings.lock_in:
-                    cancel_button = QPushButton("⨺", self)
-                    cancel_button.setStyleSheet("background-color: yellow")
-                    cancel_button.setFixedWidth(35)
-                    hbox.addWidget(cancel_button)
-                x_button = QPushButton("\u2715", self)
-                x_button.setStyleSheet("background-color: red")
-                x_button.setFixedWidth(35)
-                x_button.clicked.connect(self.handle_x_click)
-                hbox.addWidget(x_button)
-                self.layout.addLayout(hbox)
-                self.task_labels.append(task_label)
-                self.x_buttons.append(x_button)
-                self.check_buttons.append(None)
-                self.play_buttons.append(None)
-                if not self.settings.lock_in:
-                    self.cancel_buttons.append(cancel_button)
-                    cancel_button.clicked.connect(self.handle_cancel_button)
                 self.minutes_remaining.append(minutesRemaining)
-                self.gear_buttons.append(gear_button)
-
-            elif task.task_type == TaskType.BEDTIME:
-                hbox = QHBoxLayout()
-                task_label = QLabel(task.task_name + "(" + task.due_by + ")", self)
-                if task.task_status == TaskStatus.FAILED:
-                    task_label.setText("<s>" + task_label.text() + "</s>")
-                    task_label.setStyleSheet("color: red")
-                    task_label.setTextInteractionFlags(QtCore.Qt.TextSelectableByMouse)
-                elif task.task_status == TaskStatus.PASSED:
-                    task_label.setText("<s>" + task_label.text() + "</s>")
-                    task_label.setStyleSheet("color: green")
-                    task_label.setTextInteractionFlags(QtCore.Qt.TextSelectableByMouse)
-                hbox.addWidget(task_label)
-                gear_button = QPushButton("\u2699", self)
-                gear_button.setStyleSheet("background-color: gray")
-                gear_button.setFixedWidth(35)
-                gear_button.clicked.connect(self.handle_edit_button)
-                hbox.addWidget(gear_button)
-                if not self.settings.lock_in:
-                    cancel_button = QPushButton("⨺", self)
-                    cancel_button.setStyleSheet("background-color: yellow")
-                    cancel_button.setFixedWidth(35)
-                    hbox.addWidget(cancel_button)
-                x_button = QPushButton("\u2715", self)
-                x_button.setStyleSheet("background-color: blue")
-                x_button.setFixedWidth(35)
-                x_button.clicked.connect(self.handle_x_click)
-                hbox.addWidget(x_button)
-                self.layout.addLayout(hbox)
-                self.task_labels.append(task_label)
-                self.x_buttons.append(x_button)
-                if not self.settings.lock_in:
-                    self.cancel_buttons.append(cancel_button)
-                    cancel_button.clicked.connect(self.handle_cancel_button)
-                self.check_buttons.append(None)
-                self.play_buttons.append(None)
+            else:
                 self.minutes_remaining.append(None)
-                self.gear_buttons.append(gear_button)
+
+            if task.task_type == TaskType.TIMER:
+                play_button = self.create_button("\u25B6", "green", 65, self.handle_play_click)
+                hbox.addWidget(play_button)
+                self.play_buttons.append(play_button)
+            else:
+                self.play_buttons.append(None)
+
+            if task.task_type == TaskType.ACTIVE:
+                check_button = self.create_button("\u2713", "green", 35, self.handle_check_click)
+                hbox.addWidget(check_button)
+                self.check_buttons.append(check_button)
+            else:
+                self.check_buttons.append(None)
+
+            gear_button = self.create_button("\u2699", "gray", 35, self.handle_edit_button)
+            hbox.addWidget(gear_button)
+            self.gear_buttons.append(gear_button)
+
+            if not self.settings.lock_in:
+                cancel_button = self.create_button("⨺", "yellow", 35, self.handle_cancel_button)
+                hbox.addWidget(cancel_button)
+                self.cancel_buttons.append(cancel_button)
+
+            x_button_color = "blue" if task.task_type == TaskType.BEDTIME else "red"
+            x_button = self.create_button("\u2715", x_button_color, 35, self.handle_x_click)
+            hbox.addWidget(x_button)
+            self.x_buttons.append(x_button)
+
+            self.layout.addLayout(hbox)
+            self.task_labels.append(task_label)
+
+    def create_task_label(self, task):
+        task_label = QLabel(task.task_name + "(" + task.due_by + ")", self)
+        if task.task_status == TaskStatus.FAILED:
+            task_label.setText("<s>" + task_label.text() + "</s>")
+            task_label.setStyleSheet("color: red")
+        elif task.task_status == TaskStatus.PASSED:
+            task_label.setText("<s>" + task_label.text() + "</s>")
+            task_label.setStyleSheet("color: green")
+        task_label.setTextInteractionFlags(QtCore.Qt.TextSelectableByMouse)
+        return task_label
+
+    def create_button(self, text, color, width, handler):
+        button = QPushButton(text, self)
+        button.setStyleSheet("background-color: " + color)
+        button.setFixedWidth(width)
+        button.clicked.connect(handler)
+        return button
 
 
     # This function is where the timers horizontal layout is created, and establishes Klaus's mood
@@ -498,7 +384,6 @@ class TodoListWindow(QWidget):
         self.layout.addLayout(self.hlayout)
 
     # [Group 2] This group is where the Timer Threads are handled
-
     def update_duration(self, task, time_remaining):
         index = self.todo_list.index(task)
         self.todo_list[index].duration = time_remaining
