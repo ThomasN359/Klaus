@@ -8,15 +8,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="1be6badc-fbce-489b-8f04-225b720bd2a2" name="Changes" comment="Implemented lock in button. Added &quot;daily settings method&quot;. Added pop-up dialogs for some buttons.">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/KlausSrc/GlobalThreads.py" beforeDir="false" afterPath="$PROJECT_DIR$/KlausSrc/GlobalThreads.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/KlausSrc/HelperFunctions.py" beforeDir="false" afterPath="$PROJECT_DIR$/KlausSrc/HelperFunctions.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/KlausSrc/ReminderPopUpWindow.py" beforeDir="false" afterPath="$PROJECT_DIR$/KlausSrc/ReminderPopUpWindow.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/KlausSrc/Settings.py" beforeDir="false" afterPath="$PROJECT_DIR$/KlausSrc/Settings.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/KlausSrc/TodolistWindow.py" beforeDir="false" afterPath="$PROJECT_DIR$/KlausSrc/TodolistWindow.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Pics/streak.png" beforeDir="false" afterPath="$PROJECT_DIR$/Pics/streak.png" afterDir="false" />
-    </list>
+    <list default="true" id="1be6badc-fbce-489b-8f04-225b720bd2a2" name="Changes" comment="Implement Calandar and quality of life changes" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -139,7 +131,21 @@
       <option name="project" value="LOCAL" />
       <updated>1684656487049</updated>
     </task>
-    <option name="localTasksCounter" value="5" />
+    <task id="LOCAL-00005" summary="Implement Calandar and quality of life changes">
+      <created>1684722103121</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1684722103121</updated>
+    </task>
+    <task id="LOCAL-00006" summary="Implement Calandar and quality of life changes">
+      <created>1684722235228</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1684722235228</updated>
+    </task>
+    <option name="localTasksCounter" value="7" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -159,7 +165,8 @@
     <MESSAGE value="Created the first 14 classes and some extra files here and there" />
     <MESSAGE value="Updated imports, made config file, and added functionality to list creator" />
     <MESSAGE value="Implemented lock in button. Added &quot;daily settings method&quot;. Added pop-up dialogs for some buttons." />
-    <option name="LAST_COMMIT_MESSAGE" value="Implemented lock in button. Added &quot;daily settings method&quot;. Added pop-up dialogs for some buttons." />
+    <MESSAGE value="Implement Calandar and quality of life changes" />
+    <option name="LAST_COMMIT_MESSAGE" value="Implement Calandar and quality of life changes" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
