@@ -18,11 +18,12 @@ class TaskStatus(enum.Enum):
 
 
 class Task:
-    def __init__(self, task_name: str, task_description: str, task_type: TaskType, task_status: TaskStatus):
+    def __init__(self, task_name: str, task_description: str, task_type: TaskType, task_status: TaskStatus, lock_in: bool = False):
         self.task_name = task_name
         self.task_description = task_description
         self.task_type = task_type
         self.task_status = task_status
+        self.lock_in = lock_in
 
     def display_task_name(self):
         print(f"Task Name: {self.task_name}")

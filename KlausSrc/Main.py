@@ -12,6 +12,7 @@ from PyQt5.QtGui import QFont
 from PyQt5.QtWidgets import *
 from HelperFunctions import *
 
+
 def main_process():  # TODO FLAG AND LOCK
 
     # Initialize the starting variables for the program
@@ -71,7 +72,7 @@ def main_process():  # TODO FLAG AND LOCK
         with open(makePath(pickleDirectory, "settings.pickle"), "rb") as f:
             data = pickle.load(f)
             settings = data["settings"]
-    #If there is no settings at all that means it's the first time having settings
+    # If there is no settings at all that means it's the first time having settings
     except:
         # Handle the exception and continue without the data
         settings.daily_start_time = QTime(0, 0)
@@ -83,12 +84,10 @@ def main_process():  # TODO FLAG AND LOCK
         settings.lock_in = False
         settings.has_daily_update = True
 
-
         with open(makePath(pickleDirectory, 'settings.pickle'), 'wb') as f:
             data = {"settings": settings, "type": "SETTINGS"}
             pickle.dump(data, f)
             f.flush()
-
 
     # The below if code block is responsible for blocking your internet use if you haven't made a todolist today
     if (datetime.now().hour >= settings.daily_start_time.hour() and (
