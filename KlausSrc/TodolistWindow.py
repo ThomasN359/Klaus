@@ -12,7 +12,7 @@ from PyQt5.QtCore import QTime, QTimer, QSize
 from PyQt5.QtGui import QIcon, QPixmap
 from PyQt5.QtWidgets import *
 from ReminderPopUpWindow import ReminderPopUp, LockInPopUp, MemoPopUp, StreakPopUp, CalendarPopUp
-from HelperFunctions import automate_browser
+from HelperFunctions import automate_browser, create_button_with_pixmap
 from AddTaskWindow import AddTaskWindow
 from AddTaskWindow import update_file
 from QuickListAddWindow import QuickListAddWindow
@@ -47,20 +47,20 @@ class TodoListWindow(QWidget):
             self.clear_layout(layout)
 
         # Here is where the top horizontal row is made, this includes the Todolist, The date, and arrows to navigate
-        self.label = QLabel(self)
-        self.label.setText(f"{datetime.now().strftime('%Y-%m-%d')} Todo List")
-        font = self.label.font()
+        label = QLabel(self)
+        label.setText(f"{datetime.now().strftime('%Y-%m-%d')} Todo List")
+        font = label.font()
         font.setPointSize(20)
-        self.label.setFont(font)
-        self.left_button = QPushButton("←", self)
-        self.right_button = QPushButton("→", self)
-        self.left_button.setFixedSize(40, 30)
+        label.setFont(font)
+        left_button = QPushButton("←", self)
+        right_button = QPushButton("→", self)
+        left_button.setFixedSize(40, 30)
         self.title_layout = QHBoxLayout()
-        self.right_button.setFixedSize(40, 30)
+        right_button.setFixedSize(40, 30)
         self.title_layout.addStretch(1)
-        self.title_layout.addWidget(self.left_button)
-        self.title_layout.addWidget(self.label)
-        self.title_layout.addWidget(self.right_button)
+        self.title_layout.addWidget(left_button)
+        self.title_layout.addWidget(label)
+        self.title_layout.addWidget(right_button)
         self.title_layout.addStretch(1)
         self.title_layout.addStretch()
 
@@ -77,54 +77,36 @@ class TodoListWindow(QWidget):
         # This next section is where the buttons below the title layout is created
         self.sub_title_layout = QHBoxLayout()
 
-
         # Lock button
-        self.lock_button = QPushButton()
-        pixmap = QPixmap(makePath(pictureDirectory, "lock.png"))
-        self.lock_button.setIcon(QIcon(pixmap))
-        self.lock_button.setIconSize(QSize(30, 30))
-        self.lock_button.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
-        self.lock_button.clicked.connect(self.lockIn)
+        if self.settings.lock_in:
+            pixmap = QPixmap(makePath(pictureDirectory, "lock.png"))
+        else:
+            pixmap = QPixmap(makePath(pictureDirectory, "unlock.png"))
+        self.lock_button = create_button_with_pixmap(pixmap, (30, 30), self.lockIn)
         self.lock_button.setStyleSheet("background-color: #cfcfcf")  # set gray background color
         self.lock_button.setFixedSize(45, 45)  # set fixed size of 30x30 pixels
 
         # Streak Button
-        self.streak_button = QPushButton()
         pixmap = QPixmap(makePath(pictureDirectory, "streak.png"))
-        self.streak_button.setIcon(QIcon(pixmap))
-        self.streak_button.setIconSize(QSize(30, 30))
-        self.streak_button.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
-        self.streak_button.clicked.connect(self.handle_streak_button)
+        self.streak_button = create_button_with_pixmap(pixmap, (30, 30), self.handle_streak_button)
         self.streak_button.setStyleSheet("background-color: #ffff00")  # set gray background color
         self.streak_button.setFixedSize(45, 45)  # set fixed size of 30x30 pixels
 
         # Memo Button
-        self.memo_button = QPushButton()
         pixmap = QPixmap(makePath(pictureDirectory, "memo.png"))
-        self.memo_button.setIcon(QIcon(pixmap))
-        self.memo_button.setIconSize(QSize(30, 30))
-        self.memo_button.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
-        self.memo_button.clicked.connect(self.handle_memo_button)
+        self.memo_button = create_button_with_pixmap(pixmap, (30, 30), self.handle_memo_button)
         self.memo_button.setStyleSheet("background-color: #ffb200")  # set gray background color
         self.memo_button.setFixedSize(45, 45)  # set fixed size of 30x30 pixels
 
         # Refresh Button
-        self.refresh_button = QPushButton()
         pixmap = QPixmap(makePath(pictureDirectory, "refresh_icon.png"))
-        self.refresh_button.setIcon(QIcon(pixmap))
-        self.refresh_button.setIconSize(QSize(30, 30))
-        self.refresh_button.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
-        self.refresh_button.clicked.connect(self.refresh_save)
+        self.refresh_button = create_button_with_pixmap(pixmap, (30, 30), self.refresh_save)
         self.refresh_button.setStyleSheet("background-color: #00ff00")  # set gray background color
         self.refresh_button.setFixedSize(45, 45)  # set fixed size of 30x30 pixels
 
         # Calendar Button
-        self.calendar_button = QPushButton()
         pixmap = QPixmap(makePath(pictureDirectory, "calender.png"))
-        self.calendar_button.setIcon(QIcon(pixmap))
-        self.calendar_button.setIconSize(QSize(30, 30))
-        self.calendar_button.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
-        self.calendar_button.clicked.connect(self.handle_calendar_button)
+        self.calendar_button = create_button_with_pixmap(pixmap, (30, 30), self.handle_calendar_button)
         self.calendar_button.setStyleSheet("background-color: #00ffff")  # set gray background color
         self.calendar_button.setFixedSize(45, 45)  # set fixed size of 30x30 pixels
 
@@ -240,7 +222,6 @@ class TodoListWindow(QWidget):
 
             hbox.addStretch(1)  # Add stretch factor to push the content to the left
 
-
             if task.task_type == TaskType.TIMER:
                 minutesRemaining = QLabel("Minutes Remaining: {}".format(str(task.duration // 60)))
                 hbox.addWidget(minutesRemaining)
@@ -257,7 +238,15 @@ class TodoListWindow(QWidget):
                 play_button = self.create_button("\u25B6", "green", 65, self.handle_play_click)
                 hbox.addWidget(play_button)
                 self.play_buttons.append(play_button)
-                timer_lock_in_button = self.create_button("L", "gray", 35, self.handle_timer_lock_in)
+
+
+                if task.lock_in:
+                    pixmap = QPixmap(makePath(pictureDirectory, "lock.png"))
+                else:
+                    pixmap = QPixmap(makePath(pictureDirectory, "unlock.png"))
+                timer_lock_in_button = create_button_with_pixmap(pixmap, (30, 30), self.handle_timer_lock_in)
+                timer_lock_in_button.setStyleSheet("background-color: #cfcfcf")  # set gray background color
+                timer_lock_in_button.setFixedSize(45, 45)  # set fixed size of 30x30 pixels
                 hbox.addWidget(timer_lock_in_button)
                 self.timer_lock_in_buttons.append(timer_lock_in_button)
 
@@ -310,7 +299,6 @@ class TodoListWindow(QWidget):
         button.setFixedWidth(width)
         button.clicked.connect(handler)
         return button
-
 
     # This function is where the timers horizontal layout is created, and establishes Klaus's mood
     def update_feeling(self):
@@ -448,9 +436,7 @@ class TodoListWindow(QWidget):
     # Group 3 Button Handle Functionality
     # Below Title Button Functionality
     def refresh_save(self):
-        self.parent().show_todolist()
-        self.parent().repaint()
-        self.parent().update()
+        self.initUI()
         print("Saved and refreshed")
         # Saving the task list to a file
         todoData = {"Tasks": self.todo_list, "Date": datetime.now().date()}
@@ -470,10 +456,10 @@ class TodoListWindow(QWidget):
     def handle_calendar_button(self):
         dialog = CalendarPopUp()
         dialog.exec()
+
     def handle_streak_button(self):
         dialog = StreakPopUp(self)
         dialog.exec_()
-
 
     # Task Button Functionality
     def handle_check_click(self):
@@ -485,7 +471,6 @@ class TodoListWindow(QWidget):
         task_label.setStyleSheet("color: green;")
         task_label.setText("<s>" + task_label.text() + "</s>")
         update_file(self)
-
 
     def handle_x_click(self):
         sender = self.sender()
@@ -637,17 +622,8 @@ class TodoListWindow(QWidget):
                 print(f"An exception occurred while stopping the timer thread: {e}")
 
             hbox = self.layout.itemAt(index).layout()
-            task_label = self.task_labels.pop(index)
-            check_button = self.check_buttons.pop(index)
-            cancel_button = self.cancel_buttons.pop(index)
-            x_button = self.x_buttons.pop(index)
-            task = self.todo_list.pop(index)
             self.layout.removeItem(hbox)
             del hbox
-            del task_label
-            del check_button
-            del cancel_button
-            del x_button
             del task
             update_file(self)
             self.parent().show_todolist()
@@ -703,8 +679,6 @@ class TodoListWindow(QWidget):
     def open_add_list_window(self):
         self.add_list_window = QuickListAddWindow(self, self.todo_list)
         self.add_list_window.show()
-
-
 
     # [Group 4] Redundancy Funcitons. Functionality you'll use a lot so you just have it a simple function
 

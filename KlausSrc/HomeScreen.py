@@ -8,7 +8,7 @@ from GlobalThreads import ScheduleThread, BlockThread
 from TodolistWindow import TodoListWindow
 from NutritionWindow import NutritionWindow
 from config import pictureDirectory
-from HelperFunctions import makePath
+from HelperFunctions import makePath, create_button_with_pixmap
 
 
 class HomeScreen(QMainWindow):
@@ -37,44 +37,19 @@ class HomeScreen(QMainWindow):
             label.hide()
 
         # T0do List Button
-        todolist_button = QPushButton()
-        pixmap = QPixmap(makePath(pictureDirectory, "todolist.png"))
-        todolist_button.setIcon(QIcon(pixmap))
-        todolist_button.setIconSize(QSize(150, 150))
-        todolist_button.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
-        todolist_button.clicked.connect(self.show_todolist)
+        todolist_button = create_button_with_pixmap(makePath(pictureDirectory, "todolist.png"), (150, 150), self.show_todolist)
 
         # Settings Button
-        settings_button = QPushButton()
-        pixmap = QPixmap(makePath(pictureDirectory, "setting.png"))
-        settings_button.setIcon(QIcon(pixmap))
-        settings_button.setIconSize(QSize(150, 150))
-        settings_button.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
-        settings_button.clicked.connect(self.show_settings)
+        settings_button = create_button_with_pixmap(makePath(pictureDirectory, "setting.png"), (150,150), self.show_settings)
 
         # List Creator Button
-        list_creator_button = QPushButton()
-        pixmap = QPixmap(makePath(pictureDirectory,"pencil.png"))
-        list_creator_button.setIcon(QIcon(pixmap))
-        list_creator_button.setIconSize(QSize(150, 150))
-        list_creator_button.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
-        list_creator_button.clicked.connect(self.show_list_creator)
+        list_creator_button = create_button_with_pixmap(makePath(pictureDirectory, "pencil.png"), (150,150), self.show_list_creator)
 
         # Stat Button
-        stats_button = QPushButton()
-        pixmap = QPixmap(makePath(pictureDirectory,"stats.png"))
-        stats_button.setIcon(QIcon(pixmap))
-        stats_button.setIconSize(QSize(150, 150))
-        stats_button.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
-        stats_button.clicked.connect(self.show_stats)
+        stats_button = create_button_with_pixmap(makePath(pictureDirectory, "stats.png"), (150, 150), self.show_stats)
 
         # Nutrition Button
-        nutrition_button = QPushButton()
-        pixmap = QPixmap(makePath(pictureDirectory,"nutrition.png"))
-        nutrition_button.setIcon(QIcon(pixmap))
-        nutrition_button.setIconSize(QSize(150, 150))
-        nutrition_button.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
-        nutrition_button.clicked.connect(self.show_nutrition)
+        nutrition_button = create_button_with_pixmap(makePath(pictureDirectory, "nutrition.png"), (150, 150), self.show_nutrition)
 
         button_layout = QHBoxLayout()
         button_layout.addWidget(todolist_button)
