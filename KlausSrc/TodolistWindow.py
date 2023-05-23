@@ -30,6 +30,7 @@ class TodoListWindow(QWidget):
         self.check_buttons = []
         self.x_buttons = []
         self.play_buttons = []
+        self.timer_lock_in_buttons = []
         self.cancel_buttons = []
         self.minutes_remaining = []
         self.gear_buttons = []
@@ -173,8 +174,8 @@ class TodoListWindow(QWidget):
         self.update_feeling()
 
         # This clears the buttons next to each task like the checkbox, play_buttons etc. to avoid duplicates on refresh
-        widgets = [self.task_labels, self.check_buttons, self.x_buttons, self.play_buttons, self.cancel_buttons,
-                   self.minutes_remaining, self.gear_buttons]
+        widgets = [self.task_labels, self.check_buttons, self.x_buttons, self.play_buttons, self.timer_lock_in_buttons,
+                   self.cancel_buttons, self.minutes_remaining, self.gear_buttons]
         for widget_list in widgets:
             for widget in widget_list:
                 if widget is not None:
@@ -256,8 +257,13 @@ class TodoListWindow(QWidget):
                 play_button = self.create_button("\u25B6", "green", 65, self.handle_play_click)
                 hbox.addWidget(play_button)
                 self.play_buttons.append(play_button)
+                timer_lock_in_button = self.create_button("L", "gray", 35, self.handle_timer_lock_in)
+                hbox.addWidget(timer_lock_in_button)
+                self.timer_lock_in_buttons.append(timer_lock_in_button)
+
             else:
                 self.play_buttons.append(None)
+                self.timer_lock_in_buttons.append(None)
 
             if task.task_type == TaskType.ACTIVE:
                 check_button = self.create_button("\u2713", "green", 35, self.handle_check_click)
@@ -270,8 +276,12 @@ class TodoListWindow(QWidget):
             hbox.addWidget(gear_button)
             self.gear_buttons.append(gear_button)
 
-            if not self.settings.lock_in:
+            if not self.settings.lock_in and not task.lock_in:
                 cancel_button = self.create_button("⨺", "yellow", 35, self.handle_cancel_button)
+                hbox.addWidget(cancel_button)
+                self.cancel_buttons.append(cancel_button)
+            else:
+                cancel_button = self.create_button("⨺", "gray", 35, self.handle_cancel_button)
                 hbox.addWidget(cancel_button)
                 self.cancel_buttons.append(cancel_button)
 
@@ -493,6 +503,8 @@ class TodoListWindow(QWidget):
         task = self.todo_list[index]
         if sender.text() == "\u25B6":  # play symbol
             sender.setText("\u23F8")  # pause symbol
+            if task.lock_in:
+                sender.setStyleSheet("background-color: #ff0000")
             task.task_status = TaskStatus.PLAYING
             self.timer_thread = TimerThread(task, self)
             self.timer_thread.timer_signal.connect(lambda x: self.update_duration(task, x))
@@ -537,56 +549,64 @@ class TodoListWindow(QWidget):
                             pickle.dump(data, file)
             self.timer_thread.start()
         else:
-            sender.setText("\u25B6")  # play symbol
-            task.task_status = TaskStatus.PENDING
-            if self.timer_thread is not None:
-                self.timer_thread.stop()  # stop the thread
-                self.timer_thread.wait()  # wait for the thread to finish
-                self.timer_thread.timer_signal.disconnect()
-                self.timer_thread.quit()
-                del self.timer_thread
-                self.timer_thread = None
-            timer_set = False
-            for filename in os.listdir(pickleDirectory):
-                chosen_pickle = makePath(pickleDirectory, filename)
-                with open(chosen_pickle, "rb") as file:
-                    data = pickle.load(file)
-                if data["type"] == "APPLIST":
+            if not task.lock_in:
+                sender.setText("\u25B6")  # play symbol
+                task.task_status = TaskStatus.PENDING
+                if self.timer_thread is not None:
+                    self.timer_thread.stop()  # stop the thread
+                    self.timer_thread.wait()  # wait for the thread to finish
+                    self.timer_thread.timer_signal.disconnect()
+                    self.timer_thread.quit()
+                    del self.timer_thread
+                    self.timer_thread = None
+                timer_set = False
+                for filename in os.listdir(pickleDirectory):
+                    chosen_pickle = makePath(pickleDirectory, filename)
+                    with open(chosen_pickle, "rb") as file:
+                        data = pickle.load(file)
+                    if data["type"] == "APPLIST":
 
-                    if data["status"] == "TIMER":
-                        if timer_set:
+                        if data["status"] == "TIMER":
+                            if timer_set:
+                                data["status"] = "INACTIVE"
+                            else:
+                                timer_set = True
+
+                        if task.app_block_list == filename:
                             data["status"] = "INACTIVE"
-                        else:
+                            self.block_list[0][2] = []
                             timer_set = True
 
-                    if task.app_block_list == filename:
-                        data["status"] = "INACTIVE"
-                        self.block_list[0][2] = []
-                        timer_set = True
+                        with open(chosen_pickle, "wb") as file:
+                            pickle.dump(data, file)
 
-                    with open(chosen_pickle, "wb") as file:
-                        pickle.dump(data, file)
+                    chosen_pickle = makePath(pickleDirectory, filename)
+                    with open(chosen_pickle, "rb") as file:
+                        data = pickle.load(file)
+                    if data["type"] == "WEBLIST":
+                        if data["status"] == "TIMER":
+                            if timer_set:
+                                data["status"] = "INACTIVE"
+                            else:
+                                timer_set = True
 
-                chosen_pickle = makePath(pickleDirectory, filename)
-                with open(chosen_pickle, "rb") as file:
-                    data = pickle.load(file)
-                if data["type"] == "WEBLIST":
-                    if data["status"] == "TIMER":
-                        if timer_set:
+                        if task.web_block_list == filename:
                             data["status"] = "INACTIVE"
-                        else:
+                            self.block_list[1][0] = []
                             timer_set = True
 
-                    if task.web_block_list == filename:
-                        data["status"] = "INACTIVE"
-                        self.block_list[1][0] = []
-                        timer_set = True
-
-                    with open(chosen_pickle, "wb") as file:
-                        pickle.dump(data, file)
+                        with open(chosen_pickle, "wb") as file:
+                            pickle.dump(data, file)
 
         if task.web_block_list != "None":
             automate_browser(self.block_list, self.settings)
+
+    def handle_timer_lock_in(self):
+        sender = self.sender()
+        index = self.timer_lock_in_buttons.index(sender)
+        task = self.todo_list[index]
+        task.lock_in = True
+        self.refresh_save()
 
     def handle_edit_button(self):
         sender = self.sender()
@@ -599,34 +619,38 @@ class TodoListWindow(QWidget):
     def handle_cancel_button(self):
         sender = self.sender()
         index = self.cancel_buttons.index(sender)
-        try:
-            if self.todo_list[index].task_type == TaskType.TIMER and self.timer_thread is not None:
-                self.timer_thread.timer_signal.disconnect(lambda x: self.update_duration(self.todo_list[index], x))
-                self.timer_thread.stop()  # stop the thread
-                self.timer_thread.wait()  # wait for the thread to finish
-                self.timer_thread.timer_signal.disconnect()
-                self.timer_thread.quit()
-                # self.todo_list[index].timer_thread = None
-                del self.timer_thread
+        task = self.todo_list[index]
+        if not self.settings.lock_in and not task.lock_in:
+            sender = self.sender()
+            index = self.cancel_buttons.index(sender)
+            try:
+                if self.todo_list[index].task_type == TaskType.TIMER and self.timer_thread is not None:
+                    self.timer_thread.timer_signal.disconnect(lambda x: self.update_duration(self.todo_list[index], x))
+                    self.timer_thread.stop()  # stop the thread
+                    self.timer_thread.wait()  # wait for the thread to finish
+                    self.timer_thread.timer_signal.disconnect()
+                    self.timer_thread.quit()
+                    # self.todo_list[index].timer_thread = None
+                    del self.timer_thread
 
-        except Exception as e:
-            print(f"An exception occurred while stopping the timer thread: {e}")
+            except Exception as e:
+                print(f"An exception occurred while stopping the timer thread: {e}")
 
-        hbox = self.layout.itemAt(index).layout()
-        task_label = self.task_labels.pop(index)
-        check_button = self.check_buttons.pop(index)
-        cancel_button = self.cancel_buttons.pop(index)
-        x_button = self.x_buttons.pop(index)
-        task = self.todo_list.pop(index)
-        self.layout.removeItem(hbox)
-        del hbox
-        del task_label
-        del check_button
-        del cancel_button
-        del x_button
-        del task
-        update_file(self)
-        self.parent().show_todolist()
+            hbox = self.layout.itemAt(index).layout()
+            task_label = self.task_labels.pop(index)
+            check_button = self.check_buttons.pop(index)
+            cancel_button = self.cancel_buttons.pop(index)
+            x_button = self.x_buttons.pop(index)
+            task = self.todo_list.pop(index)
+            self.layout.removeItem(hbox)
+            del hbox
+            del task_label
+            del check_button
+            del cancel_button
+            del x_button
+            del task
+            update_file(self)
+            self.parent().show_todolist()
 
     # Bottom Row Buttons Functionality
     def quick_sort(self):
