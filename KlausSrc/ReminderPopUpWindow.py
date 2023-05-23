@@ -83,17 +83,34 @@ class LockInPopUp(QDialog):
         self.close()
         print("Closed popup window")
 
+
 class StreakPopUp(QDialog):
     def __init__(self, parent=None):
         super().__init__(parent)
         self.settings = parent.settings
         self.setWindowTitle("Streak Pop-Up")
 
-        layout = QVBoxLayout()
+        self.tab_widget = QTabWidget()
 
-        message_label = QLabel("Keep track of sustained tasks and allow adding them to be automated while counting "
-                               "streaks")
-        layout.addWidget(message_label)
+        self.scheduler_tab = QWidget()
+        self.streak_tab = QWidget()
+
+        self.tab_widget.addTab(self.scheduler_tab, "Scheduler")
+        self.tab_widget.addTab(self.streak_tab, "Streak")
+
+        self.scheduler_layout = QVBoxLayout(self.scheduler_tab)
+        self.scheduler_label = QLabel("Schedule timer tasks to start automatically by setting a proper time. You can\n "
+                                      "choose if you want to lock in the task if you haven't already")
+        self.scheduler_layout.addWidget(self.scheduler_label)
+
+        self.streak_layout = QVBoxLayout(self.streak_tab)
+        self.streak_label = QLabel("Keep track of sustained tasks and allow adding them to be automated while counting\n"
+                                   " streaks. You can also customize streak rules such allowing 1 X per week.")
+        self.streak_layout.addWidget(self.streak_label)
+
+        layout = QVBoxLayout()
+        layout.addWidget(self.tab_widget)
+
         self.setLayout(layout)
 
 

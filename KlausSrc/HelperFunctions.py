@@ -4,6 +4,11 @@ import subprocess
 import time
 import traceback
 import os
+
+from PyQt5.QtCore import QSize
+from PyQt5.QtGui import QPixmap, QIcon
+from PyQt5.QtWidgets import QPushButton, QSizePolicy
+
 from config import pickleDirectory
 import atexit
 import signal
@@ -11,7 +16,8 @@ import sys
 import psutil
 import pyautogui
 
-#from CommunicationManager import sendBlocklist
+
+# from CommunicationManager import sendBlocklist
 
 # This is where the web browser block list is handled
 def automate_browser(block_lists, settings):
@@ -37,25 +43,25 @@ def automate_browser(block_lists, settings):
         # Perform the task for these optional browsers
         # TODO remove i==1 with the users browsers from settings
         for i in range(1, 4):
-            if i == 1 and settings.browsers[i - 1] == True:
+            if i == 1 and settings.browsers[i - 1]:
                 browser_exe = 'brave.exe'
                 browser_name = 'Brave'
-            elif i == 2 and settings.browsers[i - 1] == True:
+            elif i == 2 and settings.browsers[i - 1]:
                 browser_exe = 'chrome.exe'
                 browser_name = 'Google Chrome'
-            elif i == 3 and settings.browsers[i - 1] == True:
+            elif i == 3 and settings.browsers[i - 1]:
                 browser_exe = 'msedge.exe'
                 browser_name = 'Microsoft\u200b Edge'
             else:
                 continue
 
-            if browser_name == 'Google Chrome': #use chrome extension
+            if browser_name == 'Google Chrome':  # use chrome extension
                 try:
                     sendBlocklist(block_str)
                 except:
                     print(f"Unable to send blocklist for Google Chrome")
                     continue
-            else: #else use default method
+            else:  # else use default method
                 # Launch browser
                 pyautogui.hotkey('win', 'r')
                 pyautogui.typewrite(browser_exe)
@@ -133,15 +139,18 @@ def decrement_brightness():
     else:
         print("Cannot decrement brightness level as it is already 0.")
 
+
 def save_setting(settings):
     with open(makePath(pickleDirectory, 'settings.pickle'), 'wb') as f:
         data = {"settings": settings, "type": "SETTINGS"}
         pickle.dump(data, f)
         f.flush()
 
+
 def makePath(str1, str2):
     path = os.path.normpath(os.path.join(str1, str2))
     return path
+
 
 # Some settings switch their status when the new day starts such as setting a 'lock in" for a current day will be
 # reverted once the day ends. It will go back to the default settings. This function is run once a day if the
@@ -151,7 +160,17 @@ def update_daily_settings(settings):
     if not settings.has_daily_update:
         settings.lock_in = False
         settings.has_daily_update = True
-        with open(makePath(pickleDirectory,'settings.pickle'), 'wb') as f:
+        with open(makePath(pickleDirectory, 'settings.pickle'), 'wb') as f:
             data = {"settings": settings, "type": "SETTINGS"}
             pickle.dump(data, f)
             f.flush()
+
+
+def create_button_with_pixmap(path_to_icon, icon_size, clicked_handler):
+    button = QPushButton()
+    pixmap = QPixmap(path_to_icon)
+    button.setIcon(QIcon(pixmap))
+    button.setIconSize(QSize(*icon_size))
+    button.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
+    button.clicked.connect(clicked_handler)
+    return button
