@@ -8,8 +8,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="1be6badc-fbce-489b-8f04-225b720bd2a2" name="Changes" comment="Added skeleton GUI for streak button + update calendar + wallpaper + minor changes">
+    <list default="true" id="1be6badc-fbce-489b-8f04-225b720bd2a2" name="Changes" comment="Fixed bug">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/KlausSrc/TodolistWindow.py" beforeDir="false" afterPath="$PROJECT_DIR$/KlausSrc/TodolistWindow.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -182,7 +183,14 @@
       <option name="project" value="LOCAL" />
       <updated>1684893611997</updated>
     </task>
-    <option name="localTasksCounter" value="12" />
+    <task id="LOCAL-00012" summary="Fixed bug">
+      <created>1684898611888</created>
+      <option name="number" value="00012" />
+      <option name="presentableId" value="LOCAL-00012" />
+      <option name="project" value="LOCAL" />
+      <updated>1684898611888</updated>
+    </task>
+    <option name="localTasksCounter" value="13" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -208,17 +216,11 @@
     <MESSAGE value="Implemented Timer Task Lock in mechanic + small quality of life changes" />
     <MESSAGE value="Created a Pixmap button creator function and some upgrades on todolist window" />
     <MESSAGE value="Added skeleton GUI for streak button + update calendar + wallpaper + minor changes" />
-    <option name="LAST_COMMIT_MESSAGE" value="Added skeleton GUI for streak button + update calendar + wallpaper + minor changes" />
+    <MESSAGE value="Fixed bug" />
+    <option name="LAST_COMMIT_MESSAGE" value="Fixed bug" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
-      <breakpoints>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/KlausSrc/TodolistWindow.py</url>
-          <line>589</line>
-          <option name="timeStamp" value="6" />
-        </line-breakpoint>
-      </breakpoints>
       <default-breakpoints>
         <breakpoint type="python-exception">
           <properties notifyOnTerminate="true" exception="BaseException">
