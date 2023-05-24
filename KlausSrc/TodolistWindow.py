@@ -39,7 +39,7 @@ class TodoListWindow(QWidget):
         self.setLayout(self.layout)
 
     def initUI(self):
-
+        self.previous_sec = None
         # Clear the horizontal box for the title row to avoid duplicates each refresh
         if hasattr(self, 'title_layout'):
             index = self.layout.indexOf(self.title_layout)
@@ -417,6 +417,14 @@ class TodoListWindow(QWidget):
                     hasPlay = True
         current_time = QTime.currentTime().addSecs(runningTime)
         time_str = current_time.toString("hh:mm:ss ap")
+
+        # Ensure the time only decreases
+        current_sec = current_time.second()
+        if self.previous_sec is not None and current_sec > self.previous_sec:
+            current_time = current_time.addSecs(-1)
+            time_str = current_time.toString("hh:mm:ss ap")
+        self.previous_sec = current_sec
+
         if not hasPlay and self.settings.enable_dialogue_reminder_window:
             if self.settings.klaus_state == KlausFeeling.ANNOYED:
                 if random.random() < .0001:
@@ -432,7 +440,6 @@ class TodoListWindow(QWidget):
                     for i in range(5):
                         dialog = ReminderPopUp(self.settings.klaus_state, self)  # Use the main window as the parent
                         dialog.exec_()
-
         self.timer_accounted_time_display.setText(time_str)
 
     # Group 3 Button Handle Functionality
