@@ -235,10 +235,12 @@ class TodoListWindow(QWidget):
                 self.minutes_remaining.append(None)
 
             if task.task_type == TaskType.TIMER:
-                play_button = self.create_button("\u25B6", "green", 65, self.handle_play_click)
+                if task.lock_in and task.task_status == TaskStatus.PLAYING:
+                    play_button = self.create_button("\u23F8", "red", 65, self.handle_play_click)
+                else:
+                    play_button = self.create_button("\u25B6", "green", 65, self.handle_play_click)
                 hbox.addWidget(play_button)
                 self.play_buttons.append(play_button)
-
 
                 if task.lock_in:
                     pixmap = QPixmap(makePath(pictureDirectory, "lock.png"))
@@ -610,22 +612,26 @@ class TodoListWindow(QWidget):
             index = self.cancel_buttons.index(sender)
             try:
                 if self.todo_list[index].task_type == TaskType.TIMER and self.timer_thread is not None:
-                    self.timer_thread.timer_signal.disconnect(lambda x: self.update_duration(self.todo_list[index], x))
-                    self.timer_thread.stop()  # stop the thread
-                    self.timer_thread.wait()  # wait for the thread to finish
-                    self.timer_thread.timer_signal.disconnect()
-                    self.timer_thread.quit()
-                    # self.todo_list[index].timer_thread = None
-                    del self.timer_thread
+                    self.kill_timer_thread(index)
 
             except Exception as e:
                 print(f"An exception occurred while stopping the timer thread: {e}")
 
             hbox = self.layout.itemAt(index).layout()
+            task_label = self.task_labels.pop(index)
+            check_button = self.check_buttons.pop(index)
+            cancel_button = self.cancel_buttons.pop(index)
+            x_button = self.x_buttons.pop(index)
+            task = self.todo_list.pop(index)
             self.layout.removeItem(hbox)
             del hbox
+            del task_label
+            del check_button
+            del cancel_button
+            del x_button
             del task
             update_file(self)
+
             self.parent().show_todolist()
 
     # Bottom Row Buttons Functionality
@@ -655,17 +661,12 @@ class TodoListWindow(QWidget):
 
     def go_back(self):
         sender = self.sender()
+        index = -1
         for task in self.todo_list:
+            index += 1
             if task.task_type == TaskType.TIMER:
                 try:
-                    if self.timer_thread is not None:
-                        self.timer_thread.stop()  # stop the thread
-                        self.timer_thread.wait()  # wait for the thread to finish
-                        self.timer_thread.timer_signal.disconnect()
-                        self.timer_thread.quit()
-                        # self.task.timer_thread = None
-                        del self.timer_thread
-
+                    self.kill_timer_thread(index)
                 except Exception as e:
                     print(f"An exception occurred while stopping the timer thread: {e}")
         self.parent().initUI()
@@ -694,3 +695,14 @@ class TodoListWindow(QWidget):
                     if sub_layout is not None:
                         sub_layout.deleteLater()
             layout.deleteLater()
+
+    # Timer task utilize a global thread. When we pause the timer we kill the thread. We can then make a new thread
+    # and attach it to the task if it becomes unpaused. Call this to kill the thread to prevent bugs when leaving
+    # the timer task's count down display
+    def kill_timer_thread(self, index):
+        self.timer_thread.stop()  # stop the thread
+        self.timer_thread.wait()  # wait for the thread to finish
+        self.timer_thread.timer_signal.disconnect()
+        self.timer_thread.quit()
+        # self.task.timer_thread = None
+        del self.timer_thread
