@@ -8,9 +8,8 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="1be6badc-fbce-489b-8f04-225b720bd2a2" name="Changes" comment="Implemented Timer Task Lock in mechanic + small quality of life changes">
+    <list default="true" id="1be6badc-fbce-489b-8f04-225b720bd2a2" name="Changes" comment="Created a Pixmap button creator function and some upgrades on todolist window">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/KlausSrc/HelperFunctions.py" beforeDir="false" afterPath="$PROJECT_DIR$/KlausSrc/HelperFunctions.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/KlausSrc/HomeScreen.py" beforeDir="false" afterPath="$PROJECT_DIR$/KlausSrc/HomeScreen.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/KlausSrc/ReminderPopUpWindow.py" beforeDir="false" afterPath="$PROJECT_DIR$/KlausSrc/ReminderPopUpWindow.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/KlausSrc/TodolistWindow.py" beforeDir="false" afterPath="$PROJECT_DIR$/KlausSrc/TodolistWindow.py" afterDir="false" />
@@ -172,7 +171,14 @@
       <option name="project" value="LOCAL" />
       <updated>1684821410187</updated>
     </task>
-    <option name="localTasksCounter" value="10" />
+    <task id="LOCAL-00010" summary="Created a Pixmap button creator function and some upgrades on todolist window">
+      <created>1684875619177</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1684875619177</updated>
+    </task>
+    <option name="localTasksCounter" value="11" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -196,7 +202,8 @@
     <MESSAGE value="Updated Requirements text" />
     <MESSAGE value="Refactored task_row_creator significantly. Fixed it so that the tasks are inputted from he top and work their way down" />
     <MESSAGE value="Implemented Timer Task Lock in mechanic + small quality of life changes" />
-    <option name="LAST_COMMIT_MESSAGE" value="Implemented Timer Task Lock in mechanic + small quality of life changes" />
+    <MESSAGE value="Created a Pixmap button creator function and some upgrades on todolist window" />
+    <option name="LAST_COMMIT_MESSAGE" value="Created a Pixmap button creator function and some upgrades on todolist window" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
