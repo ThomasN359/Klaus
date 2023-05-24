@@ -236,9 +236,10 @@ class MemoPopUp(QDialog):
 
 
 class CalendarPopUp(QDialog):
-    def __init__(self, settings, parent=None):
+    def __init__(self, settings, todo_list, parent=None):
         super().__init__(parent)
         self.settings = settings
+        self.todo_list = todo_list
         self.setWindowTitle("Calendar Pop-Up")
         self.setGeometry(0, 0, 1100, 800)  # Set geometry of the QDialog
 
@@ -373,7 +374,7 @@ class CalendarPopUp(QDialog):
         self.populate_calendar(self.current_year, self.current_month)
 
     def streak_button_clicked(self):
-        popup = StreakPopUp(self)
+        popup = StreakPopUp(self, self.todo_list)
         popup.exec()
 
     def todo_list_button_clicked(self):
