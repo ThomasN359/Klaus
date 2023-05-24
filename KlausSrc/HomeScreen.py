@@ -1,5 +1,4 @@
-from PyQt5.QtCore import QSize
-from PyQt5.QtGui import QPixmap, QIcon
+from PyQt5.QtGui import QPalette, QBrush, QPixmap
 from PyQt5.QtWidgets import *
 from StatsWindow import StatsWindow
 from ListCreatorWindow import ListCreatorWindow
@@ -20,7 +19,16 @@ class HomeScreen(QMainWindow):
         self.block_lists = block_lists
         self.settings = settings
         self.setWindowTitle("Klaus")
-        # self.setStyleSheet("background-color: #36393e;")
+        # Set the background image
+        image_path = makePath(pictureDirectory, "plane.png")
+        background_image = QPixmap(image_path)
+        # Create a QPalette and set the QPixmap as its brush.
+        palette = QPalette()
+        palette.setBrush(QPalette.Background, QBrush(background_image))
+
+        # Apply the palette to the window.
+        self.setPalette(palette)
+
         self.initUI()
 
     def initUI(self):

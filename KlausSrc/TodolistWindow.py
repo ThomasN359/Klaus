@@ -8,8 +8,8 @@ import os
 from datetime import *
 from PyQt5 import QtCore
 from winotify import Notification
-from PyQt5.QtCore import QTime, QTimer, QSize
-from PyQt5.QtGui import QIcon, QPixmap
+from PyQt5.QtCore import QTime, QTimer
+from PyQt5.QtGui import QPixmap
 from PyQt5.QtWidgets import *
 from ReminderPopUpWindow import ReminderPopUp, LockInPopUp, MemoPopUp, StreakPopUp, CalendarPopUp
 from HelperFunctions import automate_browser, create_button_with_pixmap
@@ -415,7 +415,7 @@ class TodoListWindow(QWidget):
                     hasPlay = True
         current_time = QTime.currentTime().addSecs(runningTime)
         time_str = current_time.toString("hh:mm:ss ap")
-        if hasPlay == False and self.settings.enable_dialogue_reminder_window:
+        if not hasPlay and self.settings.enable_dialogue_reminder_window:
             if self.settings.klaus_state == KlausFeeling.ANNOYED:
                 if random.random() < .0001:
                     dialog = ReminderPopUp(self.settings.klaus_state, self)  # Use the main window as the parent
@@ -454,11 +454,11 @@ class TodoListWindow(QWidget):
         dialog.exec_()
 
     def handle_calendar_button(self):
-        dialog = CalendarPopUp()
+        dialog = CalendarPopUp(self.settings, self.todo_list)
         dialog.exec()
 
     def handle_streak_button(self):
-        dialog = StreakPopUp(self)
+        dialog = StreakPopUp(self.settings, self.todo_list)
         dialog.exec_()
 
     # Task Button Functionality

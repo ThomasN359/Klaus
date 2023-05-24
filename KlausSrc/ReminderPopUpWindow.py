@@ -1,11 +1,12 @@
 from PyQt5.QtCore import QTimer
-from PyQt5.QtGui import QColor
-from PyQt5.QtWidgets import *
+from PyQt5.QtGui import QFont
 from PyQt5.uic.Compiler.qtproxies import QtCore
 import random
 import calendar
 import datetime
-from HelperFunctions import save_setting
+from HelperFunctions import save_setting, create_button_with_pixmap
+from Task import TaskType
+from config import pictureDirectory
 from Settings import *
 
 
@@ -85,35 +86,107 @@ class LockInPopUp(QDialog):
 
 
 class StreakPopUp(QDialog):
-    def __init__(self, parent=None):
+    def __init__(self, settings, todo_list, parent=None):
         super().__init__(parent)
-        self.settings = parent.settings
+        self.todo_list = todo_list
+        self.settings = settings
         self.setWindowTitle("Streak Pop-Up")
 
         self.tab_widget = QTabWidget()
 
+        # Create tabs
         self.scheduler_tab = QWidget()
         self.streak_tab = QWidget()
+        self.bedtime_tab = QWidget()  # Add a Bedtime Scheduler tab
 
-        self.tab_widget.addTab(self.scheduler_tab, "Scheduler")
-        self.tab_widget.addTab(self.streak_tab, "Streak")
+        # Add tabs to QTabWidget
+        self.tab_widget.addTab(self.scheduler_tab, "Timer Scheduler")
+        self.tab_widget.addTab(self.streak_tab, "Streak Scheduler")
+        self.tab_widget.addTab(self.bedtime_tab, "Bedtime Scheduler")  # Add Bedtime Scheduler tab to tab_widget
 
+        # Scheduler Tab
         self.scheduler_layout = QVBoxLayout(self.scheduler_tab)
-        self.scheduler_label = QLabel("Schedule timer tasks to start automatically by setting a proper time. You can\n "
-                                      "choose if you want to lock in the task if you haven't already")
+
+        self.scheduler_label = QLabel("Select a forced start time for timer tasks")
         self.scheduler_layout.addWidget(self.scheduler_label)
 
+        self.add_task_button = QPushButton("+")
+        self.add_task_button.clicked.connect(self.add_task_row)
+        self.scheduler_layout.addWidget(self.add_task_button)
+
+        self.task_rows = []
+
+        # Streak Tab
         self.streak_layout = QVBoxLayout(self.streak_tab)
-        self.streak_label = QLabel("Keep track of sustained tasks and allow adding them to be automated while counting\n"
-                                   " streaks. You can also customize streak rules such allowing 1 X per week.")
+        self.streak_label = QLabel(
+            "Keep track of sustained tasks and allow adding them to be automated while counting\n"
+            " streaks. You can also customize streak rules such allowing 1 X per week.")
         self.streak_layout.addWidget(self.streak_label)
+
+        # Bedtime Scheduler Tab
+        self.bedtime_layout = QVBoxLayout(self.bedtime_tab)
+
+        self.days_of_week = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
+
+        for day in self.days_of_week:
+            day_layout = QHBoxLayout()
+
+            # Create and add the day label
+            day_label = QLabel(day)
+            day_layout.addWidget(day_label)
+
+            # Create and add the QTimeEdit widget for bedtime selection
+            bedtime_time_edit = QTimeEdit()
+            bedtime_time_edit.setDisplayFormat("HH:mm")  # 24-hour format
+            day_layout.addWidget(bedtime_time_edit)
+
+            # Create and add a checkbox for enabling/disabling the bedtime
+            bedtime_checkbox = QCheckBox("Enable bedtime")
+            day_layout.addWidget(bedtime_checkbox)
+
+            # Create gear button
+            gear_button = QPushButton("\u2699")
+            gear_button.setFont(QFont("Arial", 10))
+            gear_button.setStyleSheet("color: gray")
+            day_layout.addWidget(gear_button)  # add gear button to the day layout
+
+            self.bedtime_layout.addLayout(day_layout)
 
         layout = QVBoxLayout()
         layout.addWidget(self.tab_widget)
 
         self.setLayout(layout)
 
+    def add_task_row(self):
+        task_row_layout = QHBoxLayout()
 
+        task_combobox = QComboBox()
+        # Add some dummy task names, replace this with your actual task names
+        for task in self.todo_list:
+            if task.task_type == TaskType.TIMER:
+                task_combobox.addItem(task.task_name)
+        task_combobox.addItem("None")
+        task_row_layout.addWidget(task_combobox)
+
+        task_time_edit = QTimeEdit()
+        task_time_edit.setDisplayFormat("HH:mm")  # 24-hour format
+        task_row_layout.addWidget(task_time_edit)
+
+        pixmap = makePath(pictureDirectory, "unlock.png")
+        lock_button = create_button_with_pixmap(pixmap, (20,20), self.handle_lockIn)
+        lock_button.setStyleSheet("color: gray")
+        task_row_layout.addWidget(lock_button)
+
+        delete_button = QPushButton("\u26A0")
+        delete_button.setFont(QFont("Arial", 10))
+        delete_button.setStyleSheet("color: yellow")
+        task_row_layout.addWidget(delete_button)
+
+        self.task_rows.append((task_combobox, task_time_edit, lock_button, delete_button))
+        self.scheduler_layout.insertLayout(self.scheduler_layout.count()-1, task_row_layout)
+
+    def handle_lockIn(self):
+        pass
 class MemoPopUp(QDialog):
     def __init__(self, parent=None):
         super().__init__(parent)
@@ -163,8 +236,9 @@ class MemoPopUp(QDialog):
 
 
 class CalendarPopUp(QDialog):
-    def __init__(self, parent=None):
+    def __init__(self, settings, parent=None):
         super().__init__(parent)
+        self.settings = settings
         self.setWindowTitle("Calendar Pop-Up")
         self.setGeometry(0, 0, 1100, 800)  # Set geometry of the QDialog
 
@@ -217,18 +291,61 @@ class CalendarPopUp(QDialog):
         # Get the first day of the month and the number of days in the month
         month_calendar = calendar.monthcalendar(year, month)
 
+        # First, clear the table
+        self.calendar_table.clearContents()
+
+        # Get the first day of the month and the number of days in the month
+        month_calendar = calendar.monthcalendar(year, month)
+
         for i, week in enumerate(month_calendar):
             for j, day in enumerate(week):
                 if day != 0:  # calendar.monthcalendar() pads with 0s to fill weeks
-                    item = QTableWidgetItem(str(day))
-                    item.setTextAlignment(Qt.AlignTop | Qt.AlignLeft)  # Position the text to top left
-                    self.calendar_table.setItem(i, j, item)
+                    # Create a widget for the cell
+                    widget = QWidget()
+
+                    # Create a vertical layout for the cell
+                    cell_layout = QVBoxLayout()
+                    cell_layout.setAlignment(Qt.AlignTop | Qt.AlignLeft)  # Set the alignment to top left
+                    cell_layout.setSpacing(0)  # Remove spacing between the elements
+                    cell_layout.setContentsMargins(0, 0, 0, 0)  # Remove margins
+                    widget.setLayout(cell_layout)
+
+                    # Add the day label to the cell
+                    item = QLabel(str(day))
+                    item.setAlignment(Qt.AlignTop | Qt.AlignLeft)  # Position the text to top left
+                    cell_layout.addWidget(item)
+
+                    # Create a horizontal layout for the buttons
+                    button_layout = QHBoxLayout()
+                    button_layout.setAlignment(Qt.AlignTop | Qt.AlignLeft)  # Set the alignment to top left
+                    button_layout.setSpacing(0)  # Remove spacing between the buttons
+                    button_layout.setContentsMargins(0, 0, 0, 0)  # Remove margins
+
+                    # Create and add the streak button to the button layout
+                    pixmap = makePath(pictureDirectory, "streak.png")
+                    self.streak_button = create_button_with_pixmap(pixmap, (20, 20), self.streak_button_clicked)
+                    self.streak_button.setStyleSheet("background-color: #ffff00")  # set gray background color
+                    self.streak_button.setFixedSize(25, 25)  # set fixed size of 30x30 pixels
+                    button_layout.addWidget(self.streak_button)
+
+                    # Create and add the todo list button to the button layout
+                    pixmap = makePath(pictureDirectory, "todolist.png")
+                    self.todo_list_button = create_button_with_pixmap(pixmap, (20, 20), self.todo_list_button_clicked)
+                    self.todo_list_button.setStyleSheet("background-color: white")
+                    self.todo_list_button.setFixedSize(25 , 25)
+                    button_layout.addWidget(self.todo_list_button)
+
+                    # Add the button layout to the cell layout
+                    cell_layout.addLayout(button_layout)
+
+                    # Add the widget to the table
+                    self.calendar_table.setCellWidget(i, j, widget)
 
                     # Highlight the current day
                     today = datetime.date.today()
                     if day == today.day and month == today.month and year == today.year:
-                        self.calendar_table.item(i, j).setBackground(QColor(100, 149, 237))  # Cornflower Blue color
-
+                        self.calendar_table.cellWidget(i, j).setStyleSheet(
+                            'background-color: rgb(100, 149, 237);')  # Cornflower Blue color
     def prev_month(self):
         # Decrease the month, and decrease the year if necessary
         self.current_month -= 1
@@ -254,3 +371,10 @@ class CalendarPopUp(QDialog):
         self.current_month = date.month()
         self.month_label.setText(calendar.month_name[self.current_month])
         self.populate_calendar(self.current_year, self.current_month)
+
+    def streak_button_clicked(self):
+        popup = StreakPopUp(self)
+        popup.exec()
+
+    def todo_list_button_clicked(self):
+        print(datetime.datetime.now().strftime('%Y-%m-%d'))
