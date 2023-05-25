@@ -85,7 +85,7 @@ class LockInPopUp(QDialog):
         print("Closed popup window")
 
 
-class StreakPopUp(QDialog):
+class SchedulerPopUp(QDialog):
     def __init__(self, settings, todo_list, parent=None):
         super().__init__(parent)
         self.todo_list = todo_list
@@ -323,9 +323,9 @@ class CalendarPopUp(QDialog):
                     button_layout.setContentsMargins(0, 0, 0, 0)  # Remove margins
 
                     # Create and add the streak button to the button layout
-                    pixmap = makePath(pictureDirectory, "streak.png")
+                    pixmap = makePath(pictureDirectory, "scheduler.png")
                     self.streak_button = create_button_with_pixmap(pixmap, (20, 20), self.streak_button_clicked)
-                    self.streak_button.setStyleSheet("background-color: #ffff00")  # set gray background color
+                    self.streak_button.setStyleSheet("background-color: #e24545")  # set gray background color
                     self.streak_button.setFixedSize(25, 25)  # set fixed size of 30x30 pixels
                     button_layout.addWidget(self.streak_button)
 
@@ -335,6 +335,13 @@ class CalendarPopUp(QDialog):
                     self.todo_list_button.setStyleSheet("background-color: white")
                     self.todo_list_button.setFixedSize(25 , 25)
                     button_layout.addWidget(self.todo_list_button)
+
+                    # create memo button
+                    pixmap = makePath(pictureDirectory, "memo.png")
+                    self.memo_button = create_button_with_pixmap(pixmap, (20, 20), self.memo_button_clicked)
+                    self.memo_button.setStyleSheet("background-color: orange")
+                    self.memo_button.setFixedSize(25, 25)
+                    button_layout.addWidget(self.memo_button)
 
                     # Add the button layout to the cell layout
                     cell_layout.addLayout(button_layout)
@@ -374,8 +381,12 @@ class CalendarPopUp(QDialog):
         self.populate_calendar(self.current_year, self.current_month)
 
     def streak_button_clicked(self):
-        popup = StreakPopUp(self, self.todo_list)
+        popup = SchedulerPopUp(self, self.todo_list)
         popup.exec()
 
     def todo_list_button_clicked(self):
         print(datetime.datetime.now().strftime('%Y-%m-%d'))
+
+    def memo_button_clicked(self):
+        popup = MemoPopUp(self)
+        popup.exec()

@@ -108,7 +108,6 @@ class ScheduleThread(QThread):
                             toast.show()
 
                 if task.task_type == TaskType.BEDTIME:
-                    print("examing bedtime")
                     originalBedTime = task.due_by
                     timeComponents = originalBedTime.split(":")
                     hours = timeComponents[0].zfill(2)
@@ -135,7 +134,6 @@ class ScheduleThread(QThread):
                     else:
                         current_time_minutes -= timeBias
                     # If there is 3 hours left, begin decrementing the screen brightness
-                    print(str(bed_time_minutes - current_time_minutes))
                     if 180 > bed_time_minutes - current_time_minutes > 0:
                         if i % 10 == 0:
                             decrement_brightness()

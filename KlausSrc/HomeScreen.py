@@ -1,3 +1,4 @@
+from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QPalette, QBrush, QPixmap
 from PyQt5.QtWidgets import *
 from StatsWindow import StatsWindow
@@ -44,27 +45,61 @@ class HomeScreen(QMainWindow):
         else:
             label.hide()
 
-        # T0do List Button
-        todolist_button = create_button_with_pixmap(makePath(pictureDirectory, "todolist.png"), (150, 150), self.show_todolist)
+        # Todo List Button
+        todolist_button = create_button_with_pixmap(makePath(pictureDirectory, "todolist.png"), (150, 150),
+                                                    self.show_todolist)
+        todolist_button.setStyleSheet("background-color: transparent; border: none;")
+        todolist_label = QLabel('Todo List')
+        todolist_label.setAlignment(Qt.AlignCenter)
+        todolist_layout = QVBoxLayout()
+        todolist_layout.addWidget(todolist_button)
+        todolist_layout.addWidget(todolist_label)
 
         # Settings Button
-        settings_button = create_button_with_pixmap(makePath(pictureDirectory, "setting.png"), (150,150), self.show_settings)
+        settings_button = create_button_with_pixmap(makePath(pictureDirectory, "setting.png"), (150, 150),
+                                                    self.show_settings)
+        settings_button.setStyleSheet("background-color: transparent; border: none;")
+        settings_label = QLabel('Settings')
+        settings_label.setAlignment(Qt.AlignCenter)
+        settings_layout = QVBoxLayout()
+        settings_layout.addWidget(settings_button)
+        settings_layout.addWidget(settings_label)
 
         # List Creator Button
-        list_creator_button = create_button_with_pixmap(makePath(pictureDirectory, "pencil.png"), (150,150), self.show_list_creator)
+        list_creator_button = create_button_with_pixmap(makePath(pictureDirectory, "pencil.png"), (150, 150),
+                                                        self.show_list_creator)
+        list_creator_button.setStyleSheet("background-color: transparent; border: none;")
+        list_creator_label = QLabel('List Creator')
+        list_creator_label.setAlignment(Qt.AlignCenter)
+        list_creator_layout = QVBoxLayout()
+        list_creator_layout.addWidget(list_creator_button)
+        list_creator_layout.addWidget(list_creator_label)
 
         # Stat Button
         stats_button = create_button_with_pixmap(makePath(pictureDirectory, "stats.png"), (150, 150), self.show_stats)
+        stats_button.setStyleSheet("background-color: transparent; border: none;")
+        stats_label = QLabel('Stats')
+        stats_label.setAlignment(Qt.AlignCenter)
+        stats_layout = QVBoxLayout()
+        stats_layout.addWidget(stats_button)
+        stats_layout.addWidget(stats_label)
 
         # Nutrition Button
-        nutrition_button = create_button_with_pixmap(makePath(pictureDirectory, "nutrition.png"), (150, 150), self.show_nutrition)
+        nutrition_button = create_button_with_pixmap(makePath(pictureDirectory, "nutrition.png"), (150, 150),
+                                                     self.show_nutrition)
+        nutrition_button.setStyleSheet("background-color: transparent; border: none;")
+        nutrition_label = QLabel('Nutrition')
+        nutrition_label.setAlignment(Qt.AlignCenter)
+        nutrition_layout = QVBoxLayout()
+        nutrition_layout.addWidget(nutrition_button)
+        nutrition_layout.addWidget(nutrition_label)
 
         button_layout = QHBoxLayout()
-        button_layout.addWidget(todolist_button)
-        button_layout.addWidget(settings_button)
-        button_layout.addWidget(list_creator_button)
-        button_layout.addWidget(stats_button)
-        button_layout.addWidget(nutrition_button)
+        button_layout.addLayout(todolist_layout)
+        button_layout.addLayout(settings_layout)
+        button_layout.addLayout(list_creator_layout)
+        button_layout.addLayout(stats_layout)
+        button_layout.addLayout(nutrition_layout)
 
         # Create a vertical box layout and add all the buttons to it
         vertical_layout = QVBoxLayout()
@@ -72,6 +107,7 @@ class HomeScreen(QMainWindow):
         vertical_layout.addWidget(label)
         vertical_layout.addLayout(button_layout)
         vertical_layout.addStretch()
+
         central_widget = QWidget(self)
         central_widget.setLayout(vertical_layout)
         self.setCentralWidget(central_widget)
