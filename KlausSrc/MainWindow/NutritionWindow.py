@@ -4,8 +4,8 @@ from datetime import datetime
 from PyQt5 import QtCore
 from PyQt5.QtWidgets import QLabel, QPushButton, QWidget, QLineEdit, QVBoxLayout
 
-from config import pickleDirectory
-from HelperFunctions import makePath
+from KlausSrc.Utilities.config import pickleDirectory
+from KlausSrc.Utilities.HelperFunctions import makePath
 
 
 class NutritionWindow(QWidget):

@@ -1,12 +1,12 @@
 import os
 import pickle
 from datetime import datetime
-from config import pickleDirectory
+from KlausSrc.Utilities.config import pickleDirectory
 from PyQt5.QtCore import QTime, Qt
 from PyQt5.QtWidgets import QLabel, QPushButton, QComboBox, QTextEdit, QLineEdit, QVBoxLayout, QDialog, QTimeEdit, \
     QCheckBox
-from Task import TaskStatus, TaskType, ActiveTask, TimerTask, BedTime, SustainTask
-from HelperFunctions import makePath
+from KlausSrc.Objects.Task import TaskStatus, TaskType, ActiveTask, TimerTask, BedTime, SustainTask
+from KlausSrc.Utilities.HelperFunctions import makePath
 
 
 class AddTaskWindow(QDialog):

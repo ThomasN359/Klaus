@@ -1,9 +1,9 @@
 from PyQt5.QtWidgets import *
 from PyQt5.QtCore import Qt
 import pickle
-from config import pickleDirectory
+from KlausSrc.Utilities.config import pickleDirectory
 import enum
-from HelperFunctions import makePath
+from KlausSrc.Utilities.HelperFunctions import makePath
 
 class KlausFeeling(enum.Enum):
     HAPPY = 1

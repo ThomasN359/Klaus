@@ -6,8 +6,8 @@ from datetime import *
 import time
 from PyQt5.QtCore import QThread, pyqtSignal
 from winotify import Notification
-from HelperFunctions import decrement_brightness, update_daily_settings
-from Task import TaskStatus, TaskType
+from KlausSrc.Utilities.HelperFunctions import decrement_brightness, update_daily_settings
+from KlausSrc.Objects.Task import TaskStatus, TaskType
 
 
 
