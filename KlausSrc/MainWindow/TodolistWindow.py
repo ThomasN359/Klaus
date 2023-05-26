@@ -1,8 +1,12 @@
 import pickle
-from Task import TaskType, TaskStatus
-from Settings import KlausFeeling
-from GlobalThreads import TimerThread
-from config import pickleDirectory, pictureDirectory
+from KlausSrc.PopUpWindows.MemoPopUp import MemoPopUp
+from KlausSrc.PopUpWindows.LockInPopUp import LockInPopUp
+from KlausSrc.PopUpWindows.CalendarPopUp import CalendarPopUp
+from KlausSrc.PopUpWindows.SchedulerPopUp import SchedulerPopUp
+from KlausSrc.Objects.Task import TaskType, TaskStatus
+from KlausSrc.MainWindow.Settings import KlausFeeling
+from KlausSrc.GlobalModules.GlobalThreads import TimerThread
+from KlausSrc.Utilities.config import pickleDirectory, iconDirectory
 import random
 import os
 from datetime import *
@@ -11,12 +15,12 @@ from winotify import Notification
 from PyQt5.QtCore import QTime, QTimer
 from PyQt5.QtGui import QPixmap
 from PyQt5.QtWidgets import *
-from ReminderPopUpWindow import ReminderPopUp, LockInPopUp, MemoPopUp, StreakPopUp, CalendarPopUp
-from HelperFunctions import automate_browser, create_button_with_pixmap
-from AddTaskWindow import AddTaskWindow
-from AddTaskWindow import update_file
-from QuickListAddWindow import QuickListAddWindow
-from HelperFunctions import makePath
+from KlausSrc.PopUpWindows.ReminderPopUpWindow import ReminderPopUp
+from KlausSrc.Utilities.HelperFunctions import automate_browser, create_button_with_pixmap
+from KlausSrc.PopUpWindows.AddTaskWindow import AddTaskWindow
+from KlausSrc.PopUpWindows.AddTaskWindow import update_file
+from KlausSrc.PopUpWindows.QuickListAddWindow import QuickListAddWindow
+from KlausSrc.Utilities.HelperFunctions import makePath
 
 
 class TodoListWindow(QWidget):
@@ -79,43 +83,56 @@ class TodoListWindow(QWidget):
 
         # Lock button
         if self.settings.lock_in:
-            pixmap = QPixmap(makePath(pictureDirectory, "lock.png"))
+            pixmap = QPixmap(makePath(iconDirectory, "lock.png"))
         else:
-            pixmap = QPixmap(makePath(pictureDirectory, "unlock.png"))
-        self.lock_button = create_button_with_pixmap(pixmap, (30, 30), self.lockIn)
+            pixmap = QPixmap(makePath(iconDirectory, "unlock.png"))
+        self.lock_button = create_button_with_pixmap(pixmap, (35, 35), self.lockIn)
         self.lock_button.setStyleSheet("background-color: #cfcfcf")  # set gray background color
         self.lock_button.setFixedSize(45, 45)  # set fixed size of 30x30 pixels
 
-        # Streak Button
-        pixmap = QPixmap(makePath(pictureDirectory, "streak.png"))
-        self.streak_button = create_button_with_pixmap(pixmap, (30, 30), self.handle_streak_button)
-        self.streak_button.setStyleSheet("background-color: #ffff00")  # set gray background color
-        self.streak_button.setFixedSize(45, 45)  # set fixed size of 30x30 pixels
+        # Scheduler Button
+        pixmap = QPixmap(makePath(iconDirectory, "scheduler.png"))
+        self.scheduler_button = create_button_with_pixmap(pixmap, (35, 35), self.handle_scheduler_button)
+        self.scheduler_button.setStyleSheet("background-color: #e24545")  # set gray background color
+        self.scheduler_button.setFixedSize(45, 45)  # set fixed size of 30x30 pixels
 
         # Memo Button
-        pixmap = QPixmap(makePath(pictureDirectory, "memo.png"))
-        self.memo_button = create_button_with_pixmap(pixmap, (30, 30), self.handle_memo_button)
+        pixmap = QPixmap(makePath(iconDirectory, "memo.png"))
+        self.memo_button = create_button_with_pixmap(pixmap, (35, 35), self.handle_memo_button)
         self.memo_button.setStyleSheet("background-color: #ffb200")  # set gray background color
         self.memo_button.setFixedSize(45, 45)  # set fixed size of 30x30 pixels
 
         # Refresh Button
-        pixmap = QPixmap(makePath(pictureDirectory, "refresh_icon.png"))
-        self.refresh_button = create_button_with_pixmap(pixmap, (30, 30), self.refresh_save)
+        pixmap = QPixmap(makePath(iconDirectory, "refresh_icon.png"))
+        self.refresh_button = create_button_with_pixmap(pixmap, (35, 35), self.refresh_save)
         self.refresh_button.setStyleSheet("background-color: #00ff00")  # set gray background color
         self.refresh_button.setFixedSize(45, 45)  # set fixed size of 30x30 pixels
 
         # Calendar Button
-        pixmap = QPixmap(makePath(pictureDirectory, "calender.png"))
-        self.calendar_button = create_button_with_pixmap(pixmap, (30, 30), self.handle_calendar_button)
+        pixmap = QPixmap(makePath(iconDirectory, "calender.png"))
+        self.calendar_button = create_button_with_pixmap(pixmap, (35, 35), self.handle_calendar_button)
         self.calendar_button.setStyleSheet("background-color: #00ffff")  # set gray background color
         self.calendar_button.setFixedSize(45, 45)  # set fixed size of 30x30 pixels
+
+        pixmap = QPixmap(makePath(iconDirectory, "sort.png"))
+        self.sort_button = create_button_with_pixmap(pixmap, (35,35), self.quick_sort)
+        self.sort_button.setStyleSheet("background-color: #0000ff")
+        self.sort_button.setFixedSize(45, 45)
+
+        pixmap = QPixmap(makePath(iconDirectory, "list_add.png"))
+        self.list_add_button = create_button_with_pixmap(pixmap, (35,35), self.open_add_list_window)
+        self.list_add_button.setStyleSheet("background-color: #C8A2C8")
+        self.list_add_button.setFixedSize(45, 45)
 
         self.sub_title_layout.addStretch(1)
         self.sub_title_layout.addWidget(self.refresh_button)
         self.sub_title_layout.addWidget(self.memo_button)
         self.sub_title_layout.addWidget(self.lock_button)
-        self.sub_title_layout.addWidget(self.streak_button)
+        self.sub_title_layout.addWidget(self.scheduler_button)
+        self.sub_title_layout.addWidget(self.sort_button)
+        self.sub_title_layout.addWidget(self.list_add_button)
         self.sub_title_layout.addWidget(self.calendar_button)
+
         self.sub_title_layout.addStretch(1)
         self.layout.addLayout(self.sub_title_layout)
 
@@ -176,23 +193,16 @@ class TodoListWindow(QWidget):
         self.hbox2 = QHBoxLayout()
 
         # Back Button
-        self.back_button = QPushButton('Back', self)
-        self.back_button.clicked.connect(self.go_back)
+        pixmap = (makePath(iconDirectory, "back_arrow.png"))
+        self.back_button = create_button_with_pixmap(pixmap, (100,100), self.go_back)
+        self.back_button.setStyleSheet("background-color: transparent; border: none;")
         self.hbox2.addWidget(self.back_button)
 
-        # Quick Sort Button
-        self.quick_sort_button = QPushButton('Chronological Sort', self)
-        self.quick_sort_button.clicked.connect(self.quick_sort)
-        self.hbox2.addWidget(self.quick_sort_button)
-
-        # Add List Button
-        self.add_list_button = QPushButton('Add a List', self)
-        self.add_list_button.clicked.connect(self.open_add_list_window)
-        self.hbox2.addWidget(self.add_list_button)
-
         # Add Task Button
-        self.add_task_button = QPushButton('Add Task', self)
-        self.add_task_button.clicked.connect(self.open_add_task_window)
+        pixmap = (makePath(iconDirectory, "add.png"))
+        self.add_task_button = create_button_with_pixmap(pixmap, (100,100), self.open_add_task_window)
+        self.add_task_button.setStyleSheet("background-color: transparent; border: none;")
+        self.hbox2.addStretch(1)
         self.hbox2.addWidget(self.add_task_button)
 
         # Create new QVBoxLayout if it doesn't exist.
@@ -243,9 +253,9 @@ class TodoListWindow(QWidget):
                 self.play_buttons.append(play_button)
 
                 if task.lock_in:
-                    pixmap = QPixmap(makePath(pictureDirectory, "lock.png"))
+                    pixmap = QPixmap(makePath(iconDirectory, "lock.png"))
                 else:
-                    pixmap = QPixmap(makePath(pictureDirectory, "unlock.png"))
+                    pixmap = QPixmap(makePath(iconDirectory, "unlock.png"))
                 timer_lock_in_button = create_button_with_pixmap(pixmap, (30, 30), self.handle_timer_lock_in)
                 timer_lock_in_button.setStyleSheet("background-color: #cfcfcf")  # set gray background color
                 timer_lock_in_button.setFixedSize(45, 45)  # set fixed size of 30x30 pixels
@@ -466,8 +476,8 @@ class TodoListWindow(QWidget):
         dialog = CalendarPopUp(self.settings, self.todo_list)
         dialog.exec()
 
-    def handle_streak_button(self):
-        dialog = StreakPopUp(self.settings, self.todo_list)
+    def handle_scheduler_button(self):
+        dialog = SchedulerPopUp(self.settings, self.todo_list)
         dialog.exec_()
 
     # Task Button Functionality

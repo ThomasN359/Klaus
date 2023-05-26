@@ -2,8 +2,8 @@ import os
 import pickle
 from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QLabel, QPushButton, QComboBox, QVBoxLayout, QWidget, QLineEdit, QTextEdit, QHBoxLayout
-from config import pickleDirectory
-from HelperFunctions import makePath
+from KlausSrc.Utilities.config import pickleDirectory
+from KlausSrc.Utilities.HelperFunctions import makePath
 
 
 class ListCreatorWindow(QWidget):

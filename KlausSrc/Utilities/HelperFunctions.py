@@ -9,7 +9,7 @@ from PyQt5.QtCore import QSize
 from PyQt5.QtGui import QPixmap, QIcon
 from PyQt5.QtWidgets import QPushButton, QSizePolicy
 
-from config import pickleDirectory
+from KlausSrc.Utilities.config import pickleDirectory
 import atexit
 import signal
 import sys

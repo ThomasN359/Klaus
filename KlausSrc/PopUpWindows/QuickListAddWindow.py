@@ -1,8 +1,8 @@
 import os
 import pickle
 from PyQt5.QtWidgets import QPushButton, QLabel, QDialog, QVBoxLayout, QLineEdit, QComboBox
-from config import pickleDirectory
-from HelperFunctions import makePath
+from KlausSrc.Utilities.config import pickleDirectory
+from KlausSrc.Utilities.HelperFunctions import makePath
 
 class QuickListAddWindow(QDialog):
     def __init__(self, parent, todo_list):

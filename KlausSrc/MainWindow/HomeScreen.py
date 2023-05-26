@@ -1,14 +1,14 @@
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QPalette, QBrush, QPixmap
 from PyQt5.QtWidgets import *
-from StatsWindow import StatsWindow
-from ListCreatorWindow import ListCreatorWindow
-from Settings import SettingsWindow
-from GlobalThreads import ScheduleThread, BlockThread
-from TodolistWindow import TodoListWindow
-from NutritionWindow import NutritionWindow
-from config import pictureDirectory
-from HelperFunctions import makePath, create_button_with_pixmap
+from KlausSrc.MainWindow.StatsWindow import StatsWindow
+from KlausSrc.MainWindow.ListCreatorWindow import ListCreatorWindow
+from KlausSrc.MainWindow.Settings import SettingsWindow
+from KlausSrc.GlobalModules.GlobalThreads import ScheduleThread, BlockThread
+from KlausSrc.MainWindow.TodolistWindow import TodoListWindow
+from KlausSrc.MainWindow.NutritionWindow import NutritionWindow
+from KlausSrc.Utilities.config import iconDirectory, wallpaperDirectory
+from KlausSrc.Utilities.HelperFunctions import makePath, create_button_with_pixmap
 
 
 class HomeScreen(QMainWindow):
@@ -21,7 +21,7 @@ class HomeScreen(QMainWindow):
         self.settings = settings
         self.setWindowTitle("Klaus")
         # Set the background image
-        image_path = makePath(pictureDirectory, "plane.png")
+        image_path = makePath(wallpaperDirectory, "plane.png")
         background_image = QPixmap(image_path)
         # Create a QPalette and set the QPixmap as its brush.
         palette = QPalette()
@@ -46,7 +46,7 @@ class HomeScreen(QMainWindow):
             label.hide()
 
         # Todo List Button
-        todolist_button = create_button_with_pixmap(makePath(pictureDirectory, "todolist.png"), (150, 150),
+        todolist_button = create_button_with_pixmap(makePath(iconDirectory, "todolist.png"), (150, 150),
                                                     self.show_todolist)
         todolist_button.setStyleSheet("background-color: transparent; border: none;")
         todolist_label = QLabel('Todo List')
@@ -56,7 +56,7 @@ class HomeScreen(QMainWindow):
         todolist_layout.addWidget(todolist_label)
 
         # Settings Button
-        settings_button = create_button_with_pixmap(makePath(pictureDirectory, "setting.png"), (150, 150),
+        settings_button = create_button_with_pixmap(makePath(iconDirectory, "setting.png"), (150, 150),
                                                     self.show_settings)
         settings_button.setStyleSheet("background-color: transparent; border: none;")
         settings_label = QLabel('Settings')
@@ -66,7 +66,7 @@ class HomeScreen(QMainWindow):
         settings_layout.addWidget(settings_label)
 
         # List Creator Button
-        list_creator_button = create_button_with_pixmap(makePath(pictureDirectory, "pencil.png"), (150, 150),
+        list_creator_button = create_button_with_pixmap(makePath(iconDirectory, "pencil.png"), (150, 150),
                                                         self.show_list_creator)
         list_creator_button.setStyleSheet("background-color: transparent; border: none;")
         list_creator_label = QLabel('List Creator')
@@ -76,7 +76,7 @@ class HomeScreen(QMainWindow):
         list_creator_layout.addWidget(list_creator_label)
 
         # Stat Button
-        stats_button = create_button_with_pixmap(makePath(pictureDirectory, "stats.png"), (150, 150), self.show_stats)
+        stats_button = create_button_with_pixmap(makePath(iconDirectory, "stats.png"), (150, 150), self.show_stats)
         stats_button.setStyleSheet("background-color: transparent; border: none;")
         stats_label = QLabel('Stats')
         stats_label.setAlignment(Qt.AlignCenter)
@@ -85,7 +85,7 @@ class HomeScreen(QMainWindow):
         stats_layout.addWidget(stats_label)
 
         # Nutrition Button
-        nutrition_button = create_button_with_pixmap(makePath(pictureDirectory, "nutrition.png"), (150, 150),
+        nutrition_button = create_button_with_pixmap(makePath(iconDirectory, "nutrition.png"), (150, 150),
                                                      self.show_nutrition)
         nutrition_button.setStyleSheet("background-color: transparent; border: none;")
         nutrition_label = QLabel('Nutrition')

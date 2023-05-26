@@ -1,16 +1,12 @@
-from KlausSrc import HomeScreen
-from Settings import *
-from config import pictureDirectory
-from TodolistWindow import *
+from KlausSrc.MainWindow.HomeScreen import HomeScreen
+from KlausSrc.MainWindow.Settings import *
+from KlausSrc.MainWindow.TodolistWindow import *
 import multiprocessing
-import os
-import pickle
 from datetime import *
-import time
 from PyQt5.QtCore import QTime
 from PyQt5.QtGui import QFont
 from PyQt5.QtWidgets import *
-from HelperFunctions import *
+from KlausSrc.Utilities.HelperFunctions import *
 
 
 def main_process():  # TODO FLAG AND LOCK
