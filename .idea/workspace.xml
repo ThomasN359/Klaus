@@ -8,51 +8,11 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="1be6badc-fbce-489b-8f04-225b720bd2a2" name="Changes" comment="Upgraded some UI components">
-      <change afterPath="$PROJECT_DIR$/KlausSrc/MainWindow/__init__.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/KlausSrc/Objects/__init__.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/KlausSrc/PopUpWindows/CalendarPopUp.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/KlausSrc/PopUpWindows/LockInPopUp.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/KlausSrc/PopUpWindows/MemoPopUp.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/KlausSrc/PopUpWindows/SchedulerPopUp.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/KlausSrc/PopUpWindows/__init__.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/KlausSrc/Utilities/__init__.py" afterDir="false" />
+    <list default="true" id="1be6badc-fbce-489b-8f04-225b720bd2a2" name="Changes" comment="Readded Pickles Directory with modern starter pickles">
+      <change afterPath="$PROJECT_DIR$/KlausSrc/Utilities/HotkeyManager.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/KlausSrc/AddTaskWindow.py" beforeDir="false" afterPath="$PROJECT_DIR$/KlausSrc/PopUpWindows/AddTaskWindow.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/KlausSrc/CommunicationManager.py" beforeDir="false" afterPath="$PROJECT_DIR$/KlausSrc/GlobalModules/CommunicationManager.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/KlausSrc/GlobalThreads.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/KlausSrc/HelperFunctions.py" beforeDir="false" afterPath="$PROJECT_DIR$/KlausSrc/Utilities/HelperFunctions.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/KlausSrc/HomeScreen.py" beforeDir="false" afterPath="$PROJECT_DIR$/KlausSrc/MainWindow/HomeScreen.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/KlausSrc/ListCreatorWindow.py" beforeDir="false" afterPath="$PROJECT_DIR$/KlausSrc/MainWindow/ListCreatorWindow.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/KlausSrc/Main.py" beforeDir="false" afterPath="$PROJECT_DIR$/KlausSrc/Main.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/KlausSrc/NutritionWindow.py" beforeDir="false" afterPath="$PROJECT_DIR$/KlausSrc/MainWindow/NutritionWindow.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/KlausSrc/QuickListAddWindow.py" beforeDir="false" afterPath="$PROJECT_DIR$/KlausSrc/PopUpWindows/QuickListAddWindow.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/KlausSrc/ReminderPopUpWindow.py" beforeDir="false" afterPath="$PROJECT_DIR$/KlausSrc/PopUpWindows/ReminderPopUpWindow.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/KlausSrc/Settings.py" beforeDir="false" afterPath="$PROJECT_DIR$/KlausSrc/MainWindow/Settings.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/KlausSrc/StatsWindow.py" beforeDir="false" afterPath="$PROJECT_DIR$/KlausSrc/MainWindow/StatsWindow.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/KlausSrc/Task.py" beforeDir="false" afterPath="$PROJECT_DIR$/KlausSrc/Objects/Task.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/KlausSrc/TodolistWindow.py" beforeDir="false" afterPath="$PROJECT_DIR$/KlausSrc/MainWindow/TodolistWindow.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/KlausSrc/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/KlausSrc/__init__.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/KlausSrc/config.py" beforeDir="false" afterPath="$PROJECT_DIR$/KlausSrc/Utilities/config.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Pics/add.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Pics/back_arrow.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Pics/beach.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Pics/calender.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Pics/list_add.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Pics/lock.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Pics/memo.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Pics/mountain.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Pics/nutrition.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Pics/pencil.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Pics/plane.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Pics/refresh_icon.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Pics/scheduler.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Pics/setting.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Pics/sort.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Pics/stats.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Pics/streak.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Pics/todolist.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Pics/unlock.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/KlausSrc/MainWindow/HomeScreen.py" beforeDir="false" afterPath="$PROJECT_DIR$/KlausSrc/MainWindow/HomeScreen.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/KlausSrc/PopUpWindows/ReminderPopUpWindow.py" beforeDir="false" afterPath="$PROJECT_DIR$/KlausSrc/PopUpWindows/ReminderPopUpWindow.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -253,7 +213,21 @@
       <option name="project" value="LOCAL" />
       <updated>1684987056832</updated>
     </task>
-    <option name="localTasksCounter" value="16" />
+    <task id="LOCAL-00016" summary="Upgraded Project Structure">
+      <created>1685065057211</created>
+      <option name="number" value="00016" />
+      <option name="presentableId" value="LOCAL-00016" />
+      <option name="project" value="LOCAL" />
+      <updated>1685065057211</updated>
+    </task>
+    <task id="LOCAL-00017" summary="Readded Pickles Directory with modern starter pickles">
+      <created>1685065651123</created>
+      <option name="number" value="00017" />
+      <option name="presentableId" value="LOCAL-00017" />
+      <option name="project" value="LOCAL" />
+      <updated>1685065651123</updated>
+    </task>
+    <option name="localTasksCounter" value="18" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -283,7 +257,9 @@
     <MESSAGE value="Fixed some bugs and timer thread bug" />
     <MESSAGE value="Fixed timer accounted display bug. Fixed bedtime brightness decrement bug." />
     <MESSAGE value="Upgraded some UI components" />
-    <option name="LAST_COMMIT_MESSAGE" value="Upgraded some UI components" />
+    <MESSAGE value="Upgraded Project Structure" />
+    <MESSAGE value="Readded Pickles Directory with modern starter pickles" />
+    <option name="LAST_COMMIT_MESSAGE" value="Readded Pickles Directory with modern starter pickles" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
