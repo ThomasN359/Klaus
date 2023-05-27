@@ -1,12 +1,6 @@
-from PyQt5.QtCore import QTimer
-from PyQt5.QtGui import QFont
 from PyQt5.uic.Compiler.qtproxies import QtCore
 import random
-import calendar
-import datetime
-from KlausSrc.Utilities.HelperFunctions import save_setting, create_button_with_pixmap
-from KlausSrc.Objects.Task import TaskType
-from KlausSrc.Utilities.config import iconDirectory
+from KlausSrc.Utilities.HelperFunctions import save_setting
 from KlausSrc.MainWindow.Settings import *
 
 

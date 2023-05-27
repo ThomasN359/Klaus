@@ -11,6 +11,21 @@ from KlausSrc.Utilities.config import iconDirectory, wallpaperDirectory
 from KlausSrc.Utilities.HelperFunctions import makePath, create_button_with_pixmap
 
 
+def create_centered_button_layout(button, label):
+    widget = QWidget()
+    layout = QHBoxLayout(widget)
+
+    layout.addItem(QSpacerItem(0, 0, QSizePolicy.Expanding, QSizePolicy.Fixed))
+    layout.addWidget(button)
+    layout.addItem(QSpacerItem(0, 0, QSizePolicy.Expanding, QSizePolicy.Fixed))
+
+    button_layout = QVBoxLayout()
+    button_layout.addWidget(widget)
+    button_layout.addWidget(label)
+
+    return button_layout
+
+
 class HomeScreen(QMainWindow):
     def __init__(self, todo_list_archive, todo_list, block_lists, settings, parent=None):
         super().__init__(parent)
@@ -20,14 +35,35 @@ class HomeScreen(QMainWindow):
         self.block_lists = block_lists
         self.settings = settings
         self.setWindowTitle("Klaus")
+
         # Set the background image
-        image_path = makePath(wallpaperDirectory, "plane.png")
+        image_path = makePath(wallpaperDirectory, "purple_forest.png")
         background_image = QPixmap(image_path)
+
+        # Scale the background image to fit the window
+        scaled_image = background_image.scaled(self.size(), Qt.IgnoreAspectRatio, Qt.SmoothTransformation)
+
         # Create a QPalette and set the QPixmap as its brush.
         palette = QPalette()
-        palette.setBrush(QPalette.Background, QBrush(background_image))
+        palette.setBrush(QPalette.Background, QBrush(scaled_image))
 
         # Apply the palette to the window.
+        self.setPalette(palette)
+
+    def resizeEvent(self, event):
+        # Handle window resize events
+        if self.isMaximized() or self.isFullScreen():
+            # Ignore resize events when the window is maximized or in fullscreen mode
+            return
+
+        # Scale the background image to fit the resized window
+        image_path = makePath(wallpaperDirectory, "purple_tower.png")
+        background_image = QPixmap(image_path)
+        scaled_image = background_image.scaled(self.size(), Qt.IgnoreAspectRatio, Qt.SmoothTransformation)
+
+        # Update the palette with the new background image
+        palette = QPalette()
+        palette.setBrush(QPalette.Background, QBrush(scaled_image))
         self.setPalette(palette)
 
         self.initUI()
@@ -45,54 +81,41 @@ class HomeScreen(QMainWindow):
         else:
             label.hide()
 
-        # Todo List Button
+        # T0do List Button
+
         todolist_button = create_button_with_pixmap(makePath(iconDirectory, "todolist.png"), (150, 150),
                                                     self.show_todolist)
         todolist_button.setStyleSheet("background-color: transparent; border: none;")
         todolist_label = QLabel('Todo List')
         todolist_label.setAlignment(Qt.AlignCenter)
-        todolist_layout = QVBoxLayout()
-        todolist_layout.addWidget(todolist_button)
-        todolist_layout.addWidget(todolist_label)
+        todolist_layout = create_centered_button_layout(todolist_button, todolist_label)
 
-        # Settings Button
         settings_button = create_button_with_pixmap(makePath(iconDirectory, "setting.png"), (150, 150),
                                                     self.show_settings)
         settings_button.setStyleSheet("background-color: transparent; border: none;")
         settings_label = QLabel('Settings')
         settings_label.setAlignment(Qt.AlignCenter)
-        settings_layout = QVBoxLayout()
-        settings_layout.addWidget(settings_button)
-        settings_layout.addWidget(settings_label)
+        settings_layout = create_centered_button_layout(settings_button, settings_label)
 
-        # List Creator Button
         list_creator_button = create_button_with_pixmap(makePath(iconDirectory, "pencil.png"), (150, 150),
                                                         self.show_list_creator)
         list_creator_button.setStyleSheet("background-color: transparent; border: none;")
         list_creator_label = QLabel('List Creator')
         list_creator_label.setAlignment(Qt.AlignCenter)
-        list_creator_layout = QVBoxLayout()
-        list_creator_layout.addWidget(list_creator_button)
-        list_creator_layout.addWidget(list_creator_label)
+        list_creator_layout = create_centered_button_layout(list_creator_button, list_creator_label)
 
-        # Stat Button
         stats_button = create_button_with_pixmap(makePath(iconDirectory, "stats.png"), (150, 150), self.show_stats)
         stats_button.setStyleSheet("background-color: transparent; border: none;")
         stats_label = QLabel('Stats')
         stats_label.setAlignment(Qt.AlignCenter)
-        stats_layout = QVBoxLayout()
-        stats_layout.addWidget(stats_button)
-        stats_layout.addWidget(stats_label)
+        stats_layout = create_centered_button_layout(stats_button, stats_label)
 
-        # Nutrition Button
         nutrition_button = create_button_with_pixmap(makePath(iconDirectory, "nutrition.png"), (150, 150),
                                                      self.show_nutrition)
         nutrition_button.setStyleSheet("background-color: transparent; border: none;")
         nutrition_label = QLabel('Nutrition')
         nutrition_label.setAlignment(Qt.AlignCenter)
-        nutrition_layout = QVBoxLayout()
-        nutrition_layout.addWidget(nutrition_button)
-        nutrition_layout.addWidget(nutrition_label)
+        nutrition_layout = create_centered_button_layout(nutrition_button, nutrition_label)
 
         button_layout = QHBoxLayout()
         button_layout.addLayout(todolist_layout)
@@ -101,7 +124,6 @@ class HomeScreen(QMainWindow):
         button_layout.addLayout(stats_layout)
         button_layout.addLayout(nutrition_layout)
 
-        # Create a vertical box layout and add all the buttons to it
         vertical_layout = QVBoxLayout()
         vertical_layout.addStretch()
         vertical_layout.addWidget(label)
@@ -140,3 +162,4 @@ class HomeScreen(QMainWindow):
     def start_blocking(self):
         self.block_thread = BlockThread(self.block_lists, self)
         self.block_thread.start()
+
