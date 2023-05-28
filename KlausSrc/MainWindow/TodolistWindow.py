@@ -298,11 +298,11 @@ class TodoListWindow(QWidget):
             self.x_buttons.append(x_button)
 
             # Add a horizontal line after each task
-            hline = QFrame()
-            hline.setFrameShape(QFrame.HLine)
-            hline.setFrameShadow(QFrame.Sunken)
-            hline.setStyleSheet("background-color: black")  # Set line color
-            self.layout.addWidget(hline)  # Add the horizontal line to the layout
+            # hline = QFrame()
+            # hline.setFrameShape(QFrame.HLine)
+            # hline.setFrameShadow(QFrame.Sunken)
+            # hline.setStyleSheet("background-color: black")  # Set line color
+            # self.layout.addWidget(hline)  # Add the horizontal line to the layout
 
             self.layout.addLayout(hbox)
 

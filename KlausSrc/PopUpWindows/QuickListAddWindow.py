@@ -12,6 +12,7 @@ class QuickListAddWindow(QDialog):
 
     def initUI(self):
         self.setGeometry(200, 200, 500, 300)
+        self.setStyleSheet("background-color: none;")
         self.setWindowTitle("Quick Add")
 
         self.layout = QVBoxLayout()

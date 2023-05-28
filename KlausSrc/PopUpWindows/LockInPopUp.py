@@ -6,6 +6,7 @@ from KlausSrc.Utilities.HelperFunctions import save_setting
 class LockInPopUp(QDialog):
     def __init__(self, parent=None):
         super().__init__(parent)
+        self.setStyleSheet("background-color: none;")
         self.settings = parent.settings
         if self.settings.lock_in == False:
             self.setWindowTitle("Lock In Pop-Up")

@@ -7,6 +7,7 @@ class MemoPopUp(QDialog):
         super().__init__(parent)
         self.settings = parent.settings
         self.setWindowTitle("Memo Pop-Up")
+        self.setStyleSheet("background-color: none;")
 
         # Create main layout
         layout = QVBoxLayout()
