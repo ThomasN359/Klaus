@@ -19,14 +19,22 @@ class ListCreatorWindow(QWidget):
 
         list_name_label = QLabel("List Name:", self)
         self.list_name_textbox = QLineEdit(self)
+        self.list_name_textbox.setStyleSheet("QLineEdit { background-color: rgba(255, 255, 255, 128); }")
+
 
         list_type_label = QLabel("List Type:", self)
         self.list_type_combobox = QComboBox(self)
+        self.list_type_combobox.setStyleSheet("QComboBox{ background-color: rgba(255, 255, 255, 128); }")
+
         self.list_type_combobox.addItems(["Block Apps", "Block Websites"])
         self.list_type_combobox.currentIndexChanged.connect(self.update_list_UI)
 
+
         list_entries_label = QLabel("List Entries:", self)
         self.list_entries_textbox = QTextEdit(self)
+        self.list_entries_textbox.setStyleSheet("QTextEdit{ background-color: rgba(255, 255, 255, 128); }")
+
+
 
         save_button = QPushButton("Save", self)
         save_button.clicked.connect(self.save_list)
@@ -38,6 +46,8 @@ class ListCreatorWindow(QWidget):
         edit_list_label = QLabel("Edit a List:", self)
         fileList = ["None"]
         self.edit_list_combobox = QComboBox(self)
+        self.edit_list_combobox.setStyleSheet("QComboBox { background-color: rgba(255, 255, 255, 128); }")
+
 
         type = ""
 
@@ -69,7 +79,9 @@ class ListCreatorWindow(QWidget):
         main_layout.addWidget(label)
         main_layout.addWidget(list_name_label)
         main_layout.addWidget(self.list_name_textbox)
+
         main_layout.addWidget(edit_list_label)
+
         main_layout.addWidget(self.edit_list_combobox)
         main_layout.addWidget(list_type_label)
         main_layout.addWidget(self.list_type_combobox)

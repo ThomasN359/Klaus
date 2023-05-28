@@ -1,4 +1,5 @@
 from KlausSrc.MainWindow.HomeScreen import HomeScreen
+from WindowHolder import WindowHolder
 from KlausSrc.MainWindow.Settings import *
 from KlausSrc.MainWindow.TodolistWindow import *
 import multiprocessing
@@ -111,11 +112,16 @@ def main_process():  # TODO FLAG AND LOCK
     app = QApplication([])
     font = QFont("Arial", 15)
     app.setFont(font)
-    main_window = HomeScreen(todo_list_archive, todo_list, block_lists, settings)
-    main_window.show()
+    main_window = HomeScreen(todo_list_archive, todo_list, block_lists, settings, 1)
+
+    #main_window.show()
+    main_window2 = HomeScreen(todo_list_archive, todo_list, block_lists, settings, 2)
+
+    main_window3 = WindowHolder(todo_list_archive, todo_list, block_lists, settings, main_window, main_window2)
+    main_window3.show()
     # This handles the schedule things such as notifications
-    main_window.start_scheduling()
-    main_window.start_blocking()
+    #main_window.start_scheduling()
+    #main_window.start_blocking()
     # Connect close event to handle_close_event
     # main_window.closeEvent = lambda event: handle_close_event(event, flag, lock) #T0DO flag and lock
     # This handles the block list
