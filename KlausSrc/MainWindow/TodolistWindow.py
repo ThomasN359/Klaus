@@ -26,6 +26,8 @@ from KlausSrc.Utilities.HelperFunctions import makePath
 class TodoListWindow(QWidget):
     def __init__(self, todo_list_archive, todo_list, block_list, settings, parent=None):
         super().__init__(parent)
+        self.setStyleSheet("background-color: transparent; border: none;")
+        self.setGeometry(0, 0,1920, 980)
         self.todo_list_archive = todo_list_archive
         self.todo_list = todo_list
         self.block_list = block_list
@@ -56,8 +58,12 @@ class TodoListWindow(QWidget):
         font = label.font()
         font.setPointSize(20)
         label.setFont(font)
-        left_button = QPushButton("←", self)
-        right_button = QPushButton("→", self)
+        pixmap = makePath(iconDirectory, "left_arrow.png")
+        left_button = create_button_with_pixmap(pixmap, (40,30), self.handle_left_arrow_button)
+        left_button.setStyleSheet("background-color: transparent; border: none;")
+        pixmap = makePath(iconDirectory, "right_arrow.png")
+        right_button = create_button_with_pixmap(pixmap, (40,30), self.handle_right_arrow_button)
+        right_button.setStyleSheet("background-color: transparent; boarder: none;")
         left_button.setFixedSize(40, 30)
         self.title_layout = QHBoxLayout()
         right_button.setFixedSize(40, 30)
@@ -291,8 +297,18 @@ class TodoListWindow(QWidget):
             hbox.addWidget(x_button)
             self.x_buttons.append(x_button)
 
+            # Add a horizontal line after each task
+            hline = QFrame()
+            hline.setFrameShape(QFrame.HLine)
+            hline.setFrameShadow(QFrame.Sunken)
+            hline.setStyleSheet("background-color: black")  # Set line color
+            self.layout.addWidget(hline)  # Add the horizontal line to the layout
+
             self.layout.addLayout(hbox)
+
             self.task_labels.append(task_label)
+
+
 
     def create_task_label(self, task):
         task_label = QLabel(task.task_name + "(" + task.due_by + ")", self)
@@ -723,3 +739,8 @@ class TodoListWindow(QWidget):
         self.timer_thread.quit()
         # self.task.timer_thread = None
         del self.timer_thread
+
+    def handle_left_arrow_button(self):
+        pass
+    def handle_right_arrow_button(self):
+        pass
