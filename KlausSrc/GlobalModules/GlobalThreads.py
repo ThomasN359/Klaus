@@ -165,10 +165,10 @@ class SharedState:
 
 
 shared_state = SharedState()
-def kill_timer_thread2(timer_thread, index):
+def kill_timer_thread2(timer_thread):
     timer_thread.stop()  # stop the thread
     timer_thread.wait()  # wait for the thread to finish
     timer_thread.timer_signal.disconnect()
     timer_thread.quit()
-    # self.task.timer_thread = None
+    timer_thread = None
     del timer_thread

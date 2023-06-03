@@ -187,30 +187,37 @@ class HomeScreen(QMainWindow):
 
     # Below are the functions for the main window class
     def show_stats(self):
+        if shared_state.get_timer_thread() is not None:
+            kill_timer_thread2(shared_state.get_timer_thread())
         stats_window = StatsWindow(self.todo_list_archive, self.todo_list)
         self.setCentralWidget(stats_window)
 
     def show_nutrition(self):
+        if shared_state.get_timer_thread() is not None:
+            kill_timer_thread2(shared_state.get_timer_thread())
         nutrition_window = NutritionWindow(self.todo_list_archive, self.todo_list)
         self.setCentralWidget(nutrition_window)
 
     def show_todolist(self):
+        if shared_state.get_timer_thread() is not None:
+            kill_timer_thread2(shared_state.get_timer_thread())
         todolist_window = TodoListWindow(self.todo_list_archive, self.todo_list, self.block_lists, self.settings)
         self.setCentralWidget(todolist_window)
 
     def show_settings(self):
         if shared_state.get_timer_thread() is not None:
-            print("KILL KILL KILL KILL")
-            kill_timer_thread2(shared_state.get_timer_thread() , 0)
-        else:
-            print("timer_thread does not exist!")
+            kill_timer_thread2(shared_state.get_timer_thread())
         settings_window = SettingsWindow(self.todo_list_archive, self.todo_list, self.block_lists, self.settings)
         self.setCentralWidget(settings_window)
 
     def show_list_creator(self):
+        if shared_state.get_timer_thread() is not None:
+            kill_timer_thread2(shared_state.get_timer_thread())
         list_creator_window = ListCreatorWindow(self.todo_list_archive, self.todo_list)
         self.setCentralWidget(list_creator_window)
     def show_chat(self):
+        if shared_state.get_timer_thread() is not None:
+            kill_timer_thread2(shared_state.get_timer_thread())
         chat_window = ChatWindow(self.todo_list_archive, self.todo_list)
         self.setCentralWidget(chat_window)
 
