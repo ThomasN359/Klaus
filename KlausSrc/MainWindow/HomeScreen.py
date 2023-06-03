@@ -1,6 +1,7 @@
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QPalette, QBrush, QPixmap
 from PyQt5.QtWidgets import *
+from KlausSrc.GlobalModules.GlobalThreads import kill_timer_thread2
 from KlausSrc.MainWindow.StatsWindow import StatsWindow
 from KlausSrc.MainWindow.ListCreatorWindow import ListCreatorWindow
 from KlausSrc.MainWindow.Settings import SettingsWindow
@@ -10,6 +11,11 @@ from KlausSrc.MainWindow.NutritionWindow import NutritionWindow
 from KlausSrc.Utilities.config import iconDirectory, wallpaperDirectory
 from KlausSrc.Utilities.HelperFunctions import makePath, create_button_with_pixmap
 from KlausSrc.MainWindow.ChatBot import ChatWindow
+from KlausSrc.GlobalModules.GlobalThreads import shared_state
+from PyQt5.QtWidgets import QMainWindow, QDockWidget, QVBoxLayout, QWidget, QPushButton
+from PyQt5.QtCore import Qt
+from PyQt5.QtGui import QPixmap, QBrush, QPalette
+
 
 
 def create_centered_button_layout(button, label):
@@ -27,9 +33,6 @@ def create_centered_button_layout(button, label):
     return button_layout
 
 
-from PyQt5.QtWidgets import QMainWindow, QDockWidget, QVBoxLayout, QWidget, QPushButton
-from PyQt5.QtCore import Qt
-from PyQt5.QtGui import QPixmap, QBrush, QPalette
 
 class HomeScreen(QMainWindow):
     def __init__(self, todo_list_archive, todo_list, block_lists, settings,  window_number, parent=None):
@@ -48,7 +51,7 @@ class HomeScreen(QMainWindow):
         background_image = QPixmap(image_path)
 
         # Scale the background image to fit the window
-        scaled_image = background_image.scaled(self.size(), Qt.IgnoreAspectRatio, Qt.SmoothTransformation)
+        scaled_image = background_image.scaled(self.size(), Qt.KeepAspectRatio, Qt.SmoothTransformation)
 
         # Create a QPalette and set the QPixmap as its brush.
         palette = QPalette()
@@ -196,6 +199,11 @@ class HomeScreen(QMainWindow):
         self.setCentralWidget(todolist_window)
 
     def show_settings(self):
+        if shared_state.get_timer_thread() is not None:
+            print("KILL KILL KILL KILL")
+            kill_timer_thread2(shared_state.get_timer_thread() , 0)
+        else:
+            print("timer_thread does not exist!")
         settings_window = SettingsWindow(self.todo_list_archive, self.todo_list, self.block_lists, self.settings)
         self.setCentralWidget(settings_window)
 

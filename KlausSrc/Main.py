@@ -118,7 +118,7 @@ def main_process():  # TODO FLAG AND LOCK
     main_window2 = HomeScreen(todo_list_archive, todo_list, block_lists, settings, 2)
 
     main_window3 = WindowHolder(todo_list_archive, todo_list, block_lists, settings, main_window, main_window2)
-    main_window3.show()
+    main_window3.showMaximized()
     # This handles the schedule things such as notifications
     #main_window.start_scheduling()
     #main_window.start_blocking()

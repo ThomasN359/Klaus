@@ -25,6 +25,8 @@ class AddTaskWindow(QDialog):
         self.initUI()
 
     def initUI(self):
+        self.setStyleSheet("background-color: none;")
+
         self.setGeometry(200, 200, 500, 500)
         currTask = None
 
