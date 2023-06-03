@@ -518,6 +518,7 @@ class TodoListWindow(QWidget):
         update_file(self)
 
     def handle_play_click(self):
+        # TODO remember that it's possible for a task to be set to playing when we come back to it, fix tomorrow
         sender = self.sender()
         index = self.play_buttons.index(sender)
         task = self.todo_list[index]
@@ -573,6 +574,7 @@ class TodoListWindow(QWidget):
             if not task.lock_in:
                 sender.setText("\u25B6")  # play symbol
                 task.task_status = TaskStatus.PENDING
+                shared_state.set_timer_thread(None)
                 if self.timer_thread is not None:
                     self.timer_thread.stop()  # stop the thread
                     self.timer_thread.wait()  # wait for the thread to finish
@@ -646,7 +648,7 @@ class TodoListWindow(QWidget):
             index = self.cancel_buttons.index(sender)
             try:
                 if self.todo_list[index].task_type == TaskType.TIMER and self.timer_thread is not None:
-                    kill_timer_thread2(self.timer_thread, index)
+                    kill_timer_thread2(self.timer_thread)
 
             except Exception as e:
                 print(f"An exception occurred while stopping the timer thread: {e}")
@@ -700,7 +702,7 @@ class TodoListWindow(QWidget):
             index += 1
             if task.task_type == TaskType.TIMER:
                 try:
-                    kill_timer_thread2(self.timer_thread, index)
+                    kill_timer_thread2(self.timer_thread)
                 except Exception as e:
                     print(f"An exception occurred while stopping the timer thread: {e}")
         self.parent().initUI()
