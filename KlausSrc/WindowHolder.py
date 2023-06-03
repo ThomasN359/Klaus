@@ -45,6 +45,7 @@ class Sidebar(QWidget):
 class WindowHolder(QMainWindow):
     def __init__(self, todo_list_archive, todo_list, block_lists, settings, window1, window2):
         super().__init__()
+
         self.todo_list_archive = todo_list_archive
         self.todo_list = todo_list
         self.block_lists = block_lists
@@ -54,9 +55,10 @@ class WindowHolder(QMainWindow):
         self.window2 = window2
 
         # Set the geometry and position of the main windows
-        self.window1.setGeometry(0, 0, self.width() // 2, self.height())
-        self.window2.setGeometry(self.width() // 2, 0, self.width() // 2, self.height())
-
+        self.window1.setGeometry(0, 0, self.width() // 2, self.height()//2)
+        self.window2.setGeometry(self.width() // 2, 0, self.width() // 2, self.height()//2)
+        screen = QDesktopWidget().screenGeometry()
+        self.setGeometry(screen)
         # Create Menu Bar
         self.menu_bar = self.menuBar()
         self.view_menu = self.menu_bar.addMenu('Screen Type')
@@ -80,20 +82,19 @@ class WindowHolder(QMainWindow):
         self.setCentralWidget(self.main_widget)
         self.window1.show()
         self.window2.show()
-        self.set_wallpaper("snow_mountain_2d")
+        self.set_wallpaper("foggy_island.png")
 
     def set_wallpaper(self, wallpaper_name):
-        # First, get the screen resolution to scale the image
-        screen = QDesktopWidget().screenGeometry()
-        screen_width, screen_height = screen.width(), screen.height()
+        # Get the size of the window to scale the image
+        window_width, window_height = self.width(), self.height()
 
         # Now, set the background image
         self.setAutoFillBackground(True)
         palette = self.palette()
         wallpaper_path = makePath(wallpaperDirectory, wallpaper_name)
 
-        # Scaling the image to fit the screen
-        pixmap = QPixmap(wallpaper_path).scaled(screen_width, screen_height, Qt.KeepAspectRatioByExpanding)
+        # Scale the image to fit the window
+        pixmap = QPixmap(wallpaper_path).scaled(window_width, window_height, Qt.KeepAspectRatioByExpanding)
         palette.setBrush(QPalette.Window, QBrush(pixmap))
         self.setPalette(palette)
 

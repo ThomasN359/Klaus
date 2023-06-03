@@ -149,3 +149,26 @@ class ScheduleThread(QThread):
                         time.sleep(60)
             # Sleep for some time so that the loop isn't executed too often
             time.sleep(3)  # Check every three seconds
+
+
+#This timer thread should be global and applied regradless of what the window's
+#state is currently in
+class SharedState:
+    def __init__(self):
+        self.timer_thread = None
+
+    def set_timer_thread(self, timer_thread):
+        self.timer_thread = timer_thread
+
+    def get_timer_thread(self):
+        return self.timer_thread
+
+
+shared_state = SharedState()
+def kill_timer_thread2(timer_thread, index):
+    timer_thread.stop()  # stop the thread
+    timer_thread.wait()  # wait for the thread to finish
+    timer_thread.timer_signal.disconnect()
+    timer_thread.quit()
+    # self.task.timer_thread = None
+    del timer_thread

@@ -5,7 +5,8 @@ from KlausSrc.PopUpWindows.CalendarPopUp import CalendarPopUp
 from KlausSrc.PopUpWindows.SchedulerPopUp import SchedulerPopUp
 from KlausSrc.Objects.Task import TaskType, TaskStatus
 from KlausSrc.MainWindow.Settings import KlausFeeling
-from KlausSrc.GlobalModules.GlobalThreads import TimerThread
+from KlausSrc.GlobalModules.GlobalThreads import shared_state
+from KlausSrc.GlobalModules.GlobalThreads import TimerThread, kill_timer_thread2
 from KlausSrc.Utilities.config import pickleDirectory, iconDirectory
 import random
 import os
@@ -17,8 +18,7 @@ from PyQt5.QtGui import QPixmap
 from PyQt5.QtWidgets import *
 from KlausSrc.PopUpWindows.ReminderPopUpWindow import ReminderPopUp
 from KlausSrc.Utilities.HelperFunctions import automate_browser, create_button_with_pixmap
-from KlausSrc.PopUpWindows.AddTaskWindow import AddTaskWindow
-from KlausSrc.PopUpWindows.AddTaskWindow import update_file
+from KlausSrc.PopUpWindows.AddTaskWindow import AddTaskWindow, update_file
 from KlausSrc.PopUpWindows.QuickListAddWindow import QuickListAddWindow
 from KlausSrc.Utilities.HelperFunctions import makePath
 
@@ -529,6 +529,7 @@ class TodoListWindow(QWidget):
             self.timer_thread = TimerThread(task, self)
             self.timer_thread.timer_signal.connect(lambda x: self.update_duration(task, x))
             timer_set = False
+            shared_state.set_timer_thread(self.timer_thread)
 
             # Implements block list for play button
             for filename in os.listdir(pickleDirectory):
@@ -645,7 +646,7 @@ class TodoListWindow(QWidget):
             index = self.cancel_buttons.index(sender)
             try:
                 if self.todo_list[index].task_type == TaskType.TIMER and self.timer_thread is not None:
-                    self.kill_timer_thread(index)
+                    kill_timer_thread2(self.timer_thread, index)
 
             except Exception as e:
                 print(f"An exception occurred while stopping the timer thread: {e}")
@@ -699,7 +700,7 @@ class TodoListWindow(QWidget):
             index += 1
             if task.task_type == TaskType.TIMER:
                 try:
-                    self.kill_timer_thread(index)
+                    kill_timer_thread2(self.timer_thread, index)
                 except Exception as e:
                     print(f"An exception occurred while stopping the timer thread: {e}")
         self.parent().initUI()
@@ -744,3 +745,4 @@ class TodoListWindow(QWidget):
         pass
     def handle_right_arrow_button(self):
         pass
+
