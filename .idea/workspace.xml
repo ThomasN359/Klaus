@@ -10,9 +10,11 @@
   <component name="ChangeListManager">
     <list default="true" id="1be6badc-fbce-489b-8f04-225b720bd2a2" name="Changes" comment="You can now switch when timer task is playing, the chat interface is starting to form">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/KlausSrc/GlobalModules/GlobalThreads.py" beforeDir="false" afterPath="$PROJECT_DIR$/KlausSrc/GlobalModules/GlobalThreads.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/KlausSrc/MainWindow/ChatBot.py" beforeDir="false" afterPath="$PROJECT_DIR$/KlausSrc/MainWindow/ChatBot.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/KlausSrc/MainWindow/HomeScreen.py" beforeDir="false" afterPath="$PROJECT_DIR$/KlausSrc/MainWindow/HomeScreen.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/KlausSrc/MainWindow/Settings.py" beforeDir="false" afterPath="$PROJECT_DIR$/KlausSrc/MainWindow/Settings.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/KlausSrc/MainWindow/TodolistWindow.py" beforeDir="false" afterPath="$PROJECT_DIR$/KlausSrc/MainWindow/TodolistWindow.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/KlausSrc/WindowHolder.py" beforeDir="false" afterPath="$PROJECT_DIR$/KlausSrc/WindowHolder.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Pickles/settings.pickle" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/Pickles/todo_list.pickle" beforeDir="false" />
     </list>
@@ -64,7 +66,7 @@
   &quot;keyToString&quot;: {
     &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;C:/Users/inpht/PycharmProjects/Klaus&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/inpht/PycharmProjects/Scratchbox&quot;,
     &quot;run.code.analysis.last.selected.profile&quot;: &quot;aDefault&quot;,
     &quot;settings.editor.selected.configurable&quot;: &quot;com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable&quot;
   }
@@ -257,7 +259,14 @@
       <option name="project" value="LOCAL" />
       <updated>1685778512927</updated>
     </task>
-    <option name="localTasksCounter" value="22" />
+    <task id="LOCAL-00022" summary="You can now switch when timer task is playing, the chat interface is starting to form">
+      <created>1685783691531</created>
+      <option name="number" value="00022" />
+      <option name="presentableId" value="LOCAL-00022" />
+      <option name="project" value="LOCAL" />
+      <updated>1685783691531</updated>
+    </task>
+    <option name="localTasksCounter" value="23" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">

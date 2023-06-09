@@ -26,7 +26,6 @@ from KlausSrc.Utilities.HelperFunctions import makePath
 class TodoListWindow(QWidget):
     def __init__(self, todo_list_archive, todo_list, block_list, settings, parent=None):
         super().__init__(parent)
-        self.setStyleSheet("background-color: transparent; border: none;")
         self.setGeometry(0, 0,1920, 980)
         self.todo_list_archive = todo_list_archive
         self.todo_list = todo_list
@@ -202,7 +201,7 @@ class TodoListWindow(QWidget):
         pixmap = (makePath(iconDirectory, "back_arrow.png"))
         self.back_button = create_button_with_pixmap(pixmap, (100,100), self.go_back)
         self.back_button.setStyleSheet("background-color: transparent; border: none;")
-        self.hbox2.addWidget(self.back_button)
+        #self.hbox2.addWidget(self.back_button)
 
         # Add Task Button
         pixmap = (makePath(iconDirectory, "add.png"))

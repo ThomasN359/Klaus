@@ -38,27 +38,26 @@ class HomeScreen(QMainWindow):
     def __init__(self, todo_list_archive, todo_list, block_lists, settings,  window_number, parent=None):
         super().__init__(parent)
         self.window_number = window_number
-        self.setStyleSheet("background-color: transparent; border: none;")
-        self.setGeometry(0, 0, 1920, 980)
+        #self.setStyleSheet("background-color: transparent; border: none;") if you want wallpapers it should be transparent
         self.todo_list_archive = todo_list_archive
         self.todo_list = todo_list
         self.block_lists = block_lists
         self.settings = settings
         self.setWindowTitle("Klaus")
 
-        # Set the background image
-        image_path = makePath(wallpaperDirectory, "snow_mountain_2d.png")
-        background_image = QPixmap(image_path)
-
-        # Scale the background image to fit the window
-        scaled_image = background_image.scaled(self.size(), Qt.KeepAspectRatio, Qt.SmoothTransformation)
-
-        # Create a QPalette and set the QPixmap as its brush.
-        palette = QPalette()
-        palette.setBrush(QPalette.Background, QBrush(scaled_image))
-
-        # Apply the palette to the window.
-        self.setPalette(palette)
+        # # Set the background image
+        # image_path = makePath(wallpaperDirectory, "plane.png")
+        # background_image = QPixmap(image_path)
+        #
+        # # Scale the background image to fit the window
+        # scaled_image = background_image.scaled(self.size(), Qt.KeepAspectRatio, Qt.SmoothTransformation)
+        #
+        # # Create a QPalette and set the QPixmap as its brush.
+        # palette = QPalette()
+        # palette.setBrush(QPalette.Background, QBrush(scaled_image))
+        #
+        # # Apply the palette to the window.
+        # self.setPalette(palette)
 
         self.sidebar_visible = True
         self.initUI()
@@ -83,12 +82,13 @@ class HomeScreen(QMainWindow):
             sidebar_widget.setStyleSheet("background-color: #cfcfcf;")
             sidebar_layout  = QVBoxLayout(sidebar_widget)
 
-        # Add expand/shrink button to the sidebar layout
-        expand_button = QPushButton("≡", self)
-        expand_button.clicked.connect(self.toggle_sidebar_size)
-        expand_button.setFixedSize(30,30)
-        expand_button.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
+
         if self.window_number == 1:
+            # Add expand/shrink button to the sidebar layout
+            expand_button = QPushButton("≡", self)
+            expand_button.clicked.connect(self.toggle_sidebar_size)
+            expand_button.setFixedSize(30, 30)
+            expand_button.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
             sidebar_layout.addWidget(expand_button)
 
         # Add sidebar buttons to the sidebar layout
@@ -153,7 +153,7 @@ class HomeScreen(QMainWindow):
         # Set the central widget
         self.setCentralWidget(central_widget)
 
-        if (self.window_number == 1):
+        if self.window_number == 1:
             self.show_todolist()
         else:
             self.show_chat()
