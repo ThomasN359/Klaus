@@ -37,15 +37,14 @@ class Singleton:
         if sys.platform == "win32":
             try:
                 if os.path.exists(self.lockfile) and os.path.isfile(self.lockfile):
-                    os.remove(self.lockfile)
+                        os.remove(self.lockfile)
                 # create file if it doesn't exist but error if it does
                 self.fd = os.open(self.lockfile, os.O_CREAT | os.O_EXCL)
             except PermissionError as e:
                 logging.error("Another instance is running, quitting")
-                print(e)
-                raise SingletonException
+                raise SingletonException from None
             except Exception as e:
-                print(f"Unexpected error: {e}")
+                logging.error(f"Unexpected error: {e}")
                 raise
         else:
             try:
@@ -53,10 +52,9 @@ class Singleton:
                 fcntl.lockf(self.file, fcntl.LOCK_EX | fcntl.LOCK_NB)  # try to acquire exlusive, nonblocking lock
             except IOError as e:
                 logging.warning("Another instance is running, quitting")
-                print(e)
                 raise SingletonException
             except Exception as e:
-                print(f"Unexpected error: {e}")
+                logging.error(f"Unexpected error: {e}")
                 raise
 
         self.initialized = True

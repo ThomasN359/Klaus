@@ -6,6 +6,7 @@ import sys
 import threading
 import queue
 import json
+from Singleton import Singleton, SingletonException
 from HelperFunctions import createWebsiteBlocklistFromPickles, sendMessage, sendBlocklist, MESSAGE_CODES, setGlobalVar, \
     toCommManagerQueue, toNativeKlausQueue, runKlaus
 
@@ -83,6 +84,7 @@ if tkinter:
             self.after(100, self.processMessagesFromNative)
 
             sendMessage(MESSAGE_CODES.get("COMM_MANAGER_OPENED_MESSAGE"))
+            # self.openKlausAndHandleErrors()
 
         def processMessagesFromExtension(self):
             while not self.extensionCommQueue.empty():
@@ -104,15 +106,28 @@ if tkinter:
                     pass
 
                 if MESSAGE_CODES.get("GET_EXTENSION_ID_MESSAGE") in message:
-                    id = message.replace(MESSAGE_CODES.get("GET_EXTENSION_ID_MESSAGE") + ":", "")
+                    id = message.replace(MESSAGE_CODES.get("GET_EXTENSION_ID_MESSAGE") + ":", "") #replaces code and : with ""
                     setGlobalVar("EXTENSION_ID", id)
 
                 if message == MESSAGE_CODES.get("OPEN_KLAUS_MESSAGE"):
-                    runKlaus()
+                    self.openKlausAndHandleErrors()
+
+                if MESSAGE_CODES.get("SAVE_NEW_BLOCKLIST_MESSAGE") in message:
+                    blocklist = message.replace(MESSAGE_CODES.get("SAVE_NEW_BLOCKLIST_MESSAGE") + ":", "") #replaces code and : with ""
+
 
                 self.log(f"Extension:{message}")
 
             self.after(100, self.processMessagesFromExtension)
+
+        def openKlausAndHandleErrors(self):
+            try:
+                runKlaus()
+            except SingletonException:
+                sendMessage("Instance of Klaus is already running")
+            except Exception as e:
+                print(e)
+                sendMessage(e)
 
         #  Reads messages from native Klaus queue
         def processMessagesFromNative(self):
@@ -156,8 +171,6 @@ def Main():
                     'mode. Please consider installing Tkinter."')
         read_ext_thread_func(None)
         sys.exit(0)
-
-    runKlaus()
 
     extensionCommQueue = queue.Queue()
 
