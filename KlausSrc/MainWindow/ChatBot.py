@@ -1,5 +1,7 @@
 import os
 import pickle
+from PyQt5.QtCore import QTimer, pyqtSignal
+
 from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QLabel, QPushButton, QComboBox, QVBoxLayout, QWidget, QLineEdit, QTextEdit, QHBoxLayout, \
     QScrollBar, QScrollArea
@@ -26,7 +28,7 @@ class ChatWindow(QWidget):
     def initUI(self):
         layout = QVBoxLayout()
 
-        label = QLabel("Klaus ChatBot", self)
+        label = QLabel("Klaus", self)
         label.setAlignment(Qt.AlignCenter)
         layout.addWidget(label)
 
@@ -37,6 +39,9 @@ class ChatWindow(QWidget):
         # Create a separate QWidget for the chat display area
         self.chat_display_widget = QWidget()
         self.scroll_area.setWidget(self.chat_display_widget)
+
+        # Add border to chat_display_widget
+        self.chat_display_widget.setStyleSheet("border: 2px solid black")
 
         # Create a QVBoxLayout for the chat display widget
         self.chat_display_layout = QVBoxLayout()
@@ -60,6 +65,9 @@ class ChatWindow(QWidget):
 
         self.setLayout(layout)
 
+        # Add border to main widget
+        self.setStyleSheet("border: 2px solid black")
+
     def on_key_press(self, event: QKeyEvent):
         if event.key() == Qt.Key_Return or event.key() == Qt.Key_Enter:
             self.send_message()
@@ -70,10 +78,11 @@ class ChatWindow(QWidget):
         message = self.chat_input.text()
         if message:
             self.display_message("You: " + message)
-            self.display_message("Klaus ChatBot: I have yet to be trained yet")
+            self.display_message("Klaus: I have yet to be trained")
             self.chat_input.clear()
 
     def display_message(self, message: str):
         message_label = MessageLabel(message)
         self.chat_display_layout.addWidget(message_label)
+
 

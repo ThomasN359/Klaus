@@ -96,7 +96,7 @@ class SettingsWindow(QWidget):
         # Create the "Back" button and connect it to the "go_back" slot
         self.back_button = QPushButton("Back")
         self.back_button.clicked.connect(self.go_back)
-        self.buttons_layout.addWidget(self.back_button)
+        # self.buttons_layout.addWidget(self.back_button)
 
         # Create the "Save" button and connect it to the "save" slot
         self.save_button = QPushButton("Save")

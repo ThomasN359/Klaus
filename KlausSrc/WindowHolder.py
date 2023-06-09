@@ -1,45 +1,12 @@
 from PyQt5.QtWidgets import QApplication, QMainWindow, QLabel, QWidget, QVBoxLayout, QHBoxLayout, QFrame, QToolBar, \
     QPushButton, QSizePolicy, QDesktopWidget
-from PyQt5.QtGui import QPalette, QColor, QBrush, QPixmap
-from PyQt5.QtCore import Qt
-
-from KlausSrc.MainWindow.TodolistWindow import TodoListWindow
-from KlausSrc.Utilities.HelperFunctions import create_button_with_pixmap, makePath
 from KlausSrc.Utilities.config import iconDirectory, wallpaperDirectory
-from KlausSrc.MainWindow.HomeScreen import HomeScreen, create_centered_button_layout
 from PyQt5.QtWidgets import QApplication, QMainWindow, QLabel, QWidget, QVBoxLayout, QHBoxLayout, QFrame, QToolBar, \
     QPushButton, QSizePolicy
 from PyQt5.QtGui import QPalette, QColor, QBrush, QPixmap
 from PyQt5.QtCore import Qt
-
 from KlausSrc.MainWindow.TodolistWindow import TodoListWindow
 from KlausSrc.Utilities.HelperFunctions import create_button_with_pixmap, makePath
-from KlausSrc.Utilities.config import iconDirectory
-from KlausSrc.MainWindow.HomeScreen import HomeScreen, create_centered_button_layout
-
-from PyQt5.QtWidgets import QApplication, QMainWindow, QLabel, QWidget, QVBoxLayout, QHBoxLayout, QFrame, QToolBar, \
-    QPushButton, QSizePolicy
-from PyQt5.QtGui import QPalette, QColor, QBrush, QPixmap
-from PyQt5.QtCore import Qt
-
-from KlausSrc.MainWindow.TodolistWindow import TodoListWindow
-from KlausSrc.Utilities.HelperFunctions import create_button_with_pixmap, makePath
-from KlausSrc.Utilities.config import iconDirectory
-from KlausSrc.MainWindow.HomeScreen import HomeScreen, create_centered_button_layout
-
-class Sidebar(QWidget):
-    def __init__(self):
-        super().__init__()
-        self.setStyleSheet("background-color: #cfcfcf;")
-        self.layout = QVBoxLayout(self)
-        self.expand_button = QPushButton("≡")
-        self.expand_button.setFixedSize(30, 30)
-        self.expand_button.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
-
-        self.layout.addWidget(self.expand_button)
-
-    def add_button(self, button_layout):
-        self.layout.addLayout(button_layout)
 
 
 class WindowHolder(QMainWindow):
@@ -59,6 +26,7 @@ class WindowHolder(QMainWindow):
         self.window2.setGeometry(self.width() // 2, 0, self.width() // 2, self.height()//2)
         screen = QDesktopWidget().screenGeometry()
         self.setGeometry(screen)
+
         # Create Menu Bar
         self.menu_bar = self.menuBar()
         self.view_menu = self.menu_bar.addMenu('Screen Type')
@@ -82,7 +50,7 @@ class WindowHolder(QMainWindow):
         self.setCentralWidget(self.main_widget)
         self.window1.show()
         self.window2.show()
-        self.set_wallpaper("foggy_island.png")
+        #self.set_wallpaper("foggy_island.png")
 
     def set_wallpaper(self, wallpaper_name):
         # Get the size of the window to scale the image
@@ -98,9 +66,6 @@ class WindowHolder(QMainWindow):
         palette.setBrush(QPalette.Window, QBrush(pixmap))
         self.setPalette(palette)
 
-    def toggle_sidebar_size(self):
-        # Toggle the size of the sidebar widget
-        self.sidebar_widget.setHidden(not self.sidebar_widget.isHidden())
 
     def show_todolist(self):
         todolist_window = TodoListWindow(self.todo_list_archive, self.todo_list, self.block_lists, self.settings)
