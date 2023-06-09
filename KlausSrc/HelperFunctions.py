@@ -28,6 +28,7 @@ import json
 import webbrowser
 import pickle
 from config import pickleDirectory
+from Singleton import Singleton
 
 MESSAGE_CODES = {
     "PORT_ESTABLISHED_MESSAGE": "PORT_ESTABLISHED",
@@ -36,7 +37,8 @@ MESSAGE_CODES = {
     "ENABLE_BLOCKLIST_MESSAGE": "ENABLE_BLOCKLIST",
     "ENABLE_BLOCKLIST_SUCCESS_MESSAGE": "ENABLE_BLOCKLIST_SUCCESS",
     "GET_EXTENSION_ID_MESSAGE": "GET_ID",
-    "OPEN_KLAUS_MESSAGE": "OPEN_KLAUS"
+    "OPEN_KLAUS_MESSAGE": "OPEN_KLAUS",
+    "SAVE_NEW_BLOCKLIST_MESSAGE": "SAVE_NEW_BLOCKLIST"
 }
 
 lock_file = 'mainKlaus.lock'
@@ -258,7 +260,8 @@ def makeNormPath(str):
 
 def runKlaus():
     # Run the parent script
-    subprocess.Popen([sys.executable, 'Main.py', 'main'])
+    with Singleton("Main.lock"):
+        subprocess.Popen([sys.executable, 'Main.py', 'main'])
 
 
 def createWebsiteBlocklistFromBlocklists(block_lists):
@@ -271,7 +274,6 @@ def createWebsiteBlocklistFromBlocklists(block_lists):
     return (block_list)
     # except Exception as e:
     #     print(f"Error occurred while creating website blocklist: {e}")
-
 
 # Gathers website blocklist
 def createWebsiteBlocklistFromPickles():
@@ -327,10 +329,8 @@ def sendMessage(message):
 
 
 def sendBlocklist():
-    # if blocklist is not None and blocklist.startswith("BLOCKLIST:"):
-    #     sendMessage(blocklist)
-    # else:
-    #     print("Couldn't send blocklist")
+    # Format: String
+    # "BLOCKLIST:website1,website2,website3,etc"
 
     block_list = createWebsiteBlocklistFromPickles()
 
