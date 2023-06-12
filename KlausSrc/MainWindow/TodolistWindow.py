@@ -62,7 +62,7 @@ class TodoListWindow(QWidget):
         left_button.setStyleSheet("background-color: transparent; border: none;")
         pixmap = makePath(iconDirectory, "right_arrow.png")
         right_button = create_button_with_pixmap(pixmap, (40,30), self.handle_right_arrow_button)
-        right_button.setStyleSheet("background-color: transparent; boarder: none;")
+        right_button.setStyleSheet("background-color: transparent; border: none;")
         left_button.setFixedSize(40, 30)
         self.title_layout = QHBoxLayout()
         right_button.setFixedSize(40, 30)
