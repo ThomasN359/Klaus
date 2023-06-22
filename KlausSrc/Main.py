@@ -3,7 +3,7 @@ import os
 dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 sys.path.append(dir) #this fixes some weird importing thing when running communicationManager initialized by chrome
 
-from config import pictureDirectory
+from KlausSrc.Utilities.config import pictureDirectory
 import multiprocessing
 import pickle
 

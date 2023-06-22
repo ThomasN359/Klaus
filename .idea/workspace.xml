@@ -8,15 +8,12 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="1be6badc-fbce-489b-8f04-225b720bd2a2" name="Changes" comment="You can now switch when timer task is playing, the chat interface is starting to form">
+    <list default="true" id="1be6badc-fbce-489b-8f04-225b720bd2a2" name="Changes" comment="curr version">
+      <change afterPath="$PROJECT_DIR$/.env" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/KlausSrc/Main.py" beforeDir="false" afterPath="$PROJECT_DIR$/KlausSrc/Main.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/KlausSrc/MainWindow/ChatBot.py" beforeDir="false" afterPath="$PROJECT_DIR$/KlausSrc/MainWindow/ChatBot.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/KlausSrc/MainWindow/HomeScreen.py" beforeDir="false" afterPath="$PROJECT_DIR$/KlausSrc/MainWindow/HomeScreen.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/KlausSrc/MainWindow/Settings.py" beforeDir="false" afterPath="$PROJECT_DIR$/KlausSrc/MainWindow/Settings.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/KlausSrc/MainWindow/TodolistWindow.py" beforeDir="false" afterPath="$PROJECT_DIR$/KlausSrc/MainWindow/TodolistWindow.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/KlausSrc/WindowHolder.py" beforeDir="false" afterPath="$PROJECT_DIR$/KlausSrc/WindowHolder.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Pickles/settings.pickle" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Pickles/todo_list.pickle" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/KlausSrc/Utilities/config.py" beforeDir="false" afterPath="$PROJECT_DIR$/KlausSrc/Utilities/config.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -266,7 +263,14 @@
       <option name="project" value="LOCAL" />
       <updated>1685783691531</updated>
     </task>
-    <option name="localTasksCounter" value="23" />
+    <task id="LOCAL-00023" summary="curr version">
+      <created>1686290960942</created>
+      <option name="number" value="00023" />
+      <option name="presentableId" value="LOCAL-00023" />
+      <option name="project" value="LOCAL" />
+      <updated>1686290960942</updated>
+    </task>
+    <option name="localTasksCounter" value="24" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -302,7 +306,8 @@
     <MESSAGE value="Work In Progress New UI" />
     <MESSAGE value="Fixed Bug with new UI" />
     <MESSAGE value="You can now switch when timer task is playing, the chat interface is starting to form" />
-    <option name="LAST_COMMIT_MESSAGE" value="You can now switch when timer task is playing, the chat interface is starting to form" />
+    <MESSAGE value="curr version" />
+    <option name="LAST_COMMIT_MESSAGE" value="curr version" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
