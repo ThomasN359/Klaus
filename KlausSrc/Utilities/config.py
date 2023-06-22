@@ -5,7 +5,7 @@ pickleDirectory = os.path.join(parentDirectory, 'Pickles')
 pictureDirectory = os.path.join(parentDirectory, 'Pics')
 iconDirectory = os.path.join(pictureDirectory, 'icons')
 wallpaperDirectory = os.path.join(pictureDirectory, 'wallpapers')
-openaiAPIKey = "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"
+
 
 initialPrompt = "The only answers you can give for this prompt are one word strings and the only choices you have are selfawareness, userstats, command, question." \
                 "these responses can not have any punctuation, capitalization, or spaces. If you are queried with something related" \
