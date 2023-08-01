@@ -1,5 +1,5 @@
 from KlausSrc import *
-from Main import *
+#from Main import *
 from KlausSrc.MainWindow.Settings import *
 from KlausSrc.Objects.Task import *
 from KlausSrc.GlobalModules.GlobalThreads import *

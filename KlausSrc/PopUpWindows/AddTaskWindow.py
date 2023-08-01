@@ -223,7 +223,7 @@ class AddTaskWindow(QDialog):
                 duration = int(self.duration_edit.text()) * 60
                 app_block_list = self.app_block_list_combo.currentText()
                 web_block_list = self.web_block_list_combo.currentText()
-                task = TimerTask(name, description, TaskStatus.PENDING, self.reminders, due_by, duration,
+                task = TimerTask(name, description, TaskStatus.PENDING, self.reminders, due_by, None, duration,
                                  app_block_list, web_block_list)
         elif task_type == "Sustain":
             contract = description

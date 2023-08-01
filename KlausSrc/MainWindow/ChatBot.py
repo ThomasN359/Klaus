@@ -9,7 +9,7 @@ from PyQt5.QtWidgets import QLabel, QPushButton, QComboBox, QVBoxLayout, QWidget
 from PyQt5.QtGui import QKeyEvent, QIcon
 from KlausSrc.Utilities.config import pickleDirectory
 from KlausSrc.Utilities.HelperFunctions import makePath
-from KlausSrc.Utilities.config import selfAwareness, initialPrompt, openaiAPIKey
+from KlausSrc.Utilities.config import selfAwareness, initialPrompt, commandPrompt
 
 load_dotenv()
 openai.api_key = os.environ['OPENAI_KEY']
@@ -32,6 +32,7 @@ class ChatWindow(QWidget):
         self.todo_list = todo_list
         self.initUI()
         self.conversation = [{"role": "system", "content": initialPrompt}]
+        print(initialPrompt)
         self.conversation2 = None
 
     def initUI(self):
@@ -105,7 +106,7 @@ class ChatWindow(QWidget):
                         conversation = {"role": "system", "content": "Tell the user that userstats haven't been implemented yet"}
                         message_color = "purple"
                     elif assistant_reply == "command":
-                        conversation = {"role": "system", "content": "Tell the user chatbot commands haven't been implemented yet"}
+                        conversation = {"role": "system", "content": commandPrompt}
                         message_color = "red"
                     elif assistant_reply == "selfawareness":
                         conversation = {"role": "system", "content": selfAwareness}

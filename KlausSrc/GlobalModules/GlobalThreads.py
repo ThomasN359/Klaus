@@ -6,6 +6,8 @@ from datetime import *
 import time
 from PyQt5.QtCore import QThread, pyqtSignal
 from winotify import Notification
+
+from KlausSrc.PopUpWindows.StartTimerPopUp import StartTimerPopUp
 from KlausSrc.Utilities.HelperFunctions import decrement_brightness, update_daily_settings
 from KlausSrc.Objects.Task import TaskStatus, TaskType
 
@@ -44,6 +46,7 @@ class BlockThread(QThread):
         self.finished = pyqtSignal()
 
     def run(self):
+        print("start 2")
         while True:
             time.sleep(2)
             app_block_lists = []
@@ -63,11 +66,12 @@ class BlockThread(QThread):
 
 # This thread handles scheduled events. This includes notifications, bedtime shutdown, and screen dimmer
 class ScheduleThread(QThread):
+    show_popup_signal = pyqtSignal(str)
+    finished = pyqtSignal()
     def __init__(self, todo_list, settings, parent=None):
         super().__init__(parent)
         self.todo_list = todo_list
         self.settings = settings
-        self.finished = pyqtSignal()
 
     # This is how scheduled events go such as shutting off your computer or notifications
     def run(self):
@@ -108,6 +112,17 @@ class ScheduleThread(QThread):
                             toast.show() #UNCOMMENT_BlOCK_IF_WINDOWS
                             print("Reminder toast to complete the task " + task.task_name)
 
+                if task.task_type == TaskType.TIMER:
+                    print(currentClock)
+                    print("attempted to get in " + task.task_name)
+                    start_by = task.start_by
+                    print(str(start_by))
+                    if currentClock == start_by:
+                        if task.start_by is not None:
+                            self.show_popup_signal.emit(task.task_name)
+
+
+
                 if task.task_type == TaskType.BEDTIME:
                     originalBedTime = task.due_by
                     timeComponents = originalBedTime.split(":")
@@ -146,7 +161,7 @@ class ScheduleThread(QThread):
                                             duration="long")
                         toast.show() #UNCOMMENT_BlOCK_IF_WINDOWS
                         print("Prepare for shutdown in 60 seconds minutes")
-                        subprocess.run("shutdown /s /t 60", shell=True)
+                        subprocess.run("shutdown /s /t 15", shell=True)
                         time.sleep(60)
             # Sleep for some time so that the loop isn't executed too often
             time.sleep(3)  # Check every three seconds

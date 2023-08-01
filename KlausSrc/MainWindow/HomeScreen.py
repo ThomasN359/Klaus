@@ -1,7 +1,11 @@
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QPalette, QBrush, QPixmap
 from PyQt5.QtWidgets import *
+
+from KlausSrc.PopUpWindows.StartTimerPopUp import StartTimerPopUp
+from KlausSrc.Objects.Task import TaskType
 from KlausSrc.GlobalModules.GlobalThreads import kill_timer_thread2
+from KlausSrc.MainWindow.CalendarWindow import CalendarWindow
 from KlausSrc.MainWindow.StatsWindow import StatsWindow
 from KlausSrc.MainWindow.ListCreatorWindow import ListCreatorWindow
 from KlausSrc.MainWindow.Settings import SettingsWindow
@@ -14,6 +18,10 @@ from KlausSrc.MainWindow.ChatBot import ChatWindow
 from KlausSrc.GlobalModules.GlobalThreads import shared_state
 from PyQt5.QtWidgets import QMainWindow, QDockWidget, QVBoxLayout, QWidget, QPushButton
 from PyQt5.QtCore import Qt
+from datetime import *
+from KlausSrc.Utilities.config import pickleDirectory
+import pickle
+from collections import deque
 from PyQt5.QtGui import QPixmap, QBrush, QPalette
 
 
@@ -44,6 +52,10 @@ class HomeScreen(QMainWindow):
         self.block_lists = block_lists
         self.settings = settings
         self.setWindowTitle("Klaus")
+
+        if(self.window_number == 1):
+            self.start_scheduling()
+            self.start_blocking()
 
         # # Set the background image
         # image_path = makePath(wallpaperDirectory, "plane.png")
@@ -110,17 +122,24 @@ class HomeScreen(QMainWindow):
         self.list_creator_label = QLabel('List Creator')
         self.list_creator_label.setAlignment(Qt.AlignCenter)
         self.list_creator_layout = create_centered_button_layout(self.list_creator_button, self.list_creator_label)
+
         self.stats_button = create_button_with_pixmap(makePath(iconDirectory, "stats.png"), (110, 110), self.show_stats)
         self.stats_button.setStyleSheet("background-color: transparent; border: none;")
         self.stats_label = QLabel('Stats')
         self.stats_label.setAlignment(Qt.AlignCenter)
         self.stats_layout = create_centered_button_layout(self.stats_button, self.stats_label)
-        self.nutrition_button = create_button_with_pixmap(makePath(iconDirectory, "nutrition.png"), (110, 110),
-                                                     self.show_nutrition)
+
+        self.nutrition_button = create_button_with_pixmap(makePath(iconDirectory, "nutrition.png"), (110, 110), self.show_nutrition)
         self.nutrition_button.setStyleSheet("background-color: transparent; border: none;")
         self.nutrition_label = QLabel('Nutrition')
         self.nutrition_label.setAlignment(Qt.AlignCenter)
         self.nutrition_layout = create_centered_button_layout(self.nutrition_button, self.nutrition_label)
+
+        self.calendar_button = create_button_with_pixmap(makePath(iconDirectory, "calender.png"), (110, 110), self.show_calendar)
+        self.calendar_button.setStyleSheet("background-color: transparent; border: none;")
+        self.calendar_label = QLabel('Calendar')
+        self.calendar_label.setAlignment(Qt.AlignCenter)
+        self.calendar_layout = create_centered_button_layout(self.calendar_button, self.calendar_label)
 
         # Add the sidebar buttons to the sidebar layout
         if self.window_number==1:
@@ -128,7 +147,8 @@ class HomeScreen(QMainWindow):
             sidebar_layout.addLayout(self.settings_layout)
             sidebar_layout.addLayout(self.list_creator_layout)
             sidebar_layout.addLayout(self.stats_layout)
-            sidebar_layout.addLayout(self.nutrition_layout)
+            #sidebar_layout.addLayout(self.nutrition_layout)
+            sidebar_layout.addLayout(self.calendar_layout)
 
         # Create the central widget
         central_widget = QWidget(self)
@@ -198,6 +218,12 @@ class HomeScreen(QMainWindow):
         nutrition_window = NutritionWindow(self.todo_list_archive, self.todo_list)
         self.setCentralWidget(nutrition_window)
 
+    def show_calendar(self):
+        if shared_state.get_timer_thread() is not None:
+            kill_timer_thread2(shared_state.get_timer_thread())
+        calendar_window = CalendarWindow(self.settings, self.todo_list)
+        self.setCentralWidget(calendar_window)
+
     def show_todolist(self):
         if shared_state.get_timer_thread() is not None:
             kill_timer_thread2(shared_state.get_timer_thread())
@@ -223,7 +249,23 @@ class HomeScreen(QMainWindow):
 
     def start_scheduling(self):
         self.schedule_thread = ScheduleThread(self.todo_list, self.settings, self)
+        self.schedule_thread.show_popup_signal.connect(self.show_popup)
         self.schedule_thread.start()
+
+    def show_popup(self, task_name):
+        for task in self.todo_list:
+            if task.task_type == TaskType.TIMER and task.task_name == task_name:
+                task.start_by = None
+
+        todoData = {"Tasks": self.todo_list, "Date": datetime.now().date()}
+        with open(pickleDirectory + "todo_list.pickle", "wb") as f:
+            pickle.dump(todoData, f)
+            f.flush()
+
+        self.start_timer_popup = StartTimerPopUp(task_name)
+        self.start_timer_popup.exec_()
+        # Once the popup is closed, allow another one to be opened
+
 
     def start_blocking(self):
         self.block_thread = BlockThread(self.block_lists, self)

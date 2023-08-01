@@ -10,6 +10,7 @@ from KlausSrc.GlobalModules.GlobalThreads import TimerThread, kill_timer_thread2
 from KlausSrc.Utilities.config import pickleDirectory, iconDirectory
 import random
 import os
+import time as time2
 from datetime import *
 from PyQt5 import QtCore
 from winotify import Notification
@@ -472,9 +473,9 @@ class TodoListWindow(QWidget):
     def refresh_save(self):
         self.initUI()
         print("Saved and refreshed")
+
         # Saving the task list to a file
         todoData = {"Tasks": self.todo_list, "Date": datetime.now().date()}
-
         with open(pickleDirectory + "todo_list.pickle", "wb") as f:
             pickle.dump(todoData, f)
             f.flush()
@@ -710,6 +711,7 @@ class TodoListWindow(QWidget):
     def open_add_task_window(self):
         self.add_task_window = AddTaskWindow(self, self.todo_list_archive, self.todo_list, self.block_list,
                                              self.settings, -1)
+
         self.add_task_window.show()
 
     def open_add_list_window(self):

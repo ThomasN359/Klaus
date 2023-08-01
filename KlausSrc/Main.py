@@ -3,16 +3,14 @@ import os
 dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 sys.path.append(dir) #this fixes some weird importing thing when running communicationManager initialized by chrome
 
-from KlausSrc.Utilities.config import pictureDirectory
 import multiprocessing
-import pickle
 
 from KlausSrc.MainWindow.Settings import *
 from KlausSrc.MainWindow.TodolistWindow import *
 from KlausSrc.MainWindow.HomeScreen import HomeScreen
 from KlausSrc.Utilities.HelperFunctions import *
 from KlausSrc.Utilities.Singleton import Singleton
-from WindowHolder import WindowHolder
+from KlausSrc.MainWindow.WindowHolder import WindowHolder
 
 from datetime import *
 from PyQt5.QtCore import QTime
@@ -131,8 +129,9 @@ def main_process():  # TODO FLAG AND LOCK
     main_window3 = WindowHolder(todo_list_archive, todo_list, block_lists, settings, main_window, main_window2)
     main_window3.showMaximized()
     # This handles the schedule things such as notifications
-    #main_window.start_scheduling()
-    #main_window.start_blocking()
+    # main_window.start_scheduling()
+    # main_window.start_blocking()
+
     # Connect close event to handle_close_event
     # main_window.closeEvent = lambda event: handle_close_event(event, flag, lock) #T0DO flag and lock
     # This handles the block list
