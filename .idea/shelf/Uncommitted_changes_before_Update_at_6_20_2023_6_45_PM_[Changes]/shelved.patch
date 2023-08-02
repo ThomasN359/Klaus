@@ -1,0 +1,3 @@
+diff --git a/KlausSrc/Singleton.py b/KlausSrc/Utilities/Singleton.py
+rename from KlausSrc/Singleton.py
+rename to KlausSrc/Utilities/Singleton.py
