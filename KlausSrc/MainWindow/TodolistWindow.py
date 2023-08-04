@@ -45,6 +45,7 @@ class TodoListWindow(QWidget):
         self.setLayout(self.layout)
 
     def initUI(self):
+        self.timer_thread_test = shared_state.get_timer_thread()
         self.previous_sec = None
         # Clear the horizontal box for the title row to avoid duplicates each refresh
         if hasattr(self, 'title_layout'):
@@ -417,7 +418,7 @@ class TodoListWindow(QWidget):
         minute_remaining.setText(
             "Time Left " + str(time_remaining // 3600).zfill(2) + ":" + str((time_remaining % 3600) // 60).zfill(
                 2) + ":" + str(time_remaining % 60).zfill(2))
-        if (time_remaining == 0):
+        if time_remaining == 0:
             task.task_status = TaskStatus.PASSED
             task_label = self.task_labels[index]
             task_label.setStyleSheet("color: green;")
@@ -518,7 +519,6 @@ class TodoListWindow(QWidget):
         update_file(self)
 
     def handle_play_click(self):
-        # TODO remember that it's possible for a task to be set to playing when we come back to it, fix tomorrow
         sender = self.sender()
         index = self.play_buttons.index(sender)
         task = self.todo_list[index]
@@ -527,10 +527,10 @@ class TodoListWindow(QWidget):
             if task.lock_in:
                 sender.setStyleSheet("background-color: #ff0000")
             task.task_status = TaskStatus.PLAYING
-            self.timer_thread = TimerThread(task, self)
-            self.timer_thread.timer_signal.connect(lambda x: self.update_duration(task, x))
+            self.timer_thread_test = shared_state.get_timer_thread()
+            self.timer_thread_test.timer_signal.connect(lambda x: self.update_duration(task, x))
+            self.start_timer(task.duration)
             timer_set = False
-            shared_state.set_timer_thread(self.timer_thread)
 
             # Implements block list for play button
             for filename in os.listdir(pickleDirectory):
@@ -569,19 +569,17 @@ class TodoListWindow(QWidget):
 
                         with open(chosen_pickle, "wb") as file:
                             pickle.dump(data, file)
-            self.timer_thread.start()
+            #self.timer_thread.start()
+            self.timer_thread_test.start()
         else:
             if not task.lock_in:
                 sender.setText("\u25B6")  # play symbol
                 task.task_status = TaskStatus.PENDING
                 shared_state.set_timer_thread(None)
-                if self.timer_thread is not None:
-                    self.timer_thread.stop()  # stop the thread
-                    self.timer_thread.wait()  # wait for the thread to finish
-                    self.timer_thread.timer_signal.disconnect()
-                    self.timer_thread.quit()
-                    del self.timer_thread
-                    self.timer_thread = None
+                if self.timer_thread_test is not None:
+                    self.timer_thread_test.pause_timer()
+
+
                 timer_set = False
                 for filename in os.listdir(pickleDirectory):
                     chosen_pickle = makePath(pickleDirectory, filename)
@@ -631,6 +629,13 @@ class TodoListWindow(QWidget):
         task.lock_in = True
         self.refresh_save()
 
+    def start_timer(self, duration):
+        self.timer_thread_test.duration = duration
+        self.timer_thread_test.timer_active = True
+
+    def stop_timer(self):
+        self.timer_thread.timer_active = False
+
     def handle_edit_button(self):
         sender = self.sender()
         index = self.gear_buttons.index(sender)
@@ -647,8 +652,9 @@ class TodoListWindow(QWidget):
             sender = self.sender()
             index = self.cancel_buttons.index(sender)
             try:
-                if self.todo_list[index].task_type == TaskType.TIMER and self.timer_thread is not None:
-                    kill_timer_thread2(self.timer_thread)
+                if self.todo_list[index].task_type == TaskType.TIMER and self.timer_thread_test is not None:
+                    print("finna kill 1")
+                    kill_timer_thread2(self.timer_thread_test)
 
             except Exception as e:
                 print(f"An exception occurred while stopping the timer thread: {e}")
@@ -702,7 +708,8 @@ class TodoListWindow(QWidget):
             index += 1
             if task.task_type == TaskType.TIMER:
                 try:
-                    kill_timer_thread2(self.timer_thread)
+                    print("Finna kill 2")
+                    kill_timer_thread2(self.timer_thread_test)
                 except Exception as e:
                     print(f"An exception occurred while stopping the timer thread: {e}")
         self.parent().initUI()

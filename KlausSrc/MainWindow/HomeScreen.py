@@ -4,7 +4,7 @@ from PyQt5.QtWidgets import *
 
 from KlausSrc.PopUpWindows.StartTimerPopUp import StartTimerPopUp
 from KlausSrc.Objects.Task import TaskType
-from KlausSrc.GlobalModules.GlobalThreads import kill_timer_thread2
+from KlausSrc.GlobalModules.GlobalThreads import kill_timer_thread2, TimerThread
 from KlausSrc.MainWindow.CalendarWindow import CalendarWindow
 from KlausSrc.MainWindow.StatsWindow import StatsWindow
 from KlausSrc.MainWindow.ListCreatorWindow import ListCreatorWindow
@@ -177,6 +177,10 @@ class HomeScreen(QMainWindow):
             self.show_todolist()
         else:
             self.show_chat()
+
+        # Initializes the timer task thread since it's global. But it's not active yet.
+        self.timer_thread_test = TimerThread(0, self)
+        shared_state.set_timer_thread(self.timer_thread_test)
 
     def toggle_sidebar_size(self):
         # Toggle the size of the sidebar

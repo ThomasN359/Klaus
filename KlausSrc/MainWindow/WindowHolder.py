@@ -160,6 +160,7 @@ class WindowHolder(QMainWindow):
 
     def show_todolist(self):
         if shared_state.get_timer_thread() is not None:
+            print("Finna kill holder")
             kill_timer_thread2(shared_state.get_timer_thread())
         todolist_window = TodoListWindow(self.todo_list_archive, self.todo_list, self.block_lists, self.settings)
         self.setCentralWidget(todolist_window)

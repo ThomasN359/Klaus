@@ -4,7 +4,7 @@ import subprocess
 import threading
 from datetime import *
 import time
-from PyQt5.QtCore import QThread, pyqtSignal
+from PyQt5.QtCore import QThread, pyqtSignal, QTimer
 from winotify import Notification
 
 from KlausSrc.PopUpWindows.StartTimerPopUp import StartTimerPopUp
@@ -12,32 +12,58 @@ from KlausSrc.Utilities.HelperFunctions import decrement_brightness, update_dail
 from KlausSrc.Objects.Task import TaskStatus, TaskType
 
 
-
 class TimerThread(QThread):
     timer_signal = pyqtSignal(int)
-    paused = False
 
-    def __init__(self, task, parent=None):
+    def __init__(self, duration, parent=None):
         super().__init__(parent)
-        self.task = task
+        self.duration = duration
         self._stop_event = threading.Event()
+        self.signal_connected = True
+        self.timer_active = False
         if parent is not None:
             parent.destroyed.connect(self.quit)
 
     def run(self):
-        time_remaining = int(self.task.duration)
-        while time_remaining > 0 and not self._stop_event.is_set():
-            if self.paused:
-                time.sleep(1)  # sleep for 1 second
-                continue
-            self.timer_signal.emit(time_remaining)
-            time.sleep(1)  # sleep for 1 second
-            time_remaining -= 1
-        self.timer_signal.emit(0)
+        self.timer = QTimer()
+        self.timer.timeout.connect(self.handle_timeout)
+        self.time_remaining = self.duration
+        self.timer.start(1000)  # 1000 ms = 1 s
+        self.exec_()  # Start the thread's event loop
+
+    def handle_timeout(self):
+        # if no timer task is playing
+        if not self.timer_active:
+            return
+        if self._stop_event.is_set():
+            self.timer.stop()
+            self.timer_signal.emit(0)
+            return
+        if self.signal_connected:
+            print("EMIT SIGNAL")
+            self.timer_signal.emit(self.time_remaining)
+            print("EMIT SIGNAL VERIFY")
+        print("finish sleeping")
+        self.time_remaining -= 1
+        print(str(self.time_remaining))
 
     def stop(self):
+        print("DISCONNECTING THE FUCKING SIGNAL")
         self._stop_event.set()
+        self.timer.stop()
 
+    def disconnect_signal(self):
+        print("DISCONNECTING THE FUCKING SIGNAL")
+        self.signal_connected = False
+
+    def reconnect_signal(self):
+        self.signal_connected = True
+
+    def pause_timer(self):
+        self.timer.stop()
+
+    def resume_timer(self):
+        self.timer.start(1000)
 
 class BlockThread(QThread):
     def __init__(self, block_lists, parent=None):
@@ -46,7 +72,6 @@ class BlockThread(QThread):
         self.finished = pyqtSignal()
 
     def run(self):
-        print("start 2")
         while True:
             time.sleep(2)
             app_block_lists = []
@@ -84,7 +109,6 @@ class ScheduleThread(QThread):
             current_minute = current_time.minute
 
             if current_hour == self.settings.daily_start_time.hour() and current_minute == self.settings.daily_start_time.minute():
-                print("entered loop")
                 update_daily_settings(self.settings)
 
 
@@ -113,10 +137,7 @@ class ScheduleThread(QThread):
                             print("Reminder toast to complete the task " + task.task_name)
 
                 if task.task_type == TaskType.TIMER:
-                    print(currentClock)
-                    print("attempted to get in " + task.task_name)
                     start_by = task.start_by
-                    print(str(start_by))
                     if currentClock == start_by:
                         if task.start_by is not None:
                             self.show_popup_signal.emit(task.task_name)
@@ -182,9 +203,7 @@ class SharedState:
 
 shared_state = SharedState()
 def kill_timer_thread2(timer_thread):
-    timer_thread.stop()  # stop the thread
-    timer_thread.wait()  # wait for the thread to finish
-    timer_thread.timer_signal.disconnect()
-    timer_thread.quit()
-    timer_thread = None
-    del timer_thread
+    #timer_thread.timer_signal.disconnect()
+    timer_thread.disconnect_signal()
+    print("disconnect done")
+

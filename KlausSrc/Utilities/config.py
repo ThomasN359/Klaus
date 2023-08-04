@@ -8,7 +8,6 @@ pictureDirectory = os.path.join(parentDirectory, 'Pics')
 iconDirectory = os.path.join(pictureDirectory, 'icons')
 wallpaperDirectory = os.path.join(pictureDirectory, 'wallpapers')
 
-
 def get_pdf_content(file_path):
     pdf_reader = PdfReader(file_path)
 
