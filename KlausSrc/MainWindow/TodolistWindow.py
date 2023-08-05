@@ -412,6 +412,7 @@ class TodoListWindow(QWidget):
 
     # [Group 2] This group is where the Timer Threads are handled
     def update_duration(self, task, time_remaining):
+        print("update_duration running")
         index = self.todo_list.index(task)
         self.todo_list[index].duration = time_remaining
         minute_remaining = self.minutes_remaining[index]
@@ -527,9 +528,9 @@ class TodoListWindow(QWidget):
             if task.lock_in:
                 sender.setStyleSheet("background-color: #ff0000")
             task.task_status = TaskStatus.PLAYING
-            self.timer_thread_test = shared_state.get_timer_thread()
             self.timer_thread_test.timer_signal.connect(lambda x: self.update_duration(task, x))
             self.start_timer(task.duration)
+
             timer_set = False
 
             # Implements block list for play button
@@ -569,7 +570,6 @@ class TodoListWindow(QWidget):
 
                         with open(chosen_pickle, "wb") as file:
                             pickle.dump(data, file)
-            #self.timer_thread.start()
             self.timer_thread_test.start()
         else:
             if not task.lock_in:
@@ -577,7 +577,7 @@ class TodoListWindow(QWidget):
                 task.task_status = TaskStatus.PENDING
                 shared_state.set_timer_thread(None)
                 if self.timer_thread_test is not None:
-                    self.timer_thread_test.pause_timer()
+                    self.stop_timer()
 
 
                 timer_set = False
@@ -631,10 +631,15 @@ class TodoListWindow(QWidget):
 
     def start_timer(self, duration):
         self.timer_thread_test.duration = duration
+        print("The duration is " + str(duration))
         self.timer_thread_test.timer_active = True
+        self.timer_thread_test.signal_connected = True
+
 
     def stop_timer(self):
-        self.timer_thread.timer_active = False
+        self.timer_thread_test.signal_connected = False
+        self.timer_thread_test.timer_active = False
+
 
     def handle_edit_button(self):
         sender = self.sender()

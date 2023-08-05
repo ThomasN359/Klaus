@@ -40,10 +40,8 @@ class TimerThread(QThread):
             self.timer_signal.emit(0)
             return
         if self.signal_connected:
-            print("EMIT SIGNAL")
             self.timer_signal.emit(self.time_remaining)
-            print("EMIT SIGNAL VERIFY")
-        print("finish sleeping")
+            print("Signal emitted")
         self.time_remaining -= 1
         print(str(self.time_remaining))
 
@@ -182,7 +180,7 @@ class ScheduleThread(QThread):
                                             duration="long")
                         toast.show() #UNCOMMENT_BlOCK_IF_WINDOWS
                         print("Prepare for shutdown in 60 seconds minutes")
-                        subprocess.run("shutdown /s /t 15", shell=True)
+                        subprocess.run("shutdown /s /t 3", shell=True)
                         time.sleep(60)
             # Sleep for some time so that the loop isn't executed too often
             time.sleep(3)  # Check every three seconds

@@ -174,13 +174,14 @@ class HomeScreen(QMainWindow):
         self.setCentralWidget(central_widget)
 
         if self.window_number == 1:
+            # Initializes the timer task thread since it's global. But it's not active yet.
+            self.timer_thread_test = TimerThread(0, self)
+            shared_state.set_timer_thread(self.timer_thread_test)
             self.show_todolist()
         else:
             self.show_chat()
 
-        # Initializes the timer task thread since it's global. But it's not active yet.
-        self.timer_thread_test = TimerThread(0, self)
-        shared_state.set_timer_thread(self.timer_thread_test)
+
 
     def toggle_sidebar_size(self):
         # Toggle the size of the sidebar
