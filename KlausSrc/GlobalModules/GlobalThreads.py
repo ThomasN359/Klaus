@@ -27,7 +27,6 @@ class TimerThread(QThread):
     def run(self):
         self.timer = QTimer()
         self.timer.timeout.connect(self.handle_timeout)
-        self.time_remaining = self.duration
         self.timer.start(1000)  # 1000 ms = 1 s
         self.exec_()  # Start the thread's event loop
 
@@ -40,10 +39,10 @@ class TimerThread(QThread):
             self.timer_signal.emit(0)
             return
         if self.signal_connected:
-            self.timer_signal.emit(self.time_remaining)
+            self.timer_signal.emit(self.duration)
             print("Signal emitted")
-        self.time_remaining -= 1
-        print(str(self.time_remaining))
+        self.duration -= 1
+        print(str(self.duration))
 
     def stop(self):
         print("DISCONNECTING THE FUCKING SIGNAL")
