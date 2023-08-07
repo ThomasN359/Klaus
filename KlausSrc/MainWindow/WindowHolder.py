@@ -9,7 +9,7 @@ from PyQt5.QtGui import QPalette, QColor, QBrush, QPixmap, QIcon
 from PyQt5.QtCore import Qt, QSize
 from KlausSrc.MainWindow.TodolistWindow import TodoListWindow
 from KlausSrc.Utilities.HelperFunctions import create_button_with_pixmap, makePath
-from KlausSrc.GlobalModules.GlobalThreads import shared_state, kill_timer_thread2
+from KlausSrc.GlobalModules.GlobalThreads import shared_state, stop_timer_animation
 
 from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QMainWindow, QWidget, QVBoxLayout, QHBoxLayout, QDockWidget, QDesktopWidget, QPushButton
@@ -142,43 +142,43 @@ class WindowHolder(QMainWindow):
 # Below are the functions for the main window class
     def show_stats(self):
         if shared_state.get_timer_thread() is not None:
-            kill_timer_thread2(shared_state.get_timer_thread())
+            stop_timer_animation(shared_state.get_timer_thread())
         stats_window = StatsWindow(self.todo_list_archive, self.todo_list)
         self.setCentralWidget(stats_window)
 
     def show_nutrition(self):
         if shared_state.get_timer_thread() is not None:
-            kill_timer_thread2(shared_state.get_timer_thread())
+            stop_timer_animation(shared_state.get_timer_thread())
         nutrition_window = NutritionWindow(self.todo_list_archive, self.todo_list)
         self.setCentralWidget(nutrition_window)
 
     def show_calendar(self):
         if shared_state.get_timer_thread() is not None:
-            kill_timer_thread2(shared_state.get_timer_thread())
+            stop_timer_animation(shared_state.get_timer_thread())
         calendar_window = CalendarWindow(self.settings, self.todo_list)
         self.setCentralWidget(calendar_window)
 
     def show_todolist(self):
         if shared_state.get_timer_thread() is not None:
             print("Finna kill holder")
-            kill_timer_thread2(shared_state.get_timer_thread())
+            stop_timer_animation(shared_state.get_timer_thread())
         todolist_window = TodoListWindow(self.todo_list_archive, self.todo_list, self.block_lists, self.settings)
         self.setCentralWidget(todolist_window)
 
     def show_settings(self):
         if shared_state.get_timer_thread() is not None:
-            kill_timer_thread2(shared_state.get_timer_thread())
+            stop_timer_animation(shared_state.get_timer_thread())
         settings_window = SettingsWindow(self.todo_list_archive, self.todo_list, self.block_lists, self.settings)
         self.setCentralWidget(settings_window)
 
     def show_list_creator(self):
         if shared_state.get_timer_thread() is not None:
-            kill_timer_thread2(shared_state.get_timer_thread())
+            stop_timer_animation(shared_state.get_timer_thread())
         list_creator_window = ListCreatorWindow(self.todo_list_archive, self.todo_list)
         self.setCentralWidget(list_creator_window)
     def show_chat(self):
         if shared_state.get_timer_thread() is not None:
-            kill_timer_thread2(shared_state.get_timer_thread())
+            stop_timer_animation(shared_state.get_timer_thread())
         chat_window = ChatWindow(self.todo_list_archive, self.todo_list)
         self.setCentralWidget(chat_window)
 

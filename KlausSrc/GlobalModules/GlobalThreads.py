@@ -15,9 +15,14 @@ from KlausSrc.Objects.Task import TaskStatus, TaskType
 class TimerThread(QThread):
     timer_signal = pyqtSignal(int)
 
-    def __init__(self, duration, parent=None):
+    def __init__(self, task, parent=None):
         super().__init__(parent)
-        self.duration = duration
+        self.current_slot = None
+        self.task = task
+        if task is not None:
+            self.duration = task.duration
+        else:
+            self.duration = 0
         self._stop_event = threading.Event()
         self.signal_connected = True
         self.timer_active = False
@@ -40,27 +45,16 @@ class TimerThread(QThread):
             return
         if self.signal_connected:
             self.timer_signal.emit(self.duration)
-            print("Signal emitted")
         self.duration -= 1
-        print(str(self.duration))
+        self.task.duration = self.duration
 
     def stop(self):
-        print("DISCONNECTING THE FUCKING SIGNAL")
         self._stop_event.set()
         self.timer.stop()
 
     def disconnect_signal(self):
-        print("DISCONNECTING THE FUCKING SIGNAL")
         self.signal_connected = False
 
-    def reconnect_signal(self):
-        self.signal_connected = True
-
-    def pause_timer(self):
-        self.timer.stop()
-
-    def resume_timer(self):
-        self.timer.start(1000)
 
 class BlockThread(QThread):
     def __init__(self, block_lists, parent=None):
@@ -86,10 +80,12 @@ class BlockThread(QThread):
                     time.sleep(3)
                     print("App not found")
 
+
 # This thread handles scheduled events. This includes notifications, bedtime shutdown, and screen dimmer
 class ScheduleThread(QThread):
     show_popup_signal = pyqtSignal(str)
     finished = pyqtSignal()
+
     def __init__(self, todo_list, settings, parent=None):
         super().__init__(parent)
         self.todo_list = todo_list
@@ -108,14 +104,13 @@ class ScheduleThread(QThread):
             if current_hour == self.settings.daily_start_time.hour() and current_minute == self.settings.daily_start_time.minute():
                 update_daily_settings(self.settings)
 
-
             # Check the time and perform the relevant actions
             # The scheduled events are scheduled by tasks inside your todolist so we will loop through each to see if
             # the current time aligns with any time based events saved into the todo_list
             for task in self.todo_list:
                 if (task.task_type == TaskType.ACTIVE
-                        or task.task_type == TaskType.TIMER
-                        or task.task_type == TaskType.BEDTIME)\
+                    or task.task_type == TaskType.TIMER
+                    or task.task_type == TaskType.BEDTIME) \
                         and task.task_status == TaskStatus.PENDING:
 
                     # Loop through reminders to see if it's time for a reminder, if yes, display a notification
@@ -128,9 +123,9 @@ class ScheduleThread(QThread):
                         # TODO make a function that converts time
                         if str(currentClock) == str(reminderTime):
                             toast = Notification(app_id="Klaus",
-                                                title="Reminder",
-                                                msg="Reminder to complete the task " + task.task_name)
-                            toast.show() #UNCOMMENT_BlOCK_IF_WINDOWS
+                                                 title="Reminder",
+                                                 msg="Reminder to complete the task " + task.task_name)
+                            toast.show()  # UNCOMMENT_BlOCK_IF_WINDOWS
                             print("Reminder toast to complete the task " + task.task_name)
 
                 if task.task_type == TaskType.TIMER:
@@ -138,8 +133,6 @@ class ScheduleThread(QThread):
                     if currentClock == start_by:
                         if task.start_by is not None:
                             self.show_popup_signal.emit(task.task_name)
-
-
 
                 if task.task_type == TaskType.BEDTIME:
                     originalBedTime = task.due_by
@@ -174,10 +167,10 @@ class ScheduleThread(QThread):
                             print("decremented brightness")
                     if originalBedTime == currentClock:
                         toast = Notification(app_id="Klaus",
-                                            title="Reminder",
-                                            msg="It's bed time, you have 1 minutes before autoshut off",
-                                            duration="long")
-                        toast.show() #UNCOMMENT_BlOCK_IF_WINDOWS
+                                             title="Reminder",
+                                             msg="It's bed time, you have 1 minutes before autoshut off",
+                                             duration="long")
+                        toast.show()  # UNCOMMENT_BlOCK_IF_WINDOWS
                         print("Prepare for shutdown in 60 seconds minutes")
                         subprocess.run("shutdown /s /t 3", shell=True)
                         time.sleep(60)
@@ -185,8 +178,8 @@ class ScheduleThread(QThread):
             time.sleep(3)  # Check every three seconds
 
 
-#This timer thread should be global and applied regradless of what the window's
-#state is currently in
+# This timer thread should be global and applied regradless of what the window's
+# state is currently in
 class SharedState:
     def __init__(self):
         self.timer_thread = None
@@ -199,8 +192,13 @@ class SharedState:
 
 
 shared_state = SharedState()
-def kill_timer_thread2(timer_thread):
-    #timer_thread.timer_signal.disconnect()
-    timer_thread.disconnect_signal()
-    print("disconnect done")
 
+
+def stop_timer_animation(timer_thread):
+    timer_thread.disconnect_signal()
+    if timer_thread.current_slot is not None:
+        try:
+            timer_thread.timer_signal.disconnect(timer_thread.current_slot)
+            shared_state.set_timer_thread(timer_thread)
+        except TypeError:
+            pass

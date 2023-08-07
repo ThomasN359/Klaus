@@ -8,7 +8,7 @@ from KlausSrc.PopUpWindows.SchedulerPopUp import SchedulerPopUp
 from KlausSrc.Objects.Task import TaskType, TaskStatus
 from KlausSrc.MainWindow.Settings import KlausFeeling
 from KlausSrc.GlobalModules.GlobalThreads import shared_state
-from KlausSrc.GlobalModules.GlobalThreads import TimerThread, kill_timer_thread2
+from KlausSrc.GlobalModules.GlobalThreads import TimerThread, stop_timer_animation
 from KlausSrc.Utilities.config import pickleDirectory, iconDirectory
 import random
 import os
@@ -47,7 +47,7 @@ class TodoListWindow(QWidget):
         self.setLayout(self.layout)
 
     def initUI(self):
-        self.timer_thread_test = shared_state.get_timer_thread()
+        self.timer_thread = shared_state.get_timer_thread()
         self.previous_sec = None
         # Clear the horizontal box for the title row to avoid duplicates each refresh
         if hasattr(self, 'title_layout'):
@@ -529,9 +529,7 @@ class TodoListWindow(QWidget):
             if task.lock_in:
                 sender.setStyleSheet("background-color: #ff0000")
             task.task_status = TaskStatus.PLAYING
-            #self.timer_thread_test.timer_signal.connect(lambda x: self.update_duration(task, x))
             self.start_timer(task)
-            print("test" + str(task.duration))
 
             timer_set = False
 
@@ -572,13 +570,13 @@ class TodoListWindow(QWidget):
 
                         with open(chosen_pickle, "wb") as file:
                             pickle.dump(data, file)
-            self.timer_thread_test.start()
+            self.timer_thread.start()
         else:
             if not task.lock_in:
                 sender.setText("\u25B6")  # play symbol
                 task.task_status = TaskStatus.PENDING
                 shared_state.set_timer_thread(None)
-                if self.timer_thread_test is not None:
+                if self.timer_thread is not None:
                     self.stop_timer()
 
 
@@ -632,23 +630,22 @@ class TodoListWindow(QWidget):
         self.refresh_save()
 
     def start_timer(self, task):
-        slot_with_task = partial(self.slot_function, task)
-        self._current_slot = slot_with_task  # Store the current slot for later disconnection
-        self.timer_thread_test.timer_signal.connect(slot_with_task)
-        self.timer_thread_test.duration = task.duration
-        print("The inputted duration to start this is" + str(task.duration))
-        self.timer_thread_test.timer_active = True
-        self.timer_thread_test.signal_connected = True
+        self.timer_thread.task = task
+        self.timer_thread.current_slot = partial(self.slot_function, task)
+        self.timer_thread.timer_signal.connect(self.timer_thread.current_slot)
+        self.timer_thread.duration = task.duration
+        self.timer_thread.timer_active = True
+        self.timer_thread.signal_connected = True
 
     def slot_function(self, task, x):
         self.update_duration(task, x)
 
     def stop_timer(self):
-        self.timer_thread_test.signal_connected = False
-        self.timer_thread_test.timer_active = False
+        self.timer_thread.signal_connected = False
+        self.timer_thread.timer_active = False
         try:
-            self.timer_thread_test.timer_signal.disconnect(self._current_slot)
-            shared_state.set_timer_thread(self.timer_thread_test)
+            self.timer_thread.timer_signal.disconnect(self.timer_thread.current_slot)
+            shared_state.set_timer_thread(self.timer_thread)
         except TypeError:  # It's possible no connection exists, which would raise a TypeError
             pass
 
@@ -669,8 +666,8 @@ class TodoListWindow(QWidget):
             sender = self.sender()
             index = self.cancel_buttons.index(sender)
             try:
-                if self.todo_list[index].task_type == TaskType.TIMER and self.timer_thread_test is not None:
-                    kill_timer_thread2(self.timer_thread_test)
+                if self.todo_list[index].task_type == TaskType.TIMER and self.timer_thread is not None:
+                    stop_timer_animation(self.timer_thread)
 
             except Exception as e:
                 print(f"An exception occurred while stopping the timer thread: {e}")
@@ -724,7 +721,7 @@ class TodoListWindow(QWidget):
             index += 1
             if task.task_type == TaskType.TIMER:
                 try:
-                    kill_timer_thread2(self.timer_thread_test)
+                    stop_timer_animation(self.timer_thread)
                 except Exception as e:
                     print(f"An exception occurred while stopping the timer thread: {e}")
         self.parent().initUI()
@@ -755,16 +752,6 @@ class TodoListWindow(QWidget):
                         sub_layout.deleteLater()
             layout.deleteLater()
 
-    # Timer task utilize a global thread. When we pause the timer we kill the thread. We can then make a new thread
-    # and attach it to the task if it becomes unpaused. Call this to kill the thread to prevent bugs when leaving
-    # the timer task's count down display
-    def kill_timer_thread(self, index):
-        self.timer_thread.stop()  # stop the thread
-        self.timer_thread.wait()  # wait for the thread to finish
-        self.timer_thread.timer_signal.disconnect()
-        self.timer_thread.quit()
-        # self.task.timer_thread = None
-        del self.timer_thread
 
     def handle_left_arrow_button(self):
         pass
