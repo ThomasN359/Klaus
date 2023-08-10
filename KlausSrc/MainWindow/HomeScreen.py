@@ -75,7 +75,7 @@ class HomeScreen(QMainWindow):
         self.initUI()
 
     def initUI(self):
-
+        self.timeStamp = datetime.now().date()
         # Create a QLabel widget with the text "Create a Todolist to unlock chrome"
         # Set the text color to red using stylesheet
         label = QLabel("Create a Todolist to unlock the internet", self)
@@ -233,7 +233,7 @@ class HomeScreen(QMainWindow):
     def show_todolist(self):
         if shared_state.get_timer_thread() is not None:
             stop_timer_animation(shared_state.get_timer_thread())
-        todolist_window = TodoListWindow(self.todo_list_archive, self.todo_list, self.block_lists, self.settings, datetime.now().date())
+        todolist_window = TodoListWindow(self.todo_list_archive, self.todo_list, self.block_lists, self.settings, self.timeStamp)
         self.setCentralWidget(todolist_window)
 
     def show_settings(self):

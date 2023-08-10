@@ -57,11 +57,14 @@ class TodoListWindow(QWidget):
         self.setLayout(self.layout)
 
     def initUI(self):
+        # First we will establish what day is the todolist day referring to such as the current day or tomorrow etc.
+        # From here we will grab the current todolist if one already exist for that day.
         self.daytype = self.determine_day_type(self.timestamp)
         if self.timestamp in self.todo_list_archive:
             self.todo_list = self.access_date(self.timestamp, self.todo_list_archive)
         elif len(self.todo_list) == 0:
             self.todo_list = []
+
         self.timer_thread = shared_state.get_timer_thread()
         self.previous_sec = None
         # Clear the horizontal box for the title row to avoid duplicates each refresh
@@ -72,7 +75,7 @@ class TodoListWindow(QWidget):
 
         # Here is where the top horizontal row is made, this includes the Todolist, The date, and arrows to navigate
         label = QLabel(self)
-        label.setText(f"{datetime.now().strftime('%Y-%m-%d')} Todo List")
+        label.setText(f"{str(self.timestamp)} Todo List")
         font = label.font()
         font.setPointSize(20)
         label.setFont(font)
@@ -808,6 +811,7 @@ class TodoListWindow(QWidget):
         decremented_date = current_date - timedelta(days=1)  # Subtract one day
         self.save()
         self.timestamp = decremented_date
+        self.todo_list = []
         print("The new day is" + str(decremented_date))
         self.initUI()
 
@@ -818,5 +822,6 @@ class TodoListWindow(QWidget):
         incremented_date = current_date + timedelta(days=1)  # Add one day
         self.save()
         self.timestamp = incremented_date
+        self.todo_list = []
         print("The new day is" + str(incremented_date))
         self.initUI()

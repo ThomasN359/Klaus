@@ -14,6 +14,7 @@ import datetime
 class CalendarWindow(QMainWindow):
     def __init__(self, settings, todo_list, parent=None):
         super().__init__(parent)
+        self.clicked_date = None
         self.settings = settings
         self.todo_list = todo_list
         self.setWindowTitle("Calendar Pop-Up")
@@ -62,6 +63,8 @@ class CalendarWindow(QMainWindow):
         self.calendar_table.verticalHeader().setSectionResizeMode(QHeaderView.Stretch)
         self.populate_calendar(self.current_year, self.current_month)
         layout.addWidget(self.calendar_table)
+
+        self.calendar_table.cellClicked.connect(self.cell_clicked)
 
     def populate_calendar(self, year, month):
         # First, clear the table
@@ -158,8 +161,25 @@ class CalendarWindow(QMainWindow):
         popup.exec()
 
     def todo_list_button_clicked(self):
-        print(datetime.datetime.now().strftime('%Y-%m-%d'))
+        if not self.clicked_date:
+            source_widget = self.sender().parentWidget()
+            for i in range(self.calendar_table.rowCount()):
+                for j in range(self.calendar_table.columnCount()):
+                    if self.calendar_table.cellWidget(i, j) == source_widget:
+                        day = source_widget.findChild(QLabel).text()
+                        self.clicked_date = datetime.date(self.current_year, self.current_month, int(day))
+                        break
+
+        if self.clicked_date:
+            self.parent().timeStamp = self.clicked_date
+            self.parent().show_todolist()
+
 
     def memo_button_clicked(self):
         popup = MemoPopUp(self)
         popup.exec()
+
+    def cell_clicked(self, row, column):
+        # This will get the date from the clicked cell in the QTableWidget
+        day = self.calendar_table.cellWidget(row, column).findChild(QLabel).text()
+        self.clicked_date = datetime.date(self.current_year, self.current_month, int(day))
