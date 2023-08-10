@@ -24,7 +24,7 @@ def main_process():  # TODO FLAG AND LOCK
     # Initialize the starting variables for the program
     settings = Settings()
     todo_list = []
-    todo_list_archive = []
+    todo_list_archive = {}
     block_lists = [[[], [], [], ], [[], [], []]]
     timeStamp = None
 
@@ -55,10 +55,12 @@ def main_process():  # TODO FLAG AND LOCK
     # Load in t0dolist archive
     try:
         with open(makePath(pickleDirectory, "todo_list_archive.pickle"), "rb") as f:
-            todo_list_archive = pickle.load(f)
+            todo_list_archive_data = pickle.load(f)
+            todo_list_archive = todo_list_archive_data["Todolists"]
+
     except:
         # Handle the exception and continue without the data
-        todo_list_archive = []
+        todo_list_archive = {}
         pass
 
     # Load in most recent t0do list
@@ -95,11 +97,10 @@ def main_process():  # TODO FLAG AND LOCK
             pickle.dump(data, f)
             f.flush()
 
-    # The below if code block is responsible for blocking your internet use if you haven't made a todolist today
     if (datetime.now().hour >= settings.daily_start_time.hour() and (
             datetime.now().date() != timeStamp or timeStamp is None) and settings.enable_lock_out):
         if len(todo_list) > 0:
-            todo_list_archive.append({timeStamp: todo_list})  # if there was a previous todolist archive it
+            todo_list_archive[timeStamp] = todo_list  # Adjust how we save to the archive
             try:
                 with open(makePath(pickleDirectory, 'todo_list_archive.pickle'), "wb") as f:
                     pickle.dump(todo_list_archive, f)

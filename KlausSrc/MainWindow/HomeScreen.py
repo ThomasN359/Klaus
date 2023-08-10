@@ -233,7 +233,7 @@ class HomeScreen(QMainWindow):
     def show_todolist(self):
         if shared_state.get_timer_thread() is not None:
             stop_timer_animation(shared_state.get_timer_thread())
-        todolist_window = TodoListWindow(self.todo_list_archive, self.todo_list, self.block_lists, self.settings)
+        todolist_window = TodoListWindow(self.todo_list_archive, self.todo_list, self.block_lists, self.settings, datetime.now().date())
         self.setCentralWidget(todolist_window)
 
     def show_settings(self):
@@ -263,7 +263,7 @@ class HomeScreen(QMainWindow):
             if task.task_type == TaskType.TIMER and task.task_name == task_name:
                 task.start_by = None
 
-        todoData = {"Tasks": self.todo_list, "Date": datetime.now().date()}
+        todoData = {"Tasks": self.todo_list, "Date": datetime.now().date(), "type": "TODOLIST"}
         with open(pickleDirectory + "todo_list.pickle", "wb") as f:
             pickle.dump(todoData, f)
             f.flush()

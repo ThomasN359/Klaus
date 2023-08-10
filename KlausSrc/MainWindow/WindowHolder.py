@@ -1,3 +1,5 @@
+import datetime
+
 from PyQt5.QtWidgets import QApplication, QMainWindow, QLabel, QWidget, QVBoxLayout, QHBoxLayout, QFrame, QToolBar, \
     QPushButton, QSizePolicy, QDesktopWidget, QDockWidget, QSpacerItem
 
@@ -14,6 +16,7 @@ from KlausSrc.GlobalModules.GlobalThreads import shared_state, stop_timer_animat
 from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QMainWindow, QWidget, QVBoxLayout, QHBoxLayout, QDockWidget, QDesktopWidget, QPushButton
 from PyQt5.QtGui import QPixmap, QPalette, QBrush
+
 
 
 class WindowHolder(QMainWindow):
@@ -160,9 +163,8 @@ class WindowHolder(QMainWindow):
 
     def show_todolist(self):
         if shared_state.get_timer_thread() is not None:
-            print("Finna kill holder")
             stop_timer_animation(shared_state.get_timer_thread())
-        todolist_window = TodoListWindow(self.todo_list_archive, self.todo_list, self.block_lists, self.settings)
+        todolist_window = TodoListWindow(self.todo_list_archive, self.todo_list, self.block_lists, self.settings, datetime.now().date())
         self.setCentralWidget(todolist_window)
 
     def show_settings(self):

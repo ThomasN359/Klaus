@@ -271,7 +271,8 @@ class AddTaskWindow(QDialog):
             self.enable_shutdown_checkbox.hide()
 
 def update_file(self):
-    todoData = {"tasks": self.todo_list, "date": datetime.now().date(), "type": "TODOLIST"}
-    with open(makePath(pickleDirectory, "todo_list.pickle"), "wb") as f:
-        pickle.dump(todoData, f)
-        f.flush()
+    self.parent().save()
+    # todoData = {"tasks": self.todo_list, "date": datetime.now().date(), "type": "TODOLIST"}
+    # with open(makePath(pickleDirectory, "todo_list.pickle"), "wb") as f:
+    #     pickle.dump(todoData, f)
+    #     f.flush()

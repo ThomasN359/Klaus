@@ -1,4 +1,6 @@
+import copy
 import pickle
+from enum import Enum
 from functools import partial
 
 from KlausSrc.PopUpWindows.MemoPopUp import MemoPopUp
@@ -26,13 +28,21 @@ from KlausSrc.PopUpWindows.QuickListAddWindow import QuickListAddWindow
 from KlausSrc.Utilities.HelperFunctions import makePath
 
 
+class DayType(Enum):
+    PAST = "past"
+    PRESENT = "present"
+    FUTURE = "future"
+
+
+
 class TodoListWindow(QWidget):
-    def __init__(self, todo_list_archive, todo_list, block_list, settings, parent=None):
+    def __init__(self, todo_list_archive, todo_list, block_list, settings, timestamp, parent=None):
         super().__init__(parent)
-        self.setGeometry(0, 0,1920, 980)
+        self.setGeometry(0, 0, 1920, 980)
         self.todo_list_archive = todo_list_archive
-        self.todo_list = todo_list
+        self.todo_list = copy.deepcopy(todo_list)  # Create a copy so other processes don't have their copy screwed
         self.block_list = block_list
+        self.timestamp = timestamp
         self.settings = settings
         self.task_labels = []
         self.check_buttons = []
@@ -47,6 +57,11 @@ class TodoListWindow(QWidget):
         self.setLayout(self.layout)
 
     def initUI(self):
+        self.daytype = self.determine_day_type(self.timestamp)
+        if self.timestamp in self.todo_list_archive:
+            self.todo_list = self.access_date(self.timestamp, self.todo_list_archive)
+        elif len(self.todo_list) == 0:
+            self.todo_list = []
         self.timer_thread = shared_state.get_timer_thread()
         self.previous_sec = None
         # Clear the horizontal box for the title row to avoid duplicates each refresh
@@ -62,10 +77,10 @@ class TodoListWindow(QWidget):
         font.setPointSize(20)
         label.setFont(font)
         pixmap = makePath(iconDirectory, "left_arrow.png")
-        left_button = create_button_with_pixmap(pixmap, (40,30), self.handle_left_arrow_button)
+        left_button = create_button_with_pixmap(pixmap, (40, 30), self.handle_left_arrow_button)
         left_button.setStyleSheet("background-color: transparent; border: none;")
         pixmap = makePath(iconDirectory, "right_arrow.png")
-        right_button = create_button_with_pixmap(pixmap, (40,30), self.handle_right_arrow_button)
+        right_button = create_button_with_pixmap(pixmap, (40, 30), self.handle_right_arrow_button)
         right_button.setStyleSheet("background-color: transparent; border: none;")
         left_button.setFixedSize(40, 30)
         self.title_layout = QHBoxLayout()
@@ -113,7 +128,7 @@ class TodoListWindow(QWidget):
 
         # Refresh Button
         pixmap = QPixmap(makePath(iconDirectory, "refresh_icon.png"))
-        self.refresh_button = create_button_with_pixmap(pixmap, (35, 35), self.refresh_save)
+        self.refresh_button = create_button_with_pixmap(pixmap, (35, 35), self.save)
         self.refresh_button.setStyleSheet("background-color: #00ff00")  # set gray background color
         self.refresh_button.setFixedSize(45, 45)  # set fixed size of 30x30 pixels
 
@@ -124,12 +139,12 @@ class TodoListWindow(QWidget):
         self.calendar_button.setFixedSize(45, 45)  # set fixed size of 30x30 pixels
 
         pixmap = QPixmap(makePath(iconDirectory, "sort.png"))
-        self.sort_button = create_button_with_pixmap(pixmap, (35,35), self.quick_sort)
+        self.sort_button = create_button_with_pixmap(pixmap, (35, 35), self.quick_sort)
         self.sort_button.setStyleSheet("background-color: #0000ff")
         self.sort_button.setFixedSize(45, 45)
 
         pixmap = QPixmap(makePath(iconDirectory, "list_add.png"))
-        self.list_add_button = create_button_with_pixmap(pixmap, (35,35), self.open_add_list_window)
+        self.list_add_button = create_button_with_pixmap(pixmap, (35, 35), self.open_add_list_window)
         self.list_add_button.setStyleSheet("background-color: #C8A2C8")
         self.list_add_button.setFixedSize(45, 45)
 
@@ -203,13 +218,13 @@ class TodoListWindow(QWidget):
 
         # Back Button
         pixmap = (makePath(iconDirectory, "back_arrow.png"))
-        self.back_button = create_button_with_pixmap(pixmap, (100,100), self.go_back)
+        self.back_button = create_button_with_pixmap(pixmap, (100, 100), self.go_back)
         self.back_button.setStyleSheet("background-color: transparent; border: none;")
-        #self.hbox2.addWidget(self.back_button)
+        # self.hbox2.addWidget(self.back_button)
 
         # Add Task Button
         pixmap = (makePath(iconDirectory, "add.png"))
-        self.add_task_button = create_button_with_pixmap(pixmap, (100,100), self.open_add_task_window)
+        self.add_task_button = create_button_with_pixmap(pixmap, (100, 100), self.open_add_task_window)
         self.add_task_button.setStyleSheet("background-color: transparent; border: none;")
         self.hbox2.addStretch(1)
         self.hbox2.addWidget(self.add_task_button)
@@ -233,6 +248,17 @@ class TodoListWindow(QWidget):
 
     # The functions task_row_creator, create_task_label, create_button draws the task rows which are horizontal
     # rectangles that include the task name and their buttons
+
+    def determine_day_type(self, target_date):
+        today = date.today()
+
+        if target_date < today:
+            return DayType.PAST
+        elif target_date == today:
+            return DayType.PRESENT
+        else:
+            return DayType.FUTURE
+
     def task_row_creator(self):
         for task in self.todo_list:
             hbox = QHBoxLayout()
@@ -310,8 +336,6 @@ class TodoListWindow(QWidget):
             self.layout.addLayout(hbox)
 
             self.task_labels.append(task_label)
-
-
 
     def create_task_label(self, task):
         task_label = QLabel(task.task_name + "(" + task.due_by + ")", self)
@@ -478,10 +502,39 @@ class TodoListWindow(QWidget):
         print("Saved and refreshed")
 
         # Saving the task list to a file
-        todoData = {"Tasks": self.todo_list, "Date": datetime.now().date()}
+        todoData = {"Tasks": self.todo_list, "Date": datetime.now().date(), "type": "TODOLIST"}
         with open(pickleDirectory + "todo_list.pickle", "wb") as f:
             pickle.dump(todoData, f)
             f.flush()
+
+    def access_date(self, date, todo_list_archive):
+        if date not in todo_list_archive:
+            todo_list_archive[date] = []
+        return todo_list_archive[date]
+
+    def save(self):
+        if self.daytype == DayType.PRESENT:
+            # Saving the task list to a file
+            todoData = {"Tasks": self.todo_list, "Date": datetime.now().date(), "type": "TODOLIST"}
+            chosenFile = makePath(pickleDirectory, "todo_list.pickle")
+
+            with open(chosenFile, "wb") as f:
+                print(str(f))
+                pickle.dump(todoData, f)
+                f.flush()
+
+        self.todo_list_archive[self.timestamp] = self.todo_list
+        todo_archive_data = {"Todolists": self.todo_list_archive, "type": "TODOLIST_ARCHIVE"}
+        chosenFile = makePath(pickleDirectory, "todo_list_archive.pickle")
+        with open(chosenFile, "wb") as f:
+            pickle.dump(todo_archive_data, f)
+            f.flush()
+
+
+
+
+
+
 
     def lockIn(self):
         dialog = LockInPopUp(self)  # Use the main window as the parent
@@ -508,7 +561,7 @@ class TodoListWindow(QWidget):
         task_label = self.task_labels[index]
         task_label.setStyleSheet("color: green;")
         task_label.setText("<s>" + task_label.text() + "</s>")
-        update_file(self)
+        self.save()
 
     def handle_x_click(self):
         sender = self.sender()
@@ -518,7 +571,7 @@ class TodoListWindow(QWidget):
         task_label = self.task_labels[index]
         task_label.setStyleSheet("color: red;")
         task_label.setText("<s>" + task_label.text() + "</s>")
-        update_file(self)
+        self.save()
 
     def handle_play_click(self):
         sender = self.sender()
@@ -578,7 +631,6 @@ class TodoListWindow(QWidget):
                 shared_state.set_timer_thread(None)
                 if self.timer_thread is not None:
                     self.stop_timer()
-
 
                 timer_set = False
                 for filename in os.listdir(pickleDirectory):
@@ -649,7 +701,6 @@ class TodoListWindow(QWidget):
         except TypeError:  # It's possible no connection exists, which would raise a TypeError
             pass
 
-
     def handle_edit_button(self):
         sender = self.sender()
         index = self.gear_buttons.index(sender)
@@ -685,7 +736,7 @@ class TodoListWindow(QWidget):
             del cancel_button
             del x_button
             del task
-            update_file(self)
+            self.save()
 
             self.parent().show_todolist()
 
@@ -752,9 +803,20 @@ class TodoListWindow(QWidget):
                         sub_layout.deleteLater()
             layout.deleteLater()
 
-
     def handle_left_arrow_button(self):
-        pass
-    def handle_right_arrow_button(self):
-        pass
+        current_date = self.timestamp # Get just the date
+        decremented_date = current_date - timedelta(days=1)  # Subtract one day
+        self.save()
+        self.timestamp = decremented_date
+        print("The new day is" + str(decremented_date))
+        self.initUI()
 
+
+
+    def handle_right_arrow_button(self):
+        current_date = self.timestamp
+        incremented_date = current_date + timedelta(days=1)  # Add one day
+        self.save()
+        self.timestamp = incremented_date
+        print("The new day is" + str(incremented_date))
+        self.initUI()
