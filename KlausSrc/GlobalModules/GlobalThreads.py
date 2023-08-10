@@ -39,7 +39,7 @@ class TimerThread(QThread):
         # if no timer task is playing
         if not self.timer_active:
             return
-        if self._stop_event.is_set():
+        if self._stop_event.is_set() or self.duration <= 0:  # <-- Added the condition here
             self.timer.stop()
             self.timer_signal.emit(0)
             return
@@ -102,6 +102,8 @@ class ScheduleThread(QThread):
             current_minute = current_time.minute
 
             if current_hour == self.settings.daily_start_time.hour() and current_minute == self.settings.daily_start_time.minute():
+                self.settings.has_daily_update = False
+                print("The bool value is" + str(self.settings.has_daily_update))
                 update_daily_settings(self.settings)
 
             # Check the time and perform the relevant actions

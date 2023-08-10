@@ -182,6 +182,7 @@ class TodoListWindow(QWidget):
         self.timer_accounted_time_display = QLabel()
         self.updateTimerAccountedTime()
 
+
         # Bedtime Label
         self.bedtime_label = QLabel("Bedtime:")
         self.bedtime_display = QLabel()
@@ -211,6 +212,7 @@ class TodoListWindow(QWidget):
 
         # This iterates through the todolist, and draws each task as a horizontal box
         self.task_row_creator()
+
 
         if hasattr(self, 'hbox2'):
             index = self.layout.indexOf(self.hbox2)
@@ -274,6 +276,7 @@ class TodoListWindow(QWidget):
                 minutesRemaining = QLabel("Minutes Remaining: {}".format(str(task.duration // 60)))
                 hbox.addWidget(minutesRemaining)
                 self.minutes_remaining.append(minutesRemaining)
+
             elif task.task_type == TaskType.SUSTAIN:
                 # TODO time calculation for sustain
                 minutesRemaining = QLabel("Minutes Remaining: -1")
@@ -812,6 +815,7 @@ class TodoListWindow(QWidget):
         self.save()
         self.timestamp = decremented_date
         self.todo_list = []
+        stop_timer_animation(shared_state.get_timer_thread())
         print("The new day is" + str(decremented_date))
         self.initUI()
 
@@ -824,4 +828,5 @@ class TodoListWindow(QWidget):
         self.timestamp = incremented_date
         self.todo_list = []
         print("The new day is" + str(incremented_date))
+        stop_timer_animation(shared_state.get_timer_thread())
         self.initUI()

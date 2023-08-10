@@ -97,8 +97,11 @@ def main_process():  # TODO FLAG AND LOCK
             pickle.dump(data, f)
             f.flush()
 
+    # if we are on a new day then continue from here
     if (datetime.now().hour >= settings.daily_start_time.hour() and (
             datetime.now().date() != timeStamp or timeStamp is None) and settings.enable_lock_out):
+        settings.has_daily_update = False
+        update_daily_settings(settings)
         if len(todo_list) > 0:
             todo_list_archive[timeStamp] = todo_list  # Adjust how we save to the archive
             try:

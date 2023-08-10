@@ -64,7 +64,7 @@ class CalendarWindow(QMainWindow):
         self.populate_calendar(self.current_year, self.current_month)
         layout.addWidget(self.calendar_table)
 
-        self.calendar_table.cellClicked.connect(self.cell_clicked)
+
 
     def populate_calendar(self, year, month):
         # First, clear the table
@@ -179,7 +179,4 @@ class CalendarWindow(QMainWindow):
         popup = MemoPopUp(self)
         popup.exec()
 
-    def cell_clicked(self, row, column):
-        # This will get the date from the clicked cell in the QTableWidget
-        day = self.calendar_table.cellWidget(row, column).findChild(QLabel).text()
-        self.clicked_date = datetime.date(self.current_year, self.current_month, int(day))
+

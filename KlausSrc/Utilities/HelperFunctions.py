@@ -158,6 +158,7 @@ def makePath(str1, str2):
 def update_daily_settings(settings):
     print("A NEW DAY HAS BEGUN")
     if not settings.has_daily_update:
+        print("test 2")
         settings.lock_in = False
         settings.has_daily_update = True
         with open(makePath(pickleDirectory, 'settings.pickle'), 'wb') as f:
