@@ -5,13 +5,15 @@ from KlausSrc.Utilities.config import pickleDirectory
 from PyQt5.QtCore import QTime, Qt
 from PyQt5.QtWidgets import QLabel, QPushButton, QComboBox, QTextEdit, QLineEdit, QVBoxLayout, QDialog, QTimeEdit, \
     QCheckBox
-from KlausSrc.Objects.Task import TaskStatus, TaskType, ActiveTask, TimerTask, BedTime, SustainTask
+from KlausSrc.Objects.Task import TaskStatus, TaskType, ActiveTask, TimerTask, BedTime, SustainTask, AddMethod
 from KlausSrc.Utilities.HelperFunctions import makePath
 
 
 class AddTaskWindow(QDialog):
     # index denotes the hbox index for the task line widget
-    def __init__(self, parent, todo_list_archive, todo_list, block_list, settings, index):
+    def __init__(self, parent, todo_list_archive, todo_list, block_list, settings, scheduler, index, add_method):
+        self.add_Method = add_method
+        self.scheduler = scheduler
         self.todo_list = todo_list
         self.settings = settings
         self.todo_list_archive = todo_list_archive
@@ -98,7 +100,7 @@ class AddTaskWindow(QDialog):
         default_time = self.settings.daily_start_time
         self.due_by_edit.setTime(default_time)
 
-        # IF there exist a bedtime, then use it
+        # IF there exist a bedtime, then use it to set the due by time
         for task in self.todo_list:
             if task.task_type == TaskType.BEDTIME:
                 default_time = task.due_by
@@ -213,7 +215,7 @@ class AddTaskWindow(QDialog):
         # The drop down menu for add task will cause the add task dialouge box to change based off of the task type
         if task_type == "Active":
             due_by = self.due_by_edit.text()
-            task = ActiveTask(name, description, TaskStatus.PENDING, self.reminders, due_by)
+            task = ActiveTask(name, description, TaskStatus.PENDING, self.add_Method, self.reminders, due_by)
         elif task_type == "Timer":
             due_by = self.due_by_edit.text()
             if self.duration_edit.text() == "":
@@ -223,31 +225,57 @@ class AddTaskWindow(QDialog):
                 duration = int(self.duration_edit.text()) * 60
                 app_block_list = self.app_block_list_combo.currentText()
                 web_block_list = self.web_block_list_combo.currentText()
-                task = TimerTask(name, description, TaskStatus.PENDING, self.reminders, due_by, None, duration,
+                task = TimerTask(name, description, TaskStatus.PENDING, self.add_Method, self.reminders, due_by, None, duration,
                                  app_block_list, web_block_list)
         elif task_type == "Sustain":
             contract = description
             end_time = self.due_by_edit.text()
-            task = SustainTask(name, description, TaskStatus.PENDING, contract, end_time)
+            task = SustainTask(name, description, TaskStatus.PENDING, self.add_Method, contract, end_time)
         elif task_type == "BedTime":
             shutdown = True
             due_by = self.due_by_edit.text()
-            task = BedTime(name, description, TaskStatus.PENDING, due_by, self.reminders, shutdown)
+            task = BedTime(name, description, TaskStatus.PENDING, self.add_Method, due_by, self.reminders, shutdown)
         if not error:
             self.has_daily_block = False
             self.block_list[0][0] = []
 
             if self.index == self.ADD_TASK:
                 self.todo_list.append(task)
-            else:
+            elif self.add_Method == AddMethod.MANUAL:
                 self.todo_list[self.index] = task
+            else:
+                print("add on monday ya")
             self.reminders = []
-            self.parent().initUI()
-            self.close()
-            self.parent().repaint()
-            self.parent().update()
-            # Saving the task list to a file
-            update_file(self)
+
+            # Define the mapping outside the function for clarity
+            ADD_METHOD_TO_DAY = {
+                AddMethod.MONDAY: "MONDAY",
+                AddMethod.TUESDAY: "TUESDAY",
+                AddMethod.WEDNESDAY: "WEDNESDAY",
+                AddMethod.THURSDAY: "THURSDAY",
+                AddMethod.FRIDAY: "FRIDAY",
+                AddMethod.SATURDAY: "SATURDAY",
+                AddMethod.SUNDAY: "SUNDAY",
+            }
+
+            # Now, inside your function
+            if self.add_Method == AddMethod.MANUAL:
+                self.parent().initUI()
+                self.close()
+                self.parent().repaint()
+                self.parent().update()
+                # Saving the task list to a file
+                update_file(self)
+            else:
+                day_name = ADD_METHOD_TO_DAY.get(self.add_Method)
+                if day_name:
+                    task.add_method = self.add_Method
+                    self.scheduler[day_name].append(task)
+                    self.save_scheduler()
+                    self.close()
+
+
+
 
     def show_task_type(self):
         task_type = self.type_combo.currentText()
@@ -269,6 +297,14 @@ class AddTaskWindow(QDialog):
             self.web_block_list_label.hide()
             self.web_block_list_combo.hide()
             self.enable_shutdown_checkbox.hide()
+
+
+    def save_scheduler(self):
+        with open(makePath(pickleDirectory, 'scheduler.pickle'), 'wb') as f:
+            data = {"scheduler": self.scheduler, "type": "scheduler"}
+            pickle.dump(data, f)
+            f.flush()
+
 
 def update_file(self):
     self.parent().save()

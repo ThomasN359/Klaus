@@ -7,7 +7,7 @@ from KlausSrc.PopUpWindows.MemoPopUp import MemoPopUp
 from KlausSrc.PopUpWindows.LockInPopUp import LockInPopUp
 from KlausSrc.PopUpWindows.CalendarPopUp import CalendarPopUp
 from KlausSrc.PopUpWindows.SchedulerPopUp import SchedulerPopUp
-from KlausSrc.Objects.Task import TaskType, TaskStatus
+from KlausSrc.Objects.Task import TaskType, TaskStatus, AddMethod
 from KlausSrc.MainWindow.Settings import KlausFeeling
 from KlausSrc.GlobalModules.GlobalThreads import shared_state
 from KlausSrc.GlobalModules.GlobalThreads import TimerThread, stop_timer_animation
@@ -36,9 +36,10 @@ class DayType(Enum):
 
 
 class TodoListWindow(QWidget):
-    def __init__(self, todo_list_archive, todo_list, block_list, settings, timestamp, parent=None):
+    def __init__(self, todo_list_archive, todo_list, block_list, settings, timestamp, scheduler, parent=None):
         super().__init__(parent)
         self.setGeometry(0, 0, 1920, 980)
+        self.scheduler = scheduler
         self.todo_list_archive = todo_list_archive
         self.todo_list = copy.deepcopy(todo_list)  # Create a copy so other processes don't have their copy screwed
         self.block_list = block_list
@@ -63,7 +64,14 @@ class TodoListWindow(QWidget):
         if self.timestamp in self.todo_list_archive:
             self.todo_list = self.access_date(self.timestamp, self.todo_list_archive)
         elif len(self.todo_list) == 0:
+            # Start with an empty list
             self.todo_list = []
+            # Get the current day of the week (e.g., 'MONDAY', 'TUESDAY', etc.)
+            current_day_name = datetime.now().strftime('%A').upper()
+            # If the current day exists in the scheduler, append its tasks to the list
+            if current_day_name in self.scheduler:
+                self.todo_list.extend(self.scheduler[current_day_name])
+            self.save()
 
         self.timer_thread = shared_state.get_timer_thread()
         self.previous_sec = None
@@ -519,6 +527,7 @@ class TodoListWindow(QWidget):
         return todo_list_archive[date]
 
     def save(self):
+        print("Archive saved worked")
         if self.daytype == DayType.PRESENT:
             # Saving the task list to a file
             todoData = {"Tasks": self.todo_list, "Date": datetime.now().date(), "type": "TODOLIST"}
@@ -555,7 +564,7 @@ class TodoListWindow(QWidget):
         dialog.exec()
 
     def handle_scheduler_button(self):
-        dialog = SchedulerPopUp(self.settings, self.todo_list)
+        dialog = SchedulerPopUp(self, self.settings, self.todo_list, self.todo_list_archive, self.block_list, self.scheduler)
         dialog.exec_()
 
     # Task Button Functionality
@@ -711,7 +720,7 @@ class TodoListWindow(QWidget):
         sender = self.sender()
         index = self.gear_buttons.index(sender)
         self.add_task_window = AddTaskWindow(self, self.todo_list_archive, self.todo_list, self.block_list,
-                                             self.settings, index)
+                                             self.settings, self.scheduler, index, AddMethod.MANUAL)
         self.add_task_window.show()
         pass
 
@@ -786,7 +795,7 @@ class TodoListWindow(QWidget):
     # Open Other Windows
     def open_add_task_window(self):
         self.add_task_window = AddTaskWindow(self, self.todo_list_archive, self.todo_list, self.block_list,
-                                             self.settings, -1)
+                                             self.settings, self.scheduler, -1, AddMethod.MANUAL)
 
         self.add_task_window.show()
 

@@ -43,9 +43,10 @@ def create_centered_button_layout(button, label):
 
 
 class HomeScreen(QMainWindow):
-    def __init__(self, todo_list_archive, todo_list, block_lists, settings,  window_number, parent=None):
+    def __init__(self, todo_list_archive, todo_list, block_lists, settings, scheduler, window_number, parent=None):
         super().__init__(parent)
         self.window_number = window_number
+        self.scheduler = scheduler
         #self.setStyleSheet("background-color: transparent; border: none;") if you want wallpapers it should be transparent
         self.todo_list_archive = todo_list_archive
         self.todo_list = todo_list
@@ -233,7 +234,7 @@ class HomeScreen(QMainWindow):
     def show_todolist(self):
         if shared_state.get_timer_thread() is not None:
             stop_timer_animation(shared_state.get_timer_thread())
-        todolist_window = TodoListWindow(self.todo_list_archive, self.todo_list, self.block_lists, self.settings, self.timeStamp)
+        todolist_window = TodoListWindow(self.todo_list_archive, self.todo_list, self.block_lists, self.settings, self.timeStamp, self.scheduler)
         self.setCentralWidget(todolist_window)
 
     def show_settings(self):

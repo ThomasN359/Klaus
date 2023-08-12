@@ -16,13 +16,25 @@ class TaskStatus(enum.Enum):
     FAILED = 3
     PLAYING = 4
 
+class AddMethod(enum.Enum):
+    MANUAL = 1
+    SUNDAY = 2
+    MONDAY = 3
+    TUESDAY = 4
+    WEDNESDAY = 5
+    THURSDAY = 6
+    FRIDAY = 7
+    SATURDAY = 8
+    AI = 9
+
 
 class Task:
-    def __init__(self, task_name: str, task_description: str, task_type: TaskType, task_status: TaskStatus, lock_in: bool = False):
+    def __init__(self, task_name: str, task_description: str, task_type: TaskType, task_status: TaskStatus, add_method: AddMethod,  lock_in: bool = False):
         self.task_name = task_name
         self.task_description = task_description
         self.task_type = task_type
         self.task_status = task_status
+        self.add_method = add_method
         self.lock_in = lock_in
 
     def display_task_name(self):
@@ -32,17 +44,17 @@ class Task:
 
 
 class ActiveTask(Task):
-    def __init__(self, task_name: str, task_description: str, task_status: TaskStatus, reminder: list[str],
+    def __init__(self, task_name: str, task_description: str, task_status: TaskStatus, add_method: AddMethod, reminder: list[str],
                  due_by: time):
-        super().__init__(task_name, task_description, TaskType.ACTIVE, TaskStatus.PENDING)
+        super().__init__(task_name, task_description, TaskType.ACTIVE, TaskStatus.PENDING, AddMethod.MANUAL)
         self.reminder = reminder
         self.due_by = due_by
 
 
 class TimerTask(Task):
-    def __init__(self, task_name: str, task_description: str, task_status: TaskStatus, reminder: list[str],
+    def __init__(self, task_name: str, task_description: str, task_status: TaskStatus,add_method: AddMethod, reminder: list[str],
                  due_by: time, start_by: time, duration: int, app_block_list: str, web_block_list):
-        super().__init__(task_name, task_description, TaskType.TIMER, TaskStatus.PENDING)
+        super().__init__(task_name, task_description, TaskType.TIMER, TaskStatus.PENDING, AddMethod.MANUAL)
         self.duration = duration
         self.app_block_list = app_block_list
         self.web_block_list = web_block_list
@@ -53,16 +65,16 @@ class TimerTask(Task):
 
 
 class SustainTask(Task):
-    def __init__(self, task_name: str, task_description: str, task_status: TaskStatus, contract: str, due_by: time):
-        super().__init__(task_name, task_description, TaskType.SUSTAIN, TaskStatus.PENDING)
+    def __init__(self, task_name: str, task_description: str, task_status: TaskStatus, add_method: AddMethod,contract: str, due_by: time):
+        super().__init__(task_name, task_description, TaskType.SUSTAIN, TaskStatus.PENDING, AddMethod.MANUAL)
         self.contract = contract
         self.due_by = due_by
 
 
 class BedTime(Task):
-    def __init__(self, task_name: str, task_description: str, task_status: TaskStatus, due_by: time,
+    def __init__(self, task_name: str, task_description: str, task_status: TaskStatus, add_method: AddMethod, due_by: time,
                  reminder: list[str], shutdown: bool):
-        super().__init__(task_name, task_description, TaskType.BEDTIME, TaskStatus.PENDING)
+        super().__init__(task_name, task_description, TaskType.BEDTIME, TaskStatus.PENDING, AddMethod.MANUAL)
         self.due_by = due_by
         self.reminder = reminder
         self.shutdown = shutdown
