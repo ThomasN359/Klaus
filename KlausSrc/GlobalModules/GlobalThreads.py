@@ -100,12 +100,10 @@ class ScheduleThread(QThread):
             currentClock = current_time.strftime('%I:%M %p')
             current_hour = current_time.hour
             current_minute = current_time.minute
-
             if current_hour == self.settings.daily_start_time.hour() and current_minute == self.settings.daily_start_time.minute():
                 self.settings.has_daily_update = False
                 print("The bool value is" + str(self.settings.has_daily_update))
                 update_daily_settings(self.settings)
-
             # Check the time and perform the relevant actions
             # The scheduled events are scheduled by tasks inside your todolist so we will loop through each to see if
             # the current time aligns with any time based events saved into the todo_list
@@ -167,7 +165,9 @@ class ScheduleThread(QThread):
                         if i % 10 == 0:
                             decrement_brightness()
                             print("decremented brightness")
-                    if originalBedTime == currentClock:
+
+
+                    if str(originalBedTime) == str(currentClock):
                         toast = Notification(app_id="Klaus",
                                              title="Reminder",
                                              msg="It's bed time, you have 1 minutes before autoshut off",
@@ -175,6 +175,7 @@ class ScheduleThread(QThread):
                         toast.show()  # UNCOMMENT_BlOCK_IF_WINDOWS
                         print("Prepare for shutdown in 60 seconds minutes")
                         subprocess.run("shutdown /s /t 3", shell=True)
+
                         time.sleep(60)
             # Sleep for some time so that the loop isn't executed too often
             time.sleep(3)  # Check every three seconds

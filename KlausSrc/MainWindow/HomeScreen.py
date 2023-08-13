@@ -265,7 +265,7 @@ class HomeScreen(QMainWindow):
             if task.task_type == TaskType.TIMER and task.task_name == task_name:
                 task.start_by = None
 
-        todoData = {"Tasks": self.todo_list, "Date": datetime.now().date(), "type": "TODOLIST"}
+        todoData = {"tasks": self.todo_list, "date": datetime.now().date(), "type": "TODOLIST"}
         with open(pickleDirectory + "todo_list.pickle", "wb") as f:
             pickle.dump(todoData, f)
             f.flush()

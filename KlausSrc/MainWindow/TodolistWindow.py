@@ -42,6 +42,7 @@ class TodoListWindow(QWidget):
         self.scheduler = scheduler
         self.todo_list_archive = todo_list_archive
         self.todo_list = copy.deepcopy(todo_list)  # Create a copy so other processes don't have their copy screwed
+        self.todo_list_original = todo_list
         self.block_list = block_list
         self.timestamp = timestamp
         self.settings = settings
@@ -516,7 +517,7 @@ class TodoListWindow(QWidget):
         print("Saved and refreshed")
 
         # Saving the task list to a file
-        todoData = {"Tasks": self.todo_list, "Date": datetime.now().date(), "type": "TODOLIST"}
+        todoData = {"tasks": self.todo_list, "date": datetime.now().date(), "type": "TODOLIST"}
         with open(pickleDirectory + "todo_list.pickle", "wb") as f:
             pickle.dump(todoData, f)
             f.flush()
@@ -530,13 +531,16 @@ class TodoListWindow(QWidget):
         print("Archive saved worked")
         if self.daytype == DayType.PRESENT:
             # Saving the task list to a file
-            todoData = {"Tasks": self.todo_list, "Date": datetime.now().date(), "type": "TODOLIST"}
+            todoData = {"tasks": self.todo_list, "date": datetime.now().date(), "type": "TODOLIST"}
             chosenFile = makePath(pickleDirectory, "todo_list.pickle")
 
             with open(chosenFile, "wb") as f:
                 print(str(f))
                 pickle.dump(todoData, f)
                 f.flush()
+            self.todo_list_original.clear()
+            self.todo_list_original.extend(self.todo_list)
+
 
         self.todo_list_archive[self.timestamp] = self.todo_list
         todo_archive_data = {"Todolists": self.todo_list_archive, "type": "TODOLIST_ARCHIVE"}
@@ -752,7 +756,7 @@ class TodoListWindow(QWidget):
             del x_button
             del task
             self.save()
-
+            self.parent().timeStamp = self.timestamp
             self.parent().show_todolist()
 
     # Bottom Row Buttons Functionality
