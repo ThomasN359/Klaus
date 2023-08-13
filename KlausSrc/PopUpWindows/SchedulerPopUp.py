@@ -129,20 +129,22 @@ class SchedulerPopUp(QDialog):
     def add_row(self, day_name):
         add_method_value = getattr(AddMethod, day_name.upper())
         self.add_task_window = AddTaskWindow(self, self.todo_list_archive, self.todo_list, self.block_list,
-                                             self.settings, self.scheduler, 0, add_method_value)
+                                             self.settings, self.scheduler, -1, add_method_value)
 
         # Connect window's close signal to redraw
-        #self.add_task_window.window_closed.connect(self.redraw_tasks)
+        self.add_task_window.window_closed.connect(self.redraw_tasks)
         self.add_task_window.show()
-        time.sleep(1)
         self.redraw_tasks()
 
     def on_drop_click(self, task, day):
         # Remove the task from the scheduler for the given day
-        self.scheduler[day].remove(task)
+        for tasks in self.scheduler[day]:
+            if tasks.task_name == task.task_name:
+                self.scheduler[day].remove(tasks)
 
-        # Save the updated scheduler
         self.save_data()
+        # Save the updated scheduler
+        self.save_scheduler()
 
         # Redraw the tasks
         self.redraw_tasks()

@@ -234,6 +234,7 @@ class HomeScreen(QMainWindow):
     def show_todolist(self):
         if shared_state.get_timer_thread() is not None:
             stop_timer_animation(shared_state.get_timer_thread())
+        print("Parent string 2 is " + str(self.timeStamp))
         todolist_window = TodoListWindow(self.todo_list_archive, self.todo_list, self.block_lists, self.settings, self.timeStamp, self.scheduler)
         self.setCentralWidget(todolist_window)
 

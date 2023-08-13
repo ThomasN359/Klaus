@@ -2,7 +2,7 @@ import os
 import pickle
 from datetime import datetime
 from KlausSrc.Utilities.config import pickleDirectory
-from PyQt5.QtCore import QTime, Qt
+from PyQt5.QtCore import QTime, Qt, pyqtSignal
 from PyQt5.QtWidgets import QLabel, QPushButton, QComboBox, QTextEdit, QLineEdit, QVBoxLayout, QDialog, QTimeEdit, \
     QCheckBox
 from KlausSrc.Objects.Task import TaskStatus, TaskType, ActiveTask, TimerTask, BedTime, SustainTask, AddMethod
@@ -10,6 +10,7 @@ from KlausSrc.Utilities.HelperFunctions import makePath
 
 
 class AddTaskWindow(QDialog):
+    window_closed = pyqtSignal()
     # index denotes the hbox index for the task line widget
     def __init__(self, parent, todo_list_archive, todo_list, block_list, settings, scheduler, index, add_method):
         self.add_Method = add_method
@@ -244,7 +245,7 @@ class AddTaskWindow(QDialog):
             elif self.add_Method == AddMethod.MANUAL:
                 self.todo_list[self.index] = task
             else:
-                print("add on monday ya")
+                print("there's an empty place in code here")
             self.reminders = []
 
             # Define the mapping outside the function for clarity
@@ -305,6 +306,9 @@ class AddTaskWindow(QDialog):
             pickle.dump(data, f)
             f.flush()
 
+    def closeEvent(self, event):
+        self.window_closed.emit()
+        super(AddTaskWindow, self).closeEvent(event)
 
 def update_file(self):
     self.parent().save()
