@@ -299,11 +299,16 @@ class TodoListWindow(QWidget):
                 if self.daytype == DayType.PRESENT:
                     if task.lock_in and task.task_status == TaskStatus.PLAYING:
                         play_button = self.create_button("\u23F8", "red", 65, self.handle_play_click)
+                        self.play_buttons.append(play_button)
+
                     else:
                         play_button = self.create_button("\u25B6", "green", 65, self.handle_play_click)
+                        self.play_buttons.append(play_button)
+                        if task.task_status == TaskStatus.PLAYING:
+                            QTimer.singleShot(100, lambda: play_button.clicked.emit()) #wait a 10th of a second to
+                            #initalize the layout before displaying the update_duration countdown animation so it has time to load
 
                     hbox.addWidget(play_button)
-                    self.play_buttons.append(play_button)
 
                 if task.lock_in:
                     pixmap = QPixmap(makePath(iconDirectory, "lock.png"))
@@ -628,13 +633,14 @@ class TodoListWindow(QWidget):
             self.parent().show_todolist()
 
 
-
-
     def handle_play_click(self):
         sender = self.sender()
         index = self.play_buttons.index(sender)
         task = self.todo_list[index]
         if sender.text() == "\u25B6":  # play symbol
+            #Ensure that only one timer can be playing at a given time by canceling function if one is already going.
+            if self.timer_thread.timer_active and task.task_status == TaskStatus.PENDING:
+                return
             sender.setText("\u23F8")  # pause symbol
             if task.lock_in:
                 sender.setStyleSheet("background-color: #ff0000")

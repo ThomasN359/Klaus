@@ -4,6 +4,7 @@ import time
 from datetime import datetime
 from functools import partial
 
+from PyQt5.QtCore import QTimer
 from PyQt5.QtGui import QFont
 from PyQt5.QtWidgets import QPushButton, QTimeEdit, QComboBox, QHBoxLayout, QVBoxLayout, QCheckBox, QLabel, QWidget, \
     QTabWidget, QDialog, QScrollArea
@@ -125,6 +126,19 @@ class SchedulerPopUp(QDialog):
         # Save using parent's save() method, if available
         if hasattr(self.parent(), 'save'):
             self.parent().save()
+
+        self.apply_button.setText('Applied')
+        self.apply_button.setStyleSheet('background-color: green')
+
+        # Create a QTimer to revert the changes after one second
+        QTimer.singleShot(420, self.reset_apply_button)
+
+
+    # This resets the button back from the green applied animaiton
+    def reset_apply_button(self):
+        self.apply_button.setText('Apply')
+        self.apply_button.setStyleSheet('')
+
 
     def add_row(self, day_name):
         add_method_value = getattr(AddMethod, day_name.upper())
