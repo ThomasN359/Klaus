@@ -240,7 +240,7 @@ class AddTaskWindow(QDialog):
             self.has_daily_block = False
             self.block_list[0][0] = []
 
-            if self.index == self.ADD_TASK:
+            if self.index == self.ADD_TASK and self.add_Method == AddMethod.MANUAL:
                 self.todo_list.append(task)
             elif self.add_Method == AddMethod.MANUAL:
                 self.todo_list[self.index] = task

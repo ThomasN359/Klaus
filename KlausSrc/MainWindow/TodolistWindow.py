@@ -50,6 +50,7 @@ class TodoListWindow(QWidget):
         self.check_buttons = []
         self.x_buttons = []
         self.play_buttons = []
+        self.forward_task_buttons = []
         self.timer_lock_in_buttons = []
         self.cancel_buttons = []
         self.minutes_remaining = []
@@ -68,7 +69,7 @@ class TodoListWindow(QWidget):
             # Start with an empty list
             self.todo_list = []
             # Get the current day of the week (e.g., 'MONDAY', 'TUESDAY', etc.)
-            current_day_name = datetime.now().strftime('%A').upper()
+            current_day_name = self.timestamp.strftime('%A').upper()
             # If the current day exists in the scheduler, append its tasks to the list
             if current_day_name in self.scheduler:
                 self.todo_list.extend(self.scheduler[current_day_name])
@@ -210,7 +211,7 @@ class TodoListWindow(QWidget):
         self.update_feeling()
 
         # This clears the buttons next to each task like the checkbox, play_buttons etc. to avoid duplicates on refresh
-        widgets = [self.task_labels, self.check_buttons, self.x_buttons, self.play_buttons, self.timer_lock_in_buttons,
+        widgets = [self.task_labels, self.check_buttons, self.x_buttons, self.play_buttons, self.forward_task_buttons, self.timer_lock_in_buttons,
                    self.cancel_buttons, self.minutes_remaining, self.gear_buttons]
         for widget_list in widgets:
             for widget in widget_list:
@@ -295,51 +296,63 @@ class TodoListWindow(QWidget):
                 self.minutes_remaining.append(None)
 
             if task.task_type == TaskType.TIMER:
-                if task.lock_in and task.task_status == TaskStatus.PLAYING:
-                    play_button = self.create_button("\u23F8", "red", 65, self.handle_play_click)
-                else:
-                    play_button = self.create_button("\u25B6", "green", 65, self.handle_play_click)
-                hbox.addWidget(play_button)
-                self.play_buttons.append(play_button)
+                if self.daytype == DayType.PRESENT:
+                    if task.lock_in and task.task_status == TaskStatus.PLAYING:
+                        play_button = self.create_button("\u23F8", "red", 65, self.handle_play_click)
+                    else:
+                        play_button = self.create_button("\u25B6", "green", 65, self.handle_play_click)
+
+                    hbox.addWidget(play_button)
+                    self.play_buttons.append(play_button)
 
                 if task.lock_in:
                     pixmap = QPixmap(makePath(iconDirectory, "lock.png"))
                 else:
                     pixmap = QPixmap(makePath(iconDirectory, "unlock.png"))
-                timer_lock_in_button = create_button_with_pixmap(pixmap, (30, 30), self.handle_timer_lock_in)
-                timer_lock_in_button.setStyleSheet("background-color: #cfcfcf")  # set gray background color
-                timer_lock_in_button.setFixedSize(45, 45)  # set fixed size of 30x30 pixels
-                hbox.addWidget(timer_lock_in_button)
-                self.timer_lock_in_buttons.append(timer_lock_in_button)
+                if self.daytype == DayType.PRESENT:
+                    timer_lock_in_button = create_button_with_pixmap(pixmap, (30, 30), self.handle_timer_lock_in)
+                    timer_lock_in_button.setStyleSheet("background-color: #cfcfcf")  # set gray background color
+                    timer_lock_in_button.setFixedSize(45, 45)  # set fixed size of 30x30 pixels
+                    hbox.addWidget(timer_lock_in_button)
+                    self.timer_lock_in_buttons.append(timer_lock_in_button)
 
             else:
                 self.play_buttons.append(None)
                 self.timer_lock_in_buttons.append(None)
 
             if task.task_type == TaskType.ACTIVE:
-                check_button = self.create_button("\u2713", "green", 35, self.handle_check_click)
-                hbox.addWidget(check_button)
-                self.check_buttons.append(check_button)
+                if self.daytype != self.daytype.PAST:
+                    check_button = self.create_button("\u2713", "green", 35, self.handle_check_click)
+                    hbox.addWidget(check_button)
+                    self.check_buttons.append(check_button)
             else:
                 self.check_buttons.append(None)
 
-            gear_button = self.create_button("\u2699", "gray", 35, self.handle_edit_button)
-            hbox.addWidget(gear_button)
-            self.gear_buttons.append(gear_button)
+            if self.daytype != DayType.PAST:
+                gear_button = self.create_button("\u2699", "gray", 35, self.handle_edit_button)
+                hbox.addWidget(gear_button)
+                self.gear_buttons.append(gear_button)
 
             if not self.settings.lock_in and not task.lock_in:
-                cancel_button = self.create_button("⨺", "yellow", 35, self.handle_cancel_button)
-                hbox.addWidget(cancel_button)
-                self.cancel_buttons.append(cancel_button)
+                if self.daytype != DayType.PAST:
+                    cancel_button = self.create_button("⨺", "yellow", 35, self.handle_cancel_button)
+                    hbox.addWidget(cancel_button)
+                    self.cancel_buttons.append(cancel_button)
             else:
-                cancel_button = self.create_button("⨺", "gray", 35, self.handle_cancel_button)
-                hbox.addWidget(cancel_button)
-                self.cancel_buttons.append(cancel_button)
+                if self.daytype != DayType.PAST:
+                    cancel_button = self.create_button("⨺", "gray", 35, self.handle_cancel_button)
+                    hbox.addWidget(cancel_button)
+                    self.cancel_buttons.append(cancel_button)
 
-            x_button_color = "blue" if task.task_type == TaskType.BEDTIME else "red"
-            x_button = self.create_button("\u2715", x_button_color, 35, self.handle_x_click)
-            hbox.addWidget(x_button)
-            self.x_buttons.append(x_button)
+            if self.daytype != DayType.PAST:
+                x_button_color = "blue" if task.task_type == TaskType.BEDTIME else "red"
+                x_button = self.create_button("\u2715", x_button_color, 35, self.handle_x_click)
+                hbox.addWidget(x_button)
+                self.x_buttons.append(x_button)
+
+            forward_task_button = self.create_button("\u2192", "blue", 35, self.handle_forward_task)
+            hbox.addWidget(forward_task_button)
+            self.forward_task_buttons.append(forward_task_button)
 
             # Add a horizontal line after each task
             # hline = QFrame()
@@ -592,6 +605,31 @@ class TodoListWindow(QWidget):
         task_label.setText("<s>" + task_label.text() + "</s>")
         self.save()
 
+    def handle_forward_task(self):
+        sender = self.sender()
+        index = self.forward_task_buttons.index(sender)
+        task = self.todo_list[index]
+        if not self.settings.lock_in and not task.lock_in:
+            try:
+                if self.todo_list[index].task_type == TaskType.TIMER and self.timer_thread is not None:
+                    stop_timer_animation(self.timer_thread)
+            except Exception as e:
+                print(f"An exception occurred while stopping the timer thread: {e}")
+            #Erase the task from the current todolist so we can pass it to the correct area
+            self.todo_list.pop(index)
+            # if we are in the past todolist we will forward the task to the current day
+            if self.daytype == DayType.PAST:
+                self.todo_list_archive[datetime.now().date()].append(task)
+            else:
+                incremented_date = self.timestamp + timedelta(days=1)  # Add one day
+                self.todo_list_archive[incremented_date].append(task)
+            self.save()
+            self.parent().timeStamp = self.timestamp
+            self.parent().show_todolist()
+
+
+
+
     def handle_play_click(self):
         sender = self.sender()
         index = self.play_buttons.index(sender)
@@ -738,23 +776,9 @@ class TodoListWindow(QWidget):
             try:
                 if self.todo_list[index].task_type == TaskType.TIMER and self.timer_thread is not None:
                     stop_timer_animation(self.timer_thread)
-
             except Exception as e:
                 print(f"An exception occurred while stopping the timer thread: {e}")
-
-            hbox = self.layout.itemAt(index).layout()
-            task_label = self.task_labels.pop(index)
-            check_button = self.check_buttons.pop(index)
-            cancel_button = self.cancel_buttons.pop(index)
-            x_button = self.x_buttons.pop(index)
-            task = self.todo_list.pop(index)
-            self.layout.removeItem(hbox)
-            del hbox
-            del task_label
-            del check_button
-            del cancel_button
-            del x_button
-            del task
+            self.todo_list.pop(index)
             self.save()
             self.parent().timeStamp = self.timestamp
             self.parent().show_todolist()
