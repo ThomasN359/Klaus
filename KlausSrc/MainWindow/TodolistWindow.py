@@ -3,6 +3,7 @@ import pickle
 from enum import Enum
 from functools import partial
 
+from KlausSrc.MainWindow.BlockManager import ListStatus
 from KlausSrc.PopUpWindows.MemoPopUp import MemoPopUp
 from KlausSrc.PopUpWindows.LockInPopUp import LockInPopUp
 from KlausSrc.PopUpWindows.CalendarPopUp import CalendarPopUp
@@ -38,7 +39,6 @@ class DayType(Enum):
 class TodoListWindow(QWidget):
     def __init__(self, todo_list_archive, todo_list, block_list, settings, timestamp, scheduler, parent=None):
         super().__init__(parent)
-        self.setGeometry(0, 0, 1920, 980)
         self.scheduler = scheduler
         self.todo_list_archive = todo_list_archive
         self.todo_list = copy.deepcopy(todo_list)  # Create a copy so other processes don't have their copy screwed
@@ -183,7 +183,7 @@ class TodoListWindow(QWidget):
         self.hlayout = QHBoxLayout()
 
         # Current Time Label
-        self.current_time_label = QLabel("Current Time:")
+        self.current_time_label = QLabel("Time:")
         self.current_time_display = QLabel()
         self.updateCurrentTime()
 
@@ -545,6 +545,16 @@ class TodoListWindow(QWidget):
             todo_list_archive[date] = []
         return todo_list_archive[date]
 
+
+    def save_block_list(self):
+        # Saving the task list to a file
+        block_list_data = {"Blocklists": self.block_list, "type": "BLOCKLIST"}
+        chosenFile = makePath(pickleDirectory, "block_list.pickle")
+        with open(chosenFile, "wb") as f:
+            print(str(f))
+            pickle.dump(block_list_data, f)
+            f.flush()
+
     def save(self):
         print("Archive saved worked")
         if self.daytype == DayType.PRESENT:
@@ -647,46 +657,18 @@ class TodoListWindow(QWidget):
             task.task_status = TaskStatus.PLAYING
             self.start_timer(task)
 
-            timer_set = False
+            # Goes through the block_list to find the list marked as on and simply turns it off.
+            for key, (app_list, is_active) in self.block_list[0].items():
+                if task.app_block_list == key:
+                    self.block_list[0][key] = (app_list, ListStatus.TIMERON)
 
-            # Implements block list for play button
-            for filename in os.listdir(pickleDirectory):
-                chosen_pickle = makePath(pickleDirectory, filename)
-                with open(chosen_pickle, "rb") as file:
-                    data = pickle.load(file)
-                if data["type"] == "APPLIST":
-                    if data["status"] == "TIMER":
-                        if timer_set:
-                            data["status"] = "INACTIVE"
-                        else:
-                            timer_set = True
+            for key, (web_list, is_active) in self.block_list[1].items():
+                if task.web_block_list == key:
+                    self.block_list[1][key] = (web_list, ListStatus.TIMERON)
 
-                    if task.app_block_list == filename:
-                        data["status"] = "TIMER"
-                        self.block_list[0][2] = data["entries"]
-                        timer_set = True
-
-                    with open(chosen_pickle, "wb") as file:
-                        pickle.dump(data, file)
-
-                if filename.endswith("WEBLIST.pickle"):
-                    chosen_pickle = makePath(pickleDirectory, filename)
-                    with open(chosen_pickle, "rb") as file:
-                        data = pickle.load(file)
-                    if data["type"] == "WEBLIST":
-                        if data["status"] == "TIMER":
-                            if timer_set:
-                                data["status"] = "INACTIVE"
-                            else:
-                                timer_set = True
-                        if task.web_block_list == filename:
-                            data["status"] = "TIMER"
-                            self.block_list[1][0] = data["entries"]
-                            timer_set = True
-
-                        with open(chosen_pickle, "wb") as file:
-                            pickle.dump(data, file)
+            self.save_block_list()
             self.timer_thread.start()
+
         else:
             if not task.lock_in:
                 sender.setText("\u25B6")  # play symbol
@@ -695,44 +677,14 @@ class TodoListWindow(QWidget):
                 if self.timer_thread is not None:
                     self.stop_timer()
 
-                timer_set = False
-                for filename in os.listdir(pickleDirectory):
-                    chosen_pickle = makePath(pickleDirectory, filename)
-                    with open(chosen_pickle, "rb") as file:
-                        data = pickle.load(file)
-                    if data["type"] == "APPLIST":
+                for key, (app_list, is_active) in self.block_list[0].items():
+                    if task.app_block_list == key:
+                        self.block_list[0][key] = (app_list, ListStatus.OFF)
 
-                        if data["status"] == "TIMER":
-                            if timer_set:
-                                data["status"] = "INACTIVE"
-                            else:
-                                timer_set = True
-
-                        if task.app_block_list == filename:
-                            data["status"] = "INACTIVE"
-                            self.block_list[0][2] = []
-                            timer_set = True
-
-                        with open(chosen_pickle, "wb") as file:
-                            pickle.dump(data, file)
-
-                    chosen_pickle = makePath(pickleDirectory, filename)
-                    with open(chosen_pickle, "rb") as file:
-                        data = pickle.load(file)
-                    if data["type"] == "WEBLIST":
-                        if data["status"] == "TIMER":
-                            if timer_set:
-                                data["status"] = "INACTIVE"
-                            else:
-                                timer_set = True
-
-                        if task.web_block_list == filename:
-                            data["status"] = "INACTIVE"
-                            self.block_list[1][0] = []
-                            timer_set = True
-
-                        with open(chosen_pickle, "wb") as file:
-                            pickle.dump(data, file)
+                for key, (web_list, is_active) in self.block_list[1].items():
+                    if task.web_block_list == key:
+                        self.block_list[1][key] = (web_list, ListStatus.OFF)
+                self.save_block_list()
 
         if task.web_block_list != "None":
             automate_browser(self.block_list, self.settings)

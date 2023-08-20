@@ -7,7 +7,7 @@ from KlausSrc.Objects.Task import TaskType
 from KlausSrc.GlobalModules.GlobalThreads import stop_timer_animation, TimerThread
 from KlausSrc.MainWindow.CalendarWindow import CalendarWindow
 from KlausSrc.MainWindow.StatsWindow import StatsWindow
-from KlausSrc.MainWindow.ListCreatorWindow import ListCreatorWindow
+from KlausSrc.MainWindow.BlockManager import BlockManagerWindow
 from KlausSrc.MainWindow.Settings import SettingsWindow
 from KlausSrc.GlobalModules.GlobalThreads import ScheduleThread, BlockThread
 from KlausSrc.MainWindow.TodolistWindow import TodoListWindow
@@ -107,12 +107,12 @@ class HomeScreen(QMainWindow):
         self.settings_label = QLabel('Settings')
         self.settings_label.setAlignment(Qt.AlignCenter)
         self.settings_layout = create_centered_button_layout(self.settings_button, self.settings_label)
-        self.list_creator_button = create_button_with_pixmap(makePath(iconDirectory, "pencil.png"), (110, 110),
-                                                        self.show_list_creator)
-        self.list_creator_button.setStyleSheet("background-color: transparent; border: none;")
-        self.list_creator_label = QLabel('List Creator')
-        self.list_creator_label.setAlignment(Qt.AlignCenter)
-        self.list_creator_layout = create_centered_button_layout(self.list_creator_button, self.list_creator_label)
+        self.block_manager_button = create_button_with_pixmap(makePath(iconDirectory, "pencil.png"), (110, 110),
+                                                        self.show_block_manager)
+        self.block_manager_button.setStyleSheet("background-color: transparent; border: none;")
+        self.block_manager_label = QLabel('List Creator')
+        self.block_manager_label.setAlignment(Qt.AlignCenter)
+        self.block_manager_layout = create_centered_button_layout(self.block_manager_button, self.block_manager_label)
 
         self.stats_button = create_button_with_pixmap(makePath(iconDirectory, "stats.png"), (110, 110), self.show_stats)
         self.stats_button.setStyleSheet("background-color: transparent; border: none;")
@@ -133,10 +133,10 @@ class HomeScreen(QMainWindow):
         self.calendar_layout = create_centered_button_layout(self.calendar_button, self.calendar_label)
 
         # Add the sidebar buttons to the sidebar layout
-        if self.window_number==1:
+        if self.window_number == 1:
             sidebar_layout.addLayout(self.todolist_layout)
             sidebar_layout.addLayout(self.settings_layout)
-            sidebar_layout.addLayout(self.list_creator_layout)
+            sidebar_layout.addLayout(self.block_manager_layout)
             sidebar_layout.addLayout(self.stats_layout)
             #sidebar_layout.addLayout(self.nutrition_layout)
             sidebar_layout.addLayout(self.calendar_layout)
@@ -180,8 +180,8 @@ class HomeScreen(QMainWindow):
             self.todolist_label.hide()
             self.settings_button.hide()
             self.settings_label.hide()
-            self.list_creator_button.hide()
-            self.list_creator_label.hide()
+            self.block_manager_button.hide()
+            self.block_manager_label.hide()
             self.stats_button.hide()
             self.stats_label.hide()
             self.nutrition_button.hide()
@@ -191,8 +191,8 @@ class HomeScreen(QMainWindow):
             self.todolist_label.show()
             self.settings_button.show()
             self.settings_label.show()
-            self.list_creator_button.show()
-            self.list_creator_label.show()
+            self.block_manager_button.show()
+            self.block_manager_label.show()
             self.stats_button.show()
             self.stats_label.show()
             self.nutrition_button.show()
@@ -233,11 +233,12 @@ class HomeScreen(QMainWindow):
         settings_window = SettingsWindow(self.todo_list_archive, self.todo_list, self.block_lists, self.settings)
         self.setCentralWidget(settings_window)
 
-    def show_list_creator(self):
+    def show_block_manager(self):
         if shared_state.get_timer_thread() is not None:
             stop_timer_animation(shared_state.get_timer_thread())
-        list_creator_window = ListCreatorWindow(self.todo_list_archive, self.todo_list, self.block_lists)
-        self.setCentralWidget(list_creator_window)
+        block_manager_window = BlockManagerWindow(self.todo_list_archive, self.todo_list, self.block_lists)
+        self.setCentralWidget(block_manager_window)
+
     def show_chat(self):
         if shared_state.get_timer_thread() is not None:
             stop_timer_animation(shared_state.get_timer_thread())

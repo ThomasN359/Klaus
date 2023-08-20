@@ -7,7 +7,7 @@ import time
 from PyQt5.QtCore import QThread, pyqtSignal, QTimer
 from winotify import Notification
 
-from KlausSrc.MainWindow.ListCreatorWindow import ListStatus
+from KlausSrc.MainWindow.BlockManager import ListStatus
 from KlausSrc.PopUpWindows.StartTimerPopUp import StartTimerPopUp
 from KlausSrc.Utilities.HelperFunctions import decrement_brightness, update_daily_settings
 from KlausSrc.Objects.Task import TaskStatus, TaskType

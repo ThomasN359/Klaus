@@ -31,11 +31,6 @@ class WindowHolder(QMainWindow):
         self.window2 = window2
         self.sidebar_visible = True  # Added this for sidebar functionality
 
-        # Set the geometry and position of the main windows
-        self.window1.setGeometry(0, 0, self.width() // 2, self.height()//2)
-        self.window2.setGeometry(self.width() // 2, 0, self.width() // 2, self.height()//2)
-        screen = QDesktopWidget().screenGeometry()
-        self.setGeometry(screen)
 
         # Create the main layout
         self.main_widget = QWidget(self)
