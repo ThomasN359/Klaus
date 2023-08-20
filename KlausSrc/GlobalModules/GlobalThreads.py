@@ -7,6 +7,7 @@ import time
 from PyQt5.QtCore import QThread, pyqtSignal, QTimer
 from winotify import Notification
 
+from KlausSrc.MainWindow.ListCreatorWindow import ListStatus
 from KlausSrc.PopUpWindows.StartTimerPopUp import StartTimerPopUp
 from KlausSrc.Utilities.HelperFunctions import decrement_brightness, update_daily_settings
 from KlausSrc.Objects.Task import TaskStatus, TaskType
@@ -66,9 +67,14 @@ class BlockThread(QThread):
         while True:
             time.sleep(2)
             app_block_lists = []
-            app_block_lists.extend(self.block_lists[0][0])
-            app_block_lists.extend(self.block_lists[0][1])
-            app_block_lists.extend(self.block_lists[0][2])
+            # self.block_lists[1] is a dictionary for the app block list. The key represents the key which is paired
+            # with a tuple that consist of an app block list and a boolean on if it's own. If boolean is on that means
+            # the block list should be active.
+            print("about to enter the app checker")
+            for key, (app_list, is_active) in self.block_lists[0].items():
+                if is_active == ListStatus.ON or is_active == ListStatus.TIMERON:
+                    app_block_lists.extend(app_list)
+
 
             for app in app_block_lists:
                 print("App: " + app)

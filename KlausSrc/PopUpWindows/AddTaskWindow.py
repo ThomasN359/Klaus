@@ -22,9 +22,6 @@ class AddTaskWindow(QDialog):
         self.reminders = []
         self.index = index
         self.block_list = block_list
-        self.has_daily_block = False
-        if len(self.block_list[0][0]) != 0:
-            self.has_daily_block = True
         self.initUI()
 
     def initUI(self):
@@ -157,11 +154,8 @@ class AddTaskWindow(QDialog):
         self.app_block_list_combo = QComboBox()
         self.app_block_list_combo.addItem("None")
 
-        for filename in os.listdir(pickleDirectory):
-            with open(makePath(pickleDirectory, filename), "rb") as f:
-                data = pickle.load(f)
-                if data["type"] == "APPLIST":
-                    self.app_block_list_combo.addItem(filename)
+        for key, (app_list, is_active) in self.block_list[0].items():
+            self.app_block_list_combo.addItem(key)
 
         self.app_block_list_label.hide()
         self.app_block_list_combo.hide()
@@ -170,11 +164,8 @@ class AddTaskWindow(QDialog):
         self.web_block_list_combo = QComboBox()
         self.web_block_list_combo.addItem("None")
 
-        for filename in os.listdir(pickleDirectory):
-            with open(makePath(pickleDirectory, filename), "rb") as f:
-                data = pickle.load(f)
-                if data["type"] == "WEBLIST":
-                    self.web_block_list_combo.addItem(filename)
+        for key, (web_list, is_active) in self.block_list[1].items():
+            self.web_block_list_combo.addItem(key)
 
         self.web_block_list_label.hide()
         self.web_block_list_combo.hide()
@@ -237,9 +228,6 @@ class AddTaskWindow(QDialog):
             due_by = self.due_by_edit.text()
             task = BedTime(name, description, TaskStatus.PENDING, self.add_Method, due_by, self.reminders, shutdown)
         if not error:
-            self.has_daily_block = False
-            self.block_list[0][0] = []
-
             if self.index == self.ADD_TASK and self.add_Method == AddMethod.MANUAL:
                 self.todo_list.append(task)
             elif self.add_Method == AddMethod.MANUAL:

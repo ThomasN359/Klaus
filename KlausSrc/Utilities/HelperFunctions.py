@@ -156,9 +156,7 @@ def makePath(str1, str2):
 # reverted once the day ends. It will go back to the default settings. This function is run once a day if the
 # boolean "has_daily_update" is evaluated to false which is checked upon start up or when the next day occurs.
 def update_daily_settings(settings):
-    print("A NEW DAY HAS BEGUN")
     if not settings.has_daily_update:
-        print("test 2")
         settings.lock_in = False
         settings.has_daily_update = True
         with open(makePath(pickleDirectory, 'settings.pickle'), 'wb') as f:

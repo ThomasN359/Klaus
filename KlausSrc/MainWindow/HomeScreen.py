@@ -54,7 +54,7 @@ class HomeScreen(QMainWindow):
         self.settings = settings
         self.setWindowTitle("Klaus")
 
-        if(self.window_number == 1):
+        if self.window_number == 1:
             self.start_scheduling()
             self.start_blocking()
 
@@ -77,17 +77,7 @@ class HomeScreen(QMainWindow):
 
     def initUI(self):
         self.timeStamp = datetime.now().date()
-        # Create a QLabel widget with the text "Create a Todolist to unlock chrome"
-        # Set the text color to red using stylesheet
-        label = QLabel("Create a Todolist to unlock the internet", self)
-        label.setStyleSheet("color: red;")
 
-        # If there are items in the block list, display the label
-        if len(self.block_lists[0][0]) != 0:
-            label.show()
-        # Otherwise, hide the label
-        else:
-            label.hide()
 
         # Create the sidebar widget
         if self.window_number == 1:
@@ -154,7 +144,6 @@ class HomeScreen(QMainWindow):
         # Create the central widget
         central_widget = QWidget(self)
         central_layout = QVBoxLayout(central_widget)
-        central_layout.addWidget(label)
         central_layout.setContentsMargins(0, 0, 0, 0)
 
         # Add the sidebar widget to a QDockWidget
@@ -247,7 +236,7 @@ class HomeScreen(QMainWindow):
     def show_list_creator(self):
         if shared_state.get_timer_thread() is not None:
             stop_timer_animation(shared_state.get_timer_thread())
-        list_creator_window = ListCreatorWindow(self.todo_list_archive, self.todo_list)
+        list_creator_window = ListCreatorWindow(self.todo_list_archive, self.todo_list, self.block_lists)
         self.setCentralWidget(list_creator_window)
     def show_chat(self):
         if shared_state.get_timer_thread() is not None:

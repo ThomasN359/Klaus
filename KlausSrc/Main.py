@@ -25,32 +25,22 @@ def main_process():  # TODO FLAG AND LOCK
     settings = Settings()
     todo_list = []
     todo_list_archive = {}
-    block_lists = [[[], [], [], ], [[], [], []]]
+    #the block_lists is a list with two components which are dictionaries. The first dictionary is for weblist,
+    #the second dictionary is for applist. Each dictionary contains a string as the list name, and a list.
+    block_lists = [{}, {}]
     timeStamp = None
 
     # Below here, items are loaded and initialized in your system, such as settings, todolist, block list etc.
-    # Load in saved block list if they exist
 
-    for filename in os.listdir(pickleDirectory):
-        filename = makePath(pickleDirectory, filename)
-        if filename.endswith("APPLIST.pickle"):
-            try:
-                with open(filename, "rb") as f:
-                    blockData = pickle.load(f)
-                    blockStatus = blockData["status"]
-                    blockEntries = blockData["entries"]
-                    blockType = blockData["type"]
-                    if blockStatus == "DAILY":
-                        block_lists[0][0] = blockEntries
-                    elif blockStatus == "GENERAL":
-                        block_lists[0][1] = blockEntries
-                    elif blockStatus == "TIMER":
-                        blockData["status"] = "INACTIVE"
-                        blockStatus = "INACTIVE"
-                        with open(filename, "wb") as f:
-                            pickle.dump(blockData, f)
-            except Exception as e:
-                print(e)
+    # Load in blocklist Pickle
+    try:
+        with open(makePath(pickleDirectory, "block_list.pickle"), "rb") as f:
+            block_list_data = pickle.load(f)
+            block_lists = block_list_data["Blocklists"]
+            block_type = block_list_data["type"]
+    except:
+        block_lists = [{},{}]
+
 
     # Load in t0dolist archive
     try:
@@ -97,7 +87,6 @@ def main_process():  # TODO FLAG AND LOCK
     except:
         # Handle the exception and continue without the data
         settings.daily_start_time = QTime(0, 0)
-        settings.enable_lock_out = False
         # First is Brave, second is Chrome, Third is edge. These check which browsers you currently use.
         settings.browsers = [False, True, False]
         settings.klaus_state = KlausFeeling.HAPPY

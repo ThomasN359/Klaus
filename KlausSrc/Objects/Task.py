@@ -53,7 +53,7 @@ class ActiveTask(Task):
 
 class TimerTask(Task):
     def __init__(self, task_name: str, task_description: str, task_status: TaskStatus,add_method: AddMethod, reminder: list[str],
-                 due_by: time, start_by: time, duration: int, app_block_list: str, web_block_list):
+                 due_by: time, start_by: time, duration: int, app_block_list: str, web_block_list: str):
         super().__init__(task_name, task_description, TaskType.TIMER, TaskStatus.PENDING, AddMethod.MANUAL)
         self.duration = duration
         self.app_block_list = app_block_list

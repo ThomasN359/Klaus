@@ -144,11 +144,21 @@ class SchedulerPopUp(QDialog):
         add_method_value = getattr(AddMethod, day_name.upper())
         self.add_task_window = AddTaskWindow(self, self.todo_list_archive, self.todo_list, self.block_list,
                                              self.settings, self.scheduler, -1, add_method_value)
-
         # Connect window's close signal to redraw
         self.add_task_window.window_closed.connect(self.redraw_tasks)
         self.add_task_window.show()
         self.redraw_tasks()
+
+    def on_edit_click(self, index, day_name):
+        add_method_value = getattr(AddMethod, day_name.upper())
+        self.add_task_window = AddTaskWindow(self, self.todo_list_archive, self.scheduler[day_name], self.block_list,
+                                             self.settings, self.scheduler, index, add_method_value)
+        self.scheduler[day_name].pop(index)
+        # Connect window's close signal to redraw
+        self.add_task_window.window_closed.connect(self.redraw_tasks)
+        self.add_task_window.show()
+        self.redraw_tasks()
+
 
     def on_drop_click(self, task, day):
         # Remove the task from the scheduler for the given day
@@ -178,14 +188,19 @@ class SchedulerPopUp(QDialog):
                     widget.deleteLater()  # properly delete the widget
 
             # Adding tasks from scheduler
-            for task in tasks:
+            for idx, task in enumerate(tasks):
                 task_hbox = QHBoxLayout()
                 task_label = QLabel(task.task_name)
                 drop_button = QPushButton('Drop')
                 drop_button.clicked.connect(partial(self.on_drop_click, task, day))
 
+                edit_button = QPushButton('Edit')
+                edit_button.clicked.connect(partial(self.on_edit_click, idx, day))
+
+
                 task_hbox.addWidget(task_label)
                 task_hbox.addWidget(drop_button)
+                task_hbox.addWidget(edit_button)
 
                 wrapper_widget = QWidget()  # We use a wrapper widget to encapsulate the QHBoxLayout
                 wrapper_widget.setLayout(task_hbox)

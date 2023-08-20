@@ -1,3 +1,4 @@
+import enum
 import os
 import pickle
 from PyQt5.QtCore import Qt
@@ -5,12 +6,17 @@ from PyQt5.QtWidgets import QLabel, QPushButton, QComboBox, QVBoxLayout, QWidget
 from KlausSrc.Utilities.config import pickleDirectory
 from KlausSrc.Utilities.HelperFunctions import makePath
 
+class ListStatus(enum.Enum):
+    ON = 0
+    OFF = 1
+    TIMERON = 2
 
 class ListCreatorWindow(QWidget):
-    def __init__(self, todo_list_archive, todo_list, parent=None):
+    def __init__(self, todo_list_archive, todo_list, block_list, parent=None):
         super().__init__(parent)
         self.todo_list_archive = todo_list_archive
         self.todo_list = todo_list
+        self.block_list = block_list
         self.initUI()
 
     def initUI(self):
@@ -38,8 +44,6 @@ class ListCreatorWindow(QWidget):
 
         save_button = QPushButton("Save", self)
         save_button.clicked.connect(self.save_list)
-        back_button = QPushButton("Back", self)
-        back_button.clicked.connect(self.go_back)
         delete_button = QPushButton("Delete", self)
         delete_button.clicked.connect(self.delete)
 
@@ -48,25 +52,12 @@ class ListCreatorWindow(QWidget):
         self.edit_list_combobox = QComboBox(self)
         self.edit_list_combobox.setStyleSheet("QComboBox { background-color: rgba(255, 255, 255, 128); }")
 
-
-        type = ""
-
-        for filename in os.listdir(pickleDirectory):
-            filePath = makePath(pickleDirectory, filename)
-            try:
-                with open(filePath, "rb") as f:
-                    data = pickle.load(f)
-                    type = data["type"]
-            except FileNotFoundError:
-                print("File not found")
-            except EOFError:
-                print("File is empty")
-            if self.list_type_combobox.currentText() == "Block Apps":
-                if type == "APPLIST":
-                    fileList.append(filename)
-            elif self.list_type_combobox.currentText() == "Blocked Websites":
-                if type == "WEBLIST":
-                    fileList.append(filename)
+        if self.list_type_combobox.currentText() == "Block Apps":
+            for app_list_name in self.block_list[0].keys():
+                fileList.append(app_list_name)
+        elif self.list_type_combobox.currentText() == "Blocked Websites":
+            for web_list_name in self.block_list[1].keys():
+                fileList.append(web_list_name)
 
         self.edit_list_combobox.addItems(fileList)
         self.edit_list_combobox.currentTextChanged.connect(self.update_list_name)
@@ -74,7 +65,6 @@ class ListCreatorWindow(QWidget):
 
         buttons_layout = QHBoxLayout()
         buttons_layout.addWidget(save_button)
-        buttons_layout.addWidget(back_button)
         buttons_layout.addWidget(delete_button)
 
         main_layout = QVBoxLayout()
@@ -134,36 +124,29 @@ class ListCreatorWindow(QWidget):
 
     def save_list(self):
         list_name = self.list_name_textbox.text()
-        list_type = self.list_type_combobox.currentText()
-        if list_type == "Block Apps":
-            list_name = list_name
-        else:
-            list_name = list_name
         list_entries = self.list_entries_textbox.toPlainText()
         entries = list_entries.split(" ")
 
         if self.list_type_combobox.currentText() == "Block Apps":
-            pickleType = "APPLIST"
+            new_list = {list_name: (entries, ListStatus.OFF)}
+            self.block_list[0].update(new_list)
         else:
-            pickleType = "WEBLIST"
+            new_list = {list_name: (entries, ListStatus.OFF)}
+            self.block_list[1].update(new_list)
+        self.save_block_list()
 
-        data = {
-            "status": "INACTIVE",
-            "type": pickleType,
-            "entries": entries
-        }
 
-        filePath = makePath(pickleDirectory,list_name+".pickle")
-        if filePath.endswith(".pickle.pickle"):
-            filePath = filePath[:-7]
-        with open(filePath, "wb") as f:
-            pickle.dump(data, f)
+
+    def save_block_list(self):
+        # Saving the task list to a file
+        block_list_data = {"Blocklists": self.block_list, "type": "BLOCKLIST"}
+        chosenFile = makePath(pickleDirectory, "block_list.pickle")
+        with open(chosenFile, "wb") as f:
+            print(str(f))
+            pickle.dump(block_list_data, f)
             f.flush()
-        self.initUI()
 
-    def go_back(self):
-        self.parent().initUI()
-
+    #TODO MAYBE MAKE A NEW DELETE BUTTON IN NEW BLOCK LIST UI
     def delete(self):
         if self.list_name_textbox.text() != "":
             filePath = makePath(pickleDirectory, self.list_name_textbox.text()+".pickle")

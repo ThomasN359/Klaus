@@ -15,7 +15,6 @@ class KlausFeeling(enum.Enum):
 class Settings:
     def __init__(self):
         self.daily_start_time = None
-        self.enable_lock_out = False
         self.browsers = []
         self.klaus_state = KlausFeeling.HAPPY
         self.enable_dialogue_reminder_window = True
@@ -46,15 +45,6 @@ class SettingsWindow(QWidget):
         self.start_time_layout.addWidget(self.start_time_label)
         self.start_time_layout.addWidget(self.start_time)
 
-        # Create a QCheckBox widget for the daily lock out toggle
-        self.lock_out = QCheckBox(self)
-        self.lock_out.setChecked(self.settings.enable_lock_out)
-        self.lock_out_label = QLabel("Enable daily lock out", self)
-
-        # Create a layout for the lock out and its label
-        self.lock_out_layout = QHBoxLayout()
-        self.lock_out_layout.addWidget(self.lock_out_label)
-        self.lock_out_layout.addWidget(self.lock_out)
 
         self.enable_dialouge_reminder_checkbox = QCheckBox(self)
         self.enable_dialouge_reminder_checkbox.setChecked(self.settings.enable_dialogue_reminder_window)
@@ -66,7 +56,6 @@ class SettingsWindow(QWidget):
         # Create a layout for the start time and lock out widgets
         self.settings_layout = QVBoxLayout()
         self.settings_layout.addLayout(self.start_time_layout)
-        self.settings_layout.addLayout(self.lock_out_layout)
         self.settings_layout.addLayout(self.enable_dialouge_layout)
 
         # Create a layout for block site check box
