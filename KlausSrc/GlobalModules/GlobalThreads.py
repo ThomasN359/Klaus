@@ -8,6 +8,8 @@ from PyQt5.QtCore import QThread, pyqtSignal, QTimer
 import sys
 if sys.platform == "win32":
     from winotify import Notification
+elif sys.platform=="linux":
+    from notifypy import Notify
 
 from KlausSrc.MainWindow.BlockManager import ListStatus
 from KlausSrc.PopUpWindows.StartTimerPopUp import StartTimerPopUp
@@ -135,7 +137,12 @@ class ScheduleThread(QThread):
                                                      title="Reminder",
                                                      msg="Reminder to complete the task " + task.task_name)
                                 toast.show()  # UNCOMMENT_BlOCK_IF_WINDOWS
-                                print("Reminder toast to complete the task " + task.task_name)
+                            elif sys.platform == "linux":
+                                notification = Notify()
+                                notification.title = "Reminder"
+                                notification.message = "Reminder to complete the task " + task.task_name
+                                notification.send()
+                            print("Reminder toast to complete the task " + task.task_name)
 
                 if task.task_type == TaskType.TIMER:
                     start_by = task.start_by
@@ -177,11 +184,17 @@ class ScheduleThread(QThread):
 
 
                     if str(originalBedTime) == str(currentClock):
-                        toast = Notification(app_id="Klaus",
-                                             title="Reminder",
-                                             msg="It's bed time, you have 1 minutes before autoshut off",
-                                             duration="long")
-                        toast.show()  # UNCOMMENT_BlOCK_IF_WINDOWS
+                        if sys.platform == "win32":
+                            toast = Notification(app_id="Klaus",
+                                                 title="Reminder",
+                                                 msg="It's bed time, you have 1 minutes before autoshut off",
+                                                 duration="long")
+                            toast.show()  # UNCOMMENT_BlOCK_IF_WINDOWS
+                        elif sys.platform == "linux":
+                            notification = Notify()
+                            notification.title = "Reminder"
+                            notification.message = "It's bed time, you have 1 minutes before autoshut off"
+                            notification.send()
                         print("Prepare for shutdown in 60 seconds minutes")
                         subprocess.run("shutdown /s /t 3", shell=True)
 

@@ -21,6 +21,8 @@ from PyQt5 import QtCore
 import sys
 if sys.platform == "win32":
     from winotify import Notification
+elif sys.platform == "linux":
+    from notifypy import Notify
 from PyQt5.QtCore import QTime, QTimer
 from PyQt5.QtGui import QPixmap
 from PyQt5.QtWidgets import *
@@ -489,6 +491,11 @@ class TodoListWindow(QWidget):
                                      title="Reminder",
                                      msg="The timer for " + task.task_name + " is over")
                 toast.show()
+            elif sys.platform == "linux":
+                notification = Notify()
+                notification.title = "Reminder"
+                notification.message = "The timer for " + task.task_name + " is over"
+                notification.send()
 
     def updateCurrentTime(self):
         current_time = QTime.currentTime()
