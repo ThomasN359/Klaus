@@ -12,7 +12,10 @@ from KlausSrc.Utilities.HelperFunctions import makePath
 from KlausSrc.Utilities.config import selfAwareness, initialPrompt, commandPrompt
 
 load_dotenv()
-openai.api_key = os.environ['OPENAI_KEY']
+if "OPENAI_KEY" in os.environ:
+    openai.api_key = os.environ['OPENAI_KEY']
+else:
+    openai.api_key = ""
 
 
 

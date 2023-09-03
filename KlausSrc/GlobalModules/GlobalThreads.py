@@ -5,7 +5,9 @@ import threading
 from datetime import *
 import time
 from PyQt5.QtCore import QThread, pyqtSignal, QTimer
-from winotify import Notification
+import sys
+if sys.platform == "win32":
+    from winotify import Notification
 
 from KlausSrc.MainWindow.BlockManager import ListStatus
 from KlausSrc.PopUpWindows.StartTimerPopUp import StartTimerPopUp
@@ -128,11 +130,12 @@ class ScheduleThread(QThread):
                         reminderTime = "{}:{} {}".format(hours, minutes, timeComponents[1].split()[1])
                         # TODO make a function that converts time
                         if str(currentClock) == str(reminderTime):
-                            toast = Notification(app_id="Klaus",
-                                                 title="Reminder",
-                                                 msg="Reminder to complete the task " + task.task_name)
-                            toast.show()  # UNCOMMENT_BlOCK_IF_WINDOWS
-                            print("Reminder toast to complete the task " + task.task_name)
+                            if sys.platform == "win32":
+                                toast = Notification(app_id="Klaus",
+                                                     title="Reminder",
+                                                     msg="Reminder to complete the task " + task.task_name)
+                                toast.show()  # UNCOMMENT_BlOCK_IF_WINDOWS
+                                print("Reminder toast to complete the task " + task.task_name)
 
                 if task.task_type == TaskType.TIMER:
                     start_by = task.start_by
