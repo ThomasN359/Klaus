@@ -184,8 +184,8 @@ class HomeScreen(QMainWindow):
             self.block_manager_label.hide()
             self.stats_button.hide()
             self.stats_label.hide()
-            self.nutrition_button.hide()
-            self.nutrition_label.hide()
+            self.calendar_label.hide()
+            self.calendar_button.hide()
         else:
             self.todolist_button.show()
             self.todolist_label.show()
@@ -195,8 +195,8 @@ class HomeScreen(QMainWindow):
             self.block_manager_label.show()
             self.stats_button.show()
             self.stats_label.show()
-            self.nutrition_button.show()
-            self.nutrition_label.show()
+            self.calendar_label.show()
+            self.calendar_button.show()
 
         self.sidebar_visible = not self.sidebar_visible
 
