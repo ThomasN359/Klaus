@@ -1,6 +1,9 @@
 import os
 import pickle
 from datetime import datetime
+
+from PyQt5.QtGui import QFont
+
 from KlausSrc.Utilities.config import pickleDirectory
 from PyQt5.QtCore import QTime, Qt, pyqtSignal
 from PyQt5.QtWidgets import QLabel, QPushButton, QComboBox, QTextEdit, QLineEdit, QVBoxLayout, QDialog, QTimeEdit, \
@@ -45,22 +48,21 @@ class AddTaskWindow(QDialog):
         self.error_label.hide()
         layout.addWidget(self.error_label)
 
-        name_label = QLabel("Name:")
         self.name_edit = QLineEdit()
-
-        layout.addWidget(name_label)
+        self.name_edit.setPlaceholderText("Name")
+        self.name_edit.setFont(QFont("Arial", 20))
         layout.addWidget(self.name_edit)
 
         if self.index != self.ADD_TASK:
             self.name_edit.setText(currTask.task_name)
 
-        description_label = QLabel("Description:")
         self.description_edit = QTextEdit()
 
         if self.index != self.ADD_TASK:
             self.description_edit.setText(currTask.task_description)
 
-        layout.addWidget(description_label)
+        self.description_edit.setPlaceholderText("Description")
+        self.description_edit.setFixedHeight(75)
         layout.addWidget(self.description_edit)
 
         type_label = QLabel("Type:")
